@@ -23,19 +23,31 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col bg-[#1B2559]">
+    <aside
+      className="flex h-full w-60 shrink-0 flex-col"
+      style={{ backgroundColor: "#141416", borderRight: "1px solid #1E1E22" }}
+    >
       {/* Logo */}
-      <div className="flex items-center gap-2 px-4 py-5 border-b border-white/10">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#4F8EF7]">
-          <Zap className="h-5 w-5 text-white" />
+      <div
+        className="flex items-center gap-2.5 px-4 py-5 border-b"
+        style={{ borderColor: "#1E1E22" }}
+      >
+        <div
+          className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
+          style={{ backgroundColor: "#CAFF33" }}
+        >
+          <Zap className="h-4 w-4" style={{ color: "#0C0C0E" }} />
         </div>
-        <span className="text-white font-bold text-lg tracking-tight">
+        <span
+          className="font-bold text-[17px] text-[#E8E8E8] tracking-tight"
+          style={{ fontFamily: "var(--font-display, 'Syne', sans-serif)" }}
+        >
           PipeFlow
         </span>
       </div>
 
       {/* Workspace switcher */}
-      <div className="px-2 py-3 border-b border-white/10">
+      <div className="px-2 py-3 border-b" style={{ borderColor: "#1E1E22" }}>
         <WorkspaceSwitcher />
       </div>
 
@@ -48,21 +60,26 @@ export function Sidebar() {
               key={href}
               href={href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-150",
                 isActive
-                  ? "bg-white/[0.15] text-white"
-                  : "text-white/70 hover:bg-white/[0.08] hover:text-white"
+                  ? "text-[#CAFF33]"
+                  : "text-[#555559] hover:text-[#8A8A8F]"
               )}
+              style={{
+                backgroundColor: isActive ? "rgba(202,255,51,0.08)" : "transparent",
+                fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+              }}
             >
               <Icon
-                className={cn(
-                  "h-4 w-4 shrink-0",
-                  isActive ? "text-[#4F8EF7]" : "text-white/50"
-                )}
+                className="h-4 w-4 shrink-0"
+                style={{ color: isActive ? "#CAFF33" : "#555559" }}
               />
               {label}
               {isActive && (
-                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-[#4F8EF7]" />
+                <div
+                  className="ml-auto h-1.5 w-1.5 rounded-full shrink-0"
+                  style={{ backgroundColor: "#CAFF33" }}
+                />
               )}
             </Link>
           );
@@ -70,8 +87,11 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="px-4 py-4 border-t border-white/10">
-        <p className="text-[11px] text-white/30 font-medium">
+      <div className="px-4 py-4 border-t" style={{ borderColor: "#1E1E22" }}>
+        <p
+          className="text-[10px] uppercase tracking-[0.14em] text-[#333337]"
+          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+        >
           PipeFlow CRM · v0.1
         </p>
       </div>
