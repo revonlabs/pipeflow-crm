@@ -14,7 +14,7 @@ FASE 1 — INTERFACE (UI-first, dados mockados)
   M1  Design System & App Shell    → branch: feat/app-shell
   M2  Auth & Onboarding (UI)       → branch: feat/auth-ui
   M3  Leads — Telas & Componentes  → branch: feat/leads-ui
-  M4  Pipeline Kanban (UI)         → branch: feat/pipeline-ui
+  M4  Pipeline Kanban (UI)         → branch: feat/pipeline-kanban ✅
   M5  Dashboard de Métricas (UI)   → branch: feat/dashboard-ui
   M6  Landing Page                 → branch: feat/landing
 
@@ -202,59 +202,64 @@ feat(leads): leads list with search/filters, lead detail page, create/edit/delet
 
 ### M4 — Pipeline Kanban (UI) ✅
 
-**Branch:** `feat/pipeline-ui` → mergeado em `main` (PR #4)
+**Branch:** `feat/pipeline-kanban` → mergeado em `main` (PR #3)
 **Objetivo:** Kanban visual com drag-and-drop funcional, usando dados mockados.
 
 #### Mock Data
-- [x] `src/lib/mock/deals.ts` — 16 deals distribuídos pelas 6 colunas do pipeline
+- [x] `src/lib/mock/deals.ts` — 14 deals distribuídos pelas 6 colunas do pipeline, linkados aos MOCK_LEADS
 
 #### Board Kanban (`/pipeline`)
-- [x] `src/app/(app)/pipeline/page.tsx` — layout horizontal com scroll
-- [x] 6 colunas fixas com header (nome da etapa + contador + valor total)
-- [x] Scroll horizontal no board, scroll vertical por coluna
-- [x] Botão "Novo Negócio" no header da página
+- [x] `src/app/(app)/pipeline/page.tsx` — layout full-height com scroll horizontal
+- [x] 6 colunas fixas com header (nome do estágio + contador + valor total em R$)
+- [x] Stats bar: pipeline ativo, receita ganha, taxa de conversão, total de negócios
+- [x] Barra de progresso proporcional por estágio
+- [x] Botão "Novo Negócio" com accent #CAFF33
 
 **Componentes**
-- [x] `src/components/pipeline/kanban-board.tsx` — container DndContext
-- [x] `src/components/pipeline/kanban-column.tsx` — SortableContext por coluna
-- [x] `src/components/pipeline/deal-card.tsx` — card arrastável
+- [x] `src/components/kanban/kanban-board.tsx` — DndContext + STAGE_CONFIG exportado
+- [x] `src/components/kanban/kanban-column.tsx` — SortableContext + useDroppable por coluna
+- [x] `src/components/kanban/deal-card.tsx` — card arrastável com useSortable
 
 **Deal Card**
-- [x] Título do negócio
-- [x] Avatar + nome do lead vinculado (avatar colorido com cor da etapa)
-- [x] Valor estimado (R$) em IBM Plex Mono, cor da etapa
-- [x] Nome do responsável
-- [x] Prazo com cor de alerta se vencido (vermelho #FF4757 + badge "Vencido")
-- [x] Menu de ações (⋮): editar, mover para, excluir
+- [x] Título em Syne
+- [x] Nome do lead + empresa (DM Sans, secondary)
+- [x] Valor estimado em IBM Plex Mono na cor do estágio
+- [x] Avatar do responsável (inicial com cor indexada)
+- [x] Badge de prazo: cinza padrão, vermelho #FF4757 se vencido (CalendarX icon)
+- [x] Accent line CSS animada no topo ao hover
+- [x] `PointerSensor` com `activationConstraint: { distance: 8 }` — distingue click de drag
 
 **Drag & Drop (@dnd-kit)**
-- [x] Arrastar card entre colunas — estado local atualiza visualmente
-- [x] Overlay animado durante o drag (rotate 1.5deg + scale 1.04, accent top-line)
-- [x] Indicador visual na coluna de destino (borda chartreuse #CAFF33)
-- [x] Touch support (mobile) via TouchSensor
+- [x] Arrastar card entre colunas — estado local atualiza com stage e position corretos
+- [x] Reordenar dentro da mesma coluna com arrayMove
+- [x] DragOverlay com rotate 1.5deg + scale 1.02 durante o drag
+- [x] Indicador visual na coluna de destino (borda + fundo na cor do estágio)
+- [x] Colunas vazias aceitam drop via useDroppable
 
 **Formulário de Negócio**
-- [x] `src/components/pipeline/deal-form-dialog.tsx`
-- [x] Campos: título*, lead vinculado (select)*, valor estimado, responsável, prazo, observações
-- [x] Pré-seleciona a coluna quando "Novo Negócio" é clicado em uma coluna específica
+- [x] `src/components/kanban/deal-form-dialog.tsx`
+- [x] Campos: título*, lead (select)*, estágio, valor (R$), responsável, prazo
+- [x] Validação Zod com React Hook Form
+- [x] Pré-seleciona o estágio ao clicar "+" em uma coluna específica
+- [x] Deletar com AlertDialog de confirmação
 
-**Brand Identity v2 aplicada**
-- [x] Fontes: Syne (display) + DM Sans (body) + IBM Plex Mono (dados)
-- [x] Accent chartreuse #CAFF33 como primary em dark mode
-- [x] Sidebar: logo mark quadrado chartreuse com "P", item ativo em chartreuse
-- [x] Cards: accent line no topo via inset box-shadow (sem glassmorphism)
-- [x] Stage colors atualizados: cool blue, cyan, chartreuse, orange, green, red
-- [x] Noise texture SVG no body (opacity 0.03)
+**Brand Identity v2**
+- [x] Fontes: Syne (display) + DM Sans (body) + IBM Plex Mono (dados) via `next/font/google`
+- [x] Accent chartreuse #CAFF33; background #0C0C0E; surface #141416
+- [x] Sidebar: #141416, item ativo chartreuse com bg rgba(202,255,51,0.08)
+- [x] Stage colors v2: #5B7FFF, #00B4D8, #CAFF33, #FF6B35, #2ED573, #FF4757
+- [x] Noise texture SVG no body (opacity 0.025)
+- [x] CSS custom vars para hover colorido por estágio via `color-mix()`
 
 **Verificação**
-- [x] Drag entre todas as 6 colunas funciona
-- [x] Estado persiste enquanto página está aberta
-- [x] Touch support mobile
-- [x] `npx tsc --noEmit` zero erros
+- [x] Drag entre todas as 6 colunas funciona e totais atualizam
+- [x] Reordenação na mesma coluna funciona
+- [x] Criar, editar e deletar negócio atualiza board em tempo real
+- [x] `npm run build` zero erros TypeScript
 
 #### Commit Final
 ```
-feat(pipeline): kanban board with 6 stages, drag-and-drop, deal cards + brand identity v2
+feat(pipeline): kanban board with drag-and-drop, deal cards, brand identity v2
 ```
 
 ---
@@ -667,7 +672,7 @@ feat(deploy): production deployment on Vercel + Supabase, workspace creation fix
 | `feat/app-shell` | M1 | Layout, sidebar, dark mode |
 | `feat/auth-ui` | M2 | Login, registro, onboarding (UI) |
 | `feat/leads-ui` | M3 | Leads list, detalhe, forms (UI) |
-| `feat/pipeline-ui` | M4 | Kanban com drag-and-drop (UI) |
+| `feat/pipeline-kanban` | M4 | Kanban com drag-and-drop (UI) ✅ |
 | `feat/dashboard-ui` | M5 | Métricas e gráfico (UI) |
 | `feat/landing` | M6 | Landing page pública |
 | `feat/supabase-core` | M7 | Auth real + migrations + RLS |
@@ -685,7 +690,7 @@ feat(deploy): production deployment on Vercel + Supabase, workspace creation fix
 feat/app-shell     → main
 feat/auth-ui       → main
 feat/leads-ui      → main
-feat/pipeline-ui   → main
+feat/pipeline-kanban → main ✅
 feat/dashboard-ui  → main
 feat/landing       → main
 feat/supabase-core → main  ← ponto de virada: dados reais
