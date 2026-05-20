@@ -413,13 +413,15 @@ feat(auth): real auth flow, route protection, workspace context — M7
 
 ### M8 — Leads & Pipeline — Dados Reais ✅
 
-**Branch:** `feat/leads-data` → mergeado em `main` (PR #9)
+**Branch:** `feat/leads-data` → mergeado em `main` (PR #7)
 **Objetivo:** Substituir todos os dados mockados por dados reais do Supabase.
 
 #### Server Actions (`src/lib/actions/`)
 - [x] `leads.ts` — `createLeadAction`, `updateLeadAction`, `deleteLeadAction`
 - [x] `deals.ts` — `createDealAction`, `updateDealAction`, `moveDealAction`, `deleteDealAction`
 - [x] `activities.ts` — `createActivityAction`
+- [x] `src/lib/members.ts` — `getWorkspaceMembers()` via `auth.admin.listUsers`
+- [x] `src/lib/supabase/admin.ts` — cliente admin com `service_role` (server-only)
 
 #### Integração nas Páginas
 - [x] `/leads` — Server Component com query real + filtros passados via props
@@ -434,20 +436,21 @@ feat(auth): real auth flow, route protection, workspace context — M7
 - [x] Membros reais no select de responsável (sem mock)
 
 #### Bug Fixes
-- [x] Hydration mismatch: `id="pipeline-kanban"` no `DndContext` + `isOverdue` computado inline
-- [x] Cursor offset no drag: removido `rotate/scale` do `DragOverlay`
-- [x] Campo de valor invadido: `grid-cols-1 sm:grid-cols-2` nos forms
-- [x] Revert otimista preserva índice original com `splice`
+- [x] Hydration mismatch: `id={useId()}` no `DndContext`
+- [x] Drag não persistia: `useEffect(() => setDeals(initialDeals), [initialDeals])` em `PipelineClient` e `LeadsTable` — garante que IDs otimistas são substituídos pelos UUIDs reais após `revalidatePath`
+- [x] Workspace creation failure: `create_workspace` estava no schema `internal` (não exposto via PostgREST) → movido para `public`; fallback INSERT removido (causava deadlock RLS circular)
+- [x] `ActivityButton` undefined em runtime: padrão de static property (`Component.Sub = Sub`) não funciona com module resolution do Next.js → convertido para named export
 
 **Verificação**
 - [x] CRUD completo de leads funciona e persiste após reload
-- [x] Drag no pipeline persiste após reload
+- [x] Drag no pipeline persiste após reload (IDs reais usados no `moveDealAction`)
 - [x] Dados do dashboard refletem o banco real
 - [x] RLS: usuário só vê dados do seu workspace
+- [x] "Registrar Atividade" abre dialog sem erro
 
 #### Commit Final
 ```
-feat(leads-pipeline): replace mock data with real Supabase queries and Server Actions
+feat(data): replace all mock data with real Supabase data — M8
 ```
 
 ---
@@ -657,7 +660,7 @@ feat(deploy): production deployment on Vercel + Supabase, workspace creation fix
 | `feat/dashboard-ui` | M5 | Métricas e gráfico (UI) |
 | `feat/landing` | M6 | Landing page pública ✅ |
 | `feat/supabase-core` | M7 | Auth real + migrations + RLS |
-| `feat/leads-data` | M8 | CRUD real leads + pipeline |
+| `feat/leads-data` | M8 | CRUD real leads + pipeline ✅ |
 | `feat/collaboration` | M9 | Convites + membros + roles |
 | `feat/billing-nextjs` | M10 | Stripe checkout + webhook + limites |
 | `feat/multi-workspace` | M10½ | Criação de múltiplos workspaces |
