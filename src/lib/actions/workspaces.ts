@@ -86,29 +86,44 @@ export async function inviteMemberAction(
     return { error: 'Falha ao criar convite. Tente novamente.' }
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+  const appUrl = (process.env.NEXT_PUBLIC_APP_URL ?? process.env.APP_URL ?? 'http://localhost:3000').replace(/\/$/, '')
   const acceptUrl = `${appUrl}/invite/${invite.token}`
 
   const inviterName = (user.user_metadata?.full_name as string | undefined) ?? user.email ?? 'Alguém'
 
-  try {
-    const resend = getResendClient()
-    await resend.emails.send({
-      from: 'PipeFlow <noreply@resend.dev>',
-      to: email,
-      subject: `Você foi convidado para ${ctx.workspace.name} no PipeFlow`,
-      html: renderWorkspaceInviteEmail({
-        workspaceName: ctx.workspace.name,
-        inviterName,
-        inviterEmail: user.email ?? '',
-        role,
-        acceptUrl,
-      }),
-    })
-  } catch (emailErr) {
-    console.error('[inviteMemberAction] email error:', emailErr)
-    // Convite criado mas e-mail falhou — retorna warning para o admin saber
-    return { warning: 'Convite criado, mas o e-mail não pôde ser enviado. Compartilhe o link manualmente.' }
+  // Em dev sem domínio próprio, o Resend só entrega para o e-mail dono da conta.
+  // Usamos o e-mail real do convidado em prod; em dev, redirecionamos para o owner.
+  const isDev = process.env.NODE_ENV === 'development'
+  const devOverrideEmail = process.env.RESEND_DEV_TO_EMAIL
+  const toEmail = isDev && devOverrideEmail ? devOverrideEmail : email
+
+  const resend = getResendClient()
+  const { error: emailError } = await resend.emails.send({
+    from: 'PipeFlow <onboarding@resend.dev>',
+    to: toEmail,
+    subject: `Você foi convidado para ${ctx.workspace.name} no PipeFlow`,
+    html: renderWorkspaceInviteEmail({
+      workspaceName: ctx.workspace.name,
+      inviterName,
+      inviterEmail: user.email ?? '',
+      role,
+      acceptUrl,
+    }),
+  })
+
+  if (emailError) {
+    console.error('[inviteMemberAction] email error:', emailError)
+    return {
+      warning: `Convite criado, mas o e-mail não pôde ser enviado (${emailError.message}). Link para compartilhar manualmente: ${acceptUrl}`,
+    }
+  }
+
+  // Em dev com redirect, avisa que o e-mail foi para o owner, não para o convidado
+  if (isDev && devOverrideEmail && devOverrideEmail !== email) {
+    revalidatePath('/settings/members')
+    return {
+      warning: `[Dev] E-mail enviado para ${devOverrideEmail} (não para ${email}). Link do convite: ${acceptUrl}`,
+    }
   }
 
   revalidatePath('/settings/members')
