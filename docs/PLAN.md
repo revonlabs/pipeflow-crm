@@ -348,7 +348,7 @@ feat(landing): public marketing page — hero, stats, features, pricing, CTA
 
 ### M7 — Banco de Dados & Auth Real ✅
 
-**Branch:** `feat/supabase-core` → mergeado em `main` (PR #8)
+**Branch:** `feat/supabase-core` → mergeado em `main` (PR #6)
 **Objetivo:** Supabase configurado localmente e em produção, auth real funcionando, dados persistentes.
 
 #### Setup Supabase
@@ -357,69 +357,56 @@ feat(landing): public marketing page — hero, stats, features, pricing, CTA
 - [x] Criar `src/lib/supabase/client.ts` — browser client (lazy singleton)
 - [x] Criar `src/lib/supabase/server.ts` — server client com cookies (lazy, async)
 
-#### Migrations (SQL direto no Supabase Dashboard)
+#### Migrations (aplicadas via MCP Supabase direto na infra)
 
-> Não utilizamos Supabase CLI. As migrations são aplicadas diretamente no **SQL Editor** do Supabase Dashboard. Os arquivos ficam em `docs/migrations/` apenas como referência e controle de versão.
+> As migrations são aplicadas via MCP do Supabase (sem Supabase CLI). Os arquivos em `docs/migrations/` servem como referência e controle de versão.
 
 - [x] `docs/migrations/001_create_workspaces.sql`
-  ```sql
-  CREATE TABLE workspaces (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name TEXT NOT NULL,
-    slug TEXT UNIQUE NOT NULL,
-    plan TEXT NOT NULL DEFAULT 'free', -- 'free' | 'pro'
-    created_at TIMESTAMPTZ DEFAULT now()
-  );
-  ```
 - [x] `docs/migrations/002_create_workspace_members.sql`
-  ```sql
-  CREATE TABLE workspace_members (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    workspace_id UUID REFERENCES workspaces(id) ON DELETE CASCADE,
-    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-    role TEXT NOT NULL DEFAULT 'member', -- 'admin' | 'member'
-    created_at TIMESTAMPTZ DEFAULT now(),
-    UNIQUE(workspace_id, user_id)
-  );
-  ```
 - [x] `docs/migrations/003_create_leads.sql`
 - [x] `docs/migrations/004_create_deals.sql` (com coluna `stage` e `position` para ordenação)
 - [x] `docs/migrations/005_create_activities.sql`
 - [x] `docs/migrations/006_create_subscriptions.sql`
 - [x] `docs/migrations/007_rls_policies.sql` — RLS em todas as tabelas; `(SELECT auth.uid())` para performance, `SET search_path=''` nas funções SECURITY DEFINER, policies `TO authenticated`
-- [x] `docs/migrations/007_drop_before_recreate.sql` — helper para recriar funções/policies com CASCADE
 - [x] `docs/migrations/008_search_indexes.sql` — `pg_trgm` + GIN indexes em `leads.name/company` e `deals.title`; índice composto `(workspace_id, email)`
-- [x] `docs/migrations/009_create_workspace_rpc.sql` — função `create_workspace` PL/pgSQL atômica (SECURITY DEFINER, REVOKE PUBLIC, GRANT authenticated)
-- [x] Executar cada arquivo no SQL Editor do Supabase Dashboard e validar
+- [x] `docs/migrations/009_create_workspace_rpc.sql` — função `create_workspace` PL/pgSQL atômica (SECURITY DEFINER)
+- [x] `docs/migrations/010_fk_indexes.sql` — índices em FKs não cobertas: `leads.owner_id`, `deals.lead_id/owner_id`, `activities.*`, `subscriptions.workspace_id`, `workspaces.owner_id`, composite `activities(lead_id, created_at DESC)`
+- [x] `docs/migrations/011_rls_hardening.sql` — `FORCE ROW LEVEL SECURITY` em todas as tabelas; `workspaces_update` restrita a `role = admin`; `wm_insert` exige `user_id = auth.uid()`
+- [x] Migration 012 (aplicada via MCP, sem arquivo local) — `is_workspace_member` e `create_workspace` movidas para schema `internal` (não exposto via REST); todas as 19 policies recriadas; elimina 2 WARNs de segurança do Supabase advisor
 
 #### Tipos TypeScript
-- [x] Gerar `src/types/supabase.ts` via **Supabase Dashboard → Settings → API → Generate types** (download) ou copiar do editor
-- [x] Atualizar `src/types/index.ts` para usar os tipos gerados
+- [x] `src/types/supabase.ts` — gerado via MCP + schema `internal` declarado manualmente para TypeScript strict
+- [x] `src/types/index.ts` com interfaces alinhadas aos tipos gerados
 
 #### Auth Real
 - [x] Configurar Supabase Auth: Email/Password habilitado
-- [x] `src/proxy.ts` — proteger rotas `(app)/*`, redirecionar para `/login` se sem sessão (`proxyConfig` — Next.js 16)
-- [x] `src/app/(auth)/login/page.tsx` — conectar form ao Supabase Auth (`signInWithPassword`); `<Suspense>` para `useSearchParams`
-- [x] `src/app/(auth)/register/page.tsx` — conectar ao Supabase Auth (`signUp`) com `emailRedirectTo`
-- [x] `src/app/(onboarding)/onboarding/page.tsx` — Server Action `createWorkspaceAction` cria workspace + workspace_member via RPC atômico
-- [x] Callback de auth: `src/app/auth/callback/route.ts` — `exchangeCodeForSession`
-- [x] Logout: `signOutAction` em `src/lib/actions/workspace.ts`, chamada pelo navbar
-- [x] Redirecionar para onboarding se usuário não tem workspace
+- [x] `src/proxy.ts` — proteção de rotas `(app)/*` com `getUser()` do `@supabase/ssr`; redireciona para `/login` (com `?redirectTo`) se sem sessão; redireciona autenticado para `/dashboard` se tentar acessar `/login` ou `/register` (`proxyConfig` — Next.js 16)
+- [x] `src/components/auth/login-form.tsx` — conectado ao `signInWithPassword` real
+- [x] `src/components/auth/register-form.tsx` — conectado ao `signUp` com `emailRedirectTo` para `/auth/callback?next=/onboarding`
+- [x] `src/app/auth/callback/route.ts` — `exchangeCodeForSession`; proteção contra open redirect
+- [x] `src/components/auth/workspace-form.tsx` — chama `createWorkspaceAction` (RPC no schema `internal` via `.schema('internal').rpc()`, com fallback de INSERTs diretos e slug único)
+- [x] `src/lib/actions/auth.ts` — `signOutAction` Server Action chamada pelo navbar
+- [x] `src/app/(app)/layout.tsx` — Server Component: carrega sessão + contexto real; redireciona para `/onboarding` se usuário não tem workspace
 
 #### Context de Workspace
-- [x] `src/hooks/use-workspace.ts` — lê workspace ativo do cookie
-- [x] `src/lib/workspace.ts` — `getWorkspaceContext()` (única query, sem N+1), `getActiveWorkspace()`, `setActiveWorkspace()`
-- [x] `src/lib/actions/workspace.ts` — `switchWorkspaceAction` (verifica membership, seta cookie, redirect)
-- [x] Workspace switcher funcional (atualiza cookie, revalida página)
+- [x] `src/lib/workspace.ts` — `getWorkspaceContext()` (query única sem N+1, resolve workspace ativo pelo cookie `pf_active_workspace`)
+- [x] `src/lib/actions/workspace.ts` — `createWorkspaceAction` e `switchWorkspaceAction` (com filtro `user_id` para prevenir IDOR)
+- [x] `src/components/layout/workspace-switcher.tsx` — dados reais via props, `switchWorkspaceAction` no select
+- [x] `src/components/layout/sidebar.tsx`, `navbar.tsx`, `mobile-sidebar.tsx` — dados reais via props; removidos todos os mocks
+
+**Resultado Supabase Advisor**
+- Security WARNs: 2 → **0**
+- Performance ERROs: 0 → 0
 
 **Verificação**
-- [x] Registro → email de confirmação → login → onboarding → dashboard
-- [x] Logout redireciona para `/login`
 - [x] Rotas protegidas redirecionam quem não está logado
+- [x] Registro → onboarding → workspace criado no banco → dashboard
+- [x] Logout redireciona para `/login`
+- [x] Build limpo: 12 rotas, zero erros TypeScript (`npm run build`)
 
 #### Commit Final
 ```
-feat(supabase): database migrations, RLS policies, real auth flow, workspace context
+feat(auth): real auth flow, route protection, workspace context — M7
 ```
 
 ---
