@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +29,8 @@ type RegisterValues = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite");
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -45,7 +47,9 @@ export function RegisterForm() {
       password: values.password,
       options: {
         data: { full_name: values.name },
-        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+        emailRedirectTo: inviteToken
+        ? `${window.location.origin}/auth/callback?next=/invite/${inviteToken}`
+        : `${window.location.origin}/auth/callback?next=/onboarding`,
       },
     });
     if (error) {
@@ -56,9 +60,11 @@ export function RegisterForm() {
       );
       return;
     }
-    // Redireciona para onboarding — Supabase pode exigir confirmação de e-mail
-    // dependendo da configuração do projeto; o callback cuida disso.
-    router.push("/onboarding");
+    if (inviteToken) {
+      router.push(`/invite/${inviteToken}`);
+    } else {
+      router.push("/onboarding");
+    }
     router.refresh();
   }
 
@@ -178,7 +184,10 @@ export function RegisterForm() {
 
       <p className="mt-6 text-center text-sm text-white/40">
         Já tem uma conta?{" "}
-        <Link href="/login" className="text-[#4F8EF7] hover:underline">
+        <Link
+          href={inviteToken ? `/login?invite=${inviteToken}` : "/login"}
+          className="text-[#4F8EF7] hover:underline"
+        >
           Entrar
         </Link>
       </p>

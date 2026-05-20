@@ -56,10 +56,16 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Já autenticado tentando acessar login/register → /dashboard
+  // Já autenticado tentando acessar login/register com convite pendente → /invite/[token]
   if (isAuthOnly && user) {
+    const invite = request.nextUrl.searchParams.get('invite')
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    if (invite) {
+      url.pathname = `/invite/${invite}`
+      url.search = ''
+    } else {
+      url.pathname = '/dashboard'
+    }
     return NextResponse.redirect(url)
   }
 
