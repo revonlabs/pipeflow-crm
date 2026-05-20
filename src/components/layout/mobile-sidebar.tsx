@@ -6,12 +6,20 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Sidebar } from "./sidebar";
+import type { Workspace } from "@/types";
 
-export function MobileSidebarTrigger() {
+interface MobileSidebarTriggerProps {
+  activeWorkspace: Workspace;
+  allWorkspaces: Workspace[];
+}
+
+export function MobileSidebarTrigger({
+  activeWorkspace,
+  allWorkspaces,
+}: MobileSidebarTriggerProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
-  // Fecha o Sheet ao navegar
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
@@ -34,7 +42,10 @@ export function MobileSidebarTrigger() {
           className="p-0 w-60 bg-[#1B2559] border-r-0 [&>button]:hidden"
         >
           <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
-          <Sidebar />
+          <Sidebar
+            activeWorkspace={activeWorkspace}
+            allWorkspaces={allWorkspaces}
+          />
         </SheetContent>
       </Sheet>
     </>

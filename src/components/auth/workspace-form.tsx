@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { createWorkspaceAction } from "@/lib/actions/workspace";
 
 const workspaceSchema = z.object({
   name: z
@@ -20,7 +21,7 @@ const workspaceSchema = z.object({
 type WorkspaceValues = z.infer<typeof workspaceSchema>;
 
 export function WorkspaceForm() {
-  const router = useRouter();
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const {
     register,
@@ -28,10 +29,13 @@ export function WorkspaceForm() {
     formState: { errors, isSubmitting },
   } = useForm<WorkspaceValues>({ resolver: zodResolver(workspaceSchema) });
 
-  async function onSubmit(_values: WorkspaceValues) {
-    // Mock: simula criação do workspace e redireciona pro dashboard
-    await new Promise((r) => setTimeout(r, 800));
-    router.push("/dashboard");
+  async function onSubmit(values: WorkspaceValues) {
+    setServerError(null);
+    const result = await createWorkspaceAction(values.name);
+    if (result?.error) {
+      setServerError(result.error);
+    }
+    // Em caso de sucesso, createWorkspaceAction faz redirect internamente
   }
 
   return (
@@ -58,6 +62,12 @@ export function WorkspaceForm() {
           Você pode alterar isso depois nas configurações.
         </p>
       </div>
+
+      {serverError && (
+        <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-400">
+          {serverError}
+        </p>
+      )}
 
       <Button
         type="submit"

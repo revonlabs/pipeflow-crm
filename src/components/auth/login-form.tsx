@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const loginSchema = z.object({
   email: z.string().min(1, "E-mail é obrigatório").email("E-mail inválido"),
@@ -29,11 +30,19 @@ export function LoginForm() {
     formState: { errors, isSubmitting },
   } = useForm<LoginValues>({ resolver: zodResolver(loginSchema) });
 
-  async function onSubmit(_values: LoginValues) {
+  async function onSubmit(values: LoginValues) {
     setServerError(null);
-    // Mock: simula delay de rede e redireciona
-    await new Promise((r) => setTimeout(r, 800));
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+    if (error) {
+      setServerError("E-mail ou senha incorretos. Verifique e tente novamente.");
+      return;
+    }
     router.push("/dashboard");
+    router.refresh();
   }
 
   return (

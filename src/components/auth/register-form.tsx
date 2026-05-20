@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 const registerSchema = z
   .object({
@@ -36,11 +37,29 @@ export function RegisterForm() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterValues>({ resolver: zodResolver(registerSchema) });
 
-  async function onSubmit(_values: RegisterValues) {
+  async function onSubmit(values: RegisterValues) {
     setServerError(null);
-    // Mock: simula delay de rede e redireciona para onboarding
-    await new Promise((r) => setTimeout(r, 800));
+    const supabase = getSupabaseBrowserClient();
+    const { error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: { full_name: values.name },
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+      },
+    });
+    if (error) {
+      setServerError(
+        error.message.includes("already registered")
+          ? "Este e-mail já está cadastrado. Tente fazer login."
+          : "Falha ao criar conta. Tente novamente."
+      );
+      return;
+    }
+    // Redireciona para onboarding — Supabase pode exigir confirmação de e-mail
+    // dependendo da configuração do projeto; o callback cuida disso.
     router.push("/onboarding");
+    router.refresh();
   }
 
   return (
