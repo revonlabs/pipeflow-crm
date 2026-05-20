@@ -2,15 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Users,
-  Kanban,
-  Settings,
-  Zap,
-} from "lucide-react";
+import { LayoutDashboard, Users, Kanban, Settings, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WorkspaceSwitcher } from "./workspace-switcher";
+import type { Workspace } from "@/types";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -19,7 +14,12 @@ const NAV_ITEMS = [
   { href: "/settings", label: "Configurações", icon: Settings },
 ];
 
-export function Sidebar() {
+interface SidebarProps {
+  activeWorkspace: Workspace;
+  allWorkspaces: Workspace[];
+}
+
+export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -48,7 +48,10 @@ export function Sidebar() {
 
       {/* Workspace switcher */}
       <div className="px-2 py-3 border-b" style={{ borderColor: "#1E1E22" }}>
-        <WorkspaceSwitcher />
+        <WorkspaceSwitcher
+          activeWorkspace={activeWorkspace}
+          allWorkspaces={allWorkspaces}
+        />
       </div>
 
       {/* Navigation */}
@@ -61,9 +64,7 @@ export function Sidebar() {
               href={href}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-150",
-                isActive
-                  ? "text-[#CAFF33]"
-                  : "text-[#555559] hover:text-[#8A8A8F]"
+                isActive ? "text-[#CAFF33]" : "text-[#555559] hover:text-[#8A8A8F]"
               )}
               style={{
                 backgroundColor: isActive ? "rgba(202,255,51,0.08)" : "transparent",

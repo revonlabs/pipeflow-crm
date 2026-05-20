@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -13,12 +12,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_WORKSPACES, MOCK_ACTIVE_WORKSPACE } from "@/lib/mock/workspaces";
+import { switchWorkspaceAction } from "@/lib/actions/workspace";
 import type { Workspace } from "@/types";
 
-export function WorkspaceSwitcher() {
-  const [active, setActive] = useState<Workspace>(MOCK_ACTIVE_WORKSPACE);
+interface WorkspaceSwitcherProps {
+  activeWorkspace: Workspace;
+  allWorkspaces: Workspace[];
+}
 
+export function WorkspaceSwitcher({ activeWorkspace, allWorkspaces }: WorkspaceSwitcherProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,12 +29,12 @@ export function WorkspaceSwitcher() {
           className="w-full justify-between px-2 h-auto py-2 hover:bg-sidebar-accent text-sidebar-foreground"
         >
           <div className="flex items-center gap-2 min-w-0">
-            <WorkspaceAvatar name={active.name} />
+            <WorkspaceAvatar name={activeWorkspace.name} />
             <div className="flex flex-col items-start min-w-0">
               <span className="text-sm font-semibold truncate max-w-[130px]">
-                {active.name}
+                {activeWorkspace.name}
               </span>
-              <PlanBadge plan={active.plan} />
+              <PlanBadge plan={activeWorkspace.plan} />
             </div>
           </div>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
@@ -44,10 +46,10 @@ export function WorkspaceSwitcher() {
           Workspaces
         </DropdownMenuLabel>
 
-        {MOCK_WORKSPACES.map((ws) => (
+        {allWorkspaces.map((ws) => (
           <DropdownMenuItem
             key={ws.id}
-            onSelect={() => setActive(ws)}
+            onSelect={() => switchWorkspaceAction(ws.id)}
             className="gap-2"
           >
             <WorkspaceAvatar name={ws.name} size="sm" />
@@ -58,7 +60,7 @@ export function WorkspaceSwitcher() {
             <Check
               className={cn(
                 "h-4 w-4 shrink-0",
-                active.id === ws.id ? "opacity-100" : "opacity-0"
+                activeWorkspace.id === ws.id ? "opacity-100" : "opacity-0"
               )}
             />
           </DropdownMenuItem>
@@ -66,7 +68,7 @@ export function WorkspaceSwitcher() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem className="gap-2 text-muted-foreground">
+        <DropdownMenuItem className="gap-2 text-muted-foreground" disabled>
           <div className="flex h-6 w-6 items-center justify-center rounded border border-dashed border-border">
             <Plus className="h-3 w-3" />
           </div>
@@ -77,13 +79,7 @@ export function WorkspaceSwitcher() {
   );
 }
 
-function WorkspaceAvatar({
-  name,
-  size = "md",
-}: {
-  name: string;
-  size?: "sm" | "md";
-}) {
+function WorkspaceAvatar({ name, size = "md" }: { name: string; size?: "sm" | "md" }) {
   const initials = name
     .split(" ")
     .slice(0, 2)
@@ -111,7 +107,5 @@ function PlanBadge({ plan }: { plan: string }) {
       </Badge>
     );
   }
-  return (
-    <span className="text-[10px] text-muted-foreground font-medium">Free</span>
-  );
+  return <span className="text-[10px] text-muted-foreground font-medium">Free</span>;
 }
