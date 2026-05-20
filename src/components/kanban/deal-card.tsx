@@ -6,7 +6,6 @@ import { Calendar, CalendarX } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { MOCK_MEMBERS } from "@/lib/mock/leads";
 import type { Deal } from "@/types";
 
 interface DealCardProps {
@@ -26,7 +25,19 @@ function formatBRL(value: number) {
   }).format(value);
 }
 
-const OWNER_HUE = ["#5B7FFF", "#CAFF33", "#FF6B35"] as const;
+const OWNER_HUE = ["#5B7FFF", "#CAFF33", "#FF6B35", "#00B4D8", "#2ED573"] as const;
+
+function ownerColorFromId(id: string | null) {
+  if (!id) return "#8A8A8F";
+  let hash = 0;
+  for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
+  return OWNER_HUE[Math.abs(hash) % OWNER_HUE.length];
+}
+
+function ownerInitial(id: string | null) {
+  if (!id) return null;
+  return id.slice(0, 1).toUpperCase();
+}
 
 export function DealCard({
   deal,
@@ -44,10 +55,7 @@ export function DealCard({
     isDragging,
   } = useSortable({ id: deal.id });
 
-  const owner = MOCK_MEMBERS.find((m) => m.id === deal.owner_id);
-  const ownerColor = owner
-    ? OWNER_HUE[MOCK_MEMBERS.indexOf(owner) % 3]
-    : "#8A8A8F";
+  const ownerColor = ownerColorFromId(deal.owner_id);
 
   const isOverdue =
     deal.due_date ? new Date(deal.due_date) < new Date() : false;
@@ -142,7 +150,7 @@ export function DealCard({
               )}
 
               {/* Avatar responsável */}
-              {owner && (
+              {deal.owner_id && (
                 <div
                   className="h-5 w-5 rounded-full flex items-center justify-center text-[9px] font-bold border shrink-0"
                   style={{
@@ -151,9 +159,8 @@ export function DealCard({
                     borderColor: `${ownerColor}30`,
                     fontFamily: "var(--font-display, 'Syne', sans-serif)",
                   }}
-                  title={owner.name}
                 >
-                  {owner.name.charAt(0)}
+                  {ownerInitial(deal.owner_id)}
                 </div>
               )}
             </div>

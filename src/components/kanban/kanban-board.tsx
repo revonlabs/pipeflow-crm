@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useId } from "react";
 import {
   DndContext,
   DragEndEvent,
@@ -49,6 +49,7 @@ export function KanbanBoard({
   onEditDeal,
   onAddDeal,
 }: KanbanBoardProps) {
+  const dndId = useId();
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -150,6 +151,7 @@ export function KanbanBoard({
 
   return (
     <DndContext
+      id={dndId}
       sensors={sensors}
       collisionDetection={closestCorners}
       onDragStart={handleDragStart}

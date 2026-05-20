@@ -40,22 +40,22 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { MOCK_LEADS, MOCK_MEMBERS } from "@/lib/mock/leads";
 import { STAGE_CONFIG } from "./kanban-board";
 import type { Deal, DealStage } from "@/types";
+import type { MemberInfo } from "@/lib/members";
+
+interface LeadOption {
+  id: string;
+  name: string;
+  company: string | null;
+  email: string | null;
+}
 
 const dealSchema = z.object({
   title: z.string().min(2, "Mínimo 2 caracteres"),
   lead_id: z.string().min(1, "Selecione um lead"),
   value: z.string().optional(),
-  stage: z.enum([
-    "new_lead",
-    "contacted",
-    "proposal_sent",
-    "negotiation",
-    "won",
-    "lost",
-  ]),
+  stage: z.enum(["new_lead", "contacted", "proposal_sent", "negotiation", "won", "lost"]),
   owner_id: z.string().optional(),
   due_date: z.string().optional(),
 });
@@ -66,22 +66,22 @@ interface DealFormDialogProps {
   open: boolean;
   deal?: Deal | null;
   defaultStage?: DealStage;
+  leads: LeadOption[];
+  members: MemberInfo[];
   onOpenChange: (open: boolean) => void;
   onSubmit: (deal: Deal) => void;
   onDelete?: (id: string) => void;
 }
 
-const monoStyle = {
-  fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)",
-} as const;
-
-const labelClass =
-  "text-[10px] font-medium uppercase tracking-[0.14em] text-[#555559]";
+const monoStyle = { fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" } as const;
+const labelClass = "text-[10px] font-medium uppercase tracking-[0.14em] text-[#555559]";
 
 export function DealFormDialog({
   open,
   deal,
   defaultStage = "new_lead",
+  leads,
+  members,
   onOpenChange,
   onSubmit,
   onDelete,
@@ -129,11 +129,11 @@ export function DealFormDialog({
     const parsedValue = rawValue ? parseFloat(rawValue) : null;
     const value = parsedValue && !isNaN(parsedValue) ? parsedValue : null;
 
-    const lead = MOCK_LEADS.find((l) => l.id === values.lead_id);
+    const leadOption = leads.find((l) => l.id === values.lead_id);
 
     const result: Deal = {
       id: deal?.id ?? `deal-${Date.now()}`,
-      workspace_id: "ws-1",
+      workspace_id: deal?.workspace_id ?? "",
       lead_id: values.lead_id,
       title: values.title,
       value,
@@ -142,13 +142,8 @@ export function DealFormDialog({
       due_date: values.due_date || null,
       position: deal?.position ?? 0,
       created_at: deal?.created_at ?? new Date().toISOString(),
-      lead: lead
-        ? {
-            id: lead.id,
-            name: lead.name,
-            company: lead.company,
-            email: lead.email,
-          }
+      lead: leadOption
+        ? { id: leadOption.id, name: leadOption.name, company: leadOption.company, email: leadOption.email }
         : deal?.lead,
     };
 
@@ -170,28 +165,15 @@ export function DealFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="sm:max-w-[480px] p-0 overflow-hidden"
-        style={{
-          backgroundColor: "#141416",
-          border: "1px solid #2A2A2E",
-        }}
+        style={{ backgroundColor: "#141416", border: "1px solid #2A2A2E" }}
       >
-        {/* Header */}
-        <div
-          className="px-5 pt-5 pb-4 border-b"
-          style={{ borderColor: "#1E1E22" }}
-        >
+        <div className="px-5 pt-5 pb-4 border-b" style={{ borderColor: "#1E1E22" }}>
           <DialogHeader>
             <div className="flex items-center gap-2.5">
-              {/* Dot accent do stage atual */}
-              <div
-                className="h-2 w-2 rounded-full shrink-0"
-                style={{ backgroundColor: stageColor }}
-              />
+              <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: stageColor }} />
               <DialogTitle
                 className="text-[15px] font-bold text-[#E8E8E8]"
-                style={{
-                  fontFamily: "var(--font-display, 'Syne', sans-serif)",
-                }}
+                style={{ fontFamily: "var(--font-display, 'Syne', sans-serif)" }}
               >
                 {isEditing ? "Editar negócio" : "Novo negócio"}
               </DialogTitle>
@@ -202,16 +184,12 @@ export function DealFormDialog({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(handleSubmit)}>
             <div className="px-5 py-4 space-y-4">
-
-              {/* Título */}
               <FormField
                 control={form.control}
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className={labelClass} style={monoStyle}>
-                      Título do negócio
-                    </FormLabel>
+                    <FormLabel className={labelClass} style={monoStyle}>Título do negócio</FormLabel>
                     <FormControl>
                       <Input
                         placeholder="Ex: Proposta Enterprise — Q1 2025"
@@ -224,26 +202,21 @@ export function DealFormDialog({
                 )}
               />
 
-              {/* Lead + Stage */}
               <div className="grid grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
                   name="lead_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={labelClass} style={monoStyle}>
-                        Lead
-                      </FormLabel>
+                      <FormLabel className={labelClass} style={monoStyle}>Lead</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus:ring-[#CAFF33]/30">
                             <SelectValue placeholder="Selecionar" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent
-                          style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}
-                        >
-                          {MOCK_LEADS.map((lead) => (
+                        <SelectContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+                          {leads.map((lead) => (
                             <SelectItem
                               key={lead.id}
                               value={lead.id}
@@ -251,9 +224,7 @@ export function DealFormDialog({
                             >
                               <span className="text-[13px]">{lead.name}</span>
                               {lead.company && (
-                                <span className="text-[11px] text-[#555559] ml-1">
-                                  · {lead.company}
-                                </span>
+                                <span className="text-[11px] text-[#555559] ml-1">· {lead.company}</span>
                               )}
                             </SelectItem>
                           ))}
@@ -269,38 +240,28 @@ export function DealFormDialog({
                   name="stage"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={labelClass} style={monoStyle}>
-                        Estágio
-                      </FormLabel>
+                      <FormLabel className={labelClass} style={monoStyle}>Estágio</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus:ring-[#CAFF33]/30">
                             <SelectValue />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent
-                          style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}
-                        >
-                          {(
-                            Object.entries(STAGE_CONFIG) as [
-                              DealStage,
-                              { label: string; color: string },
-                            ][]
-                          ).map(([key, { label, color }]) => (
-                            <SelectItem
-                              key={key}
-                              value={key}
-                              className="text-[#E8E8E8] focus:bg-[#1A1A1E] focus:text-[#CAFF33]"
-                            >
-                              <span className="flex items-center gap-2">
-                                <span
-                                  className="h-1.5 w-1.5 rounded-full inline-block shrink-0"
-                                  style={{ backgroundColor: color }}
-                                />
-                                <span className="text-[13px]">{label}</span>
-                              </span>
-                            </SelectItem>
-                          ))}
+                        <SelectContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+                          {(Object.entries(STAGE_CONFIG) as [DealStage, { label: string; color: string }][]).map(
+                            ([key, { label, color }]) => (
+                              <SelectItem
+                                key={key}
+                                value={key}
+                                className="text-[#E8E8E8] focus:bg-[#1A1A1E] focus:text-[#CAFF33]"
+                              >
+                                <span className="flex items-center gap-2">
+                                  <span className="h-1.5 w-1.5 rounded-full inline-block shrink-0" style={{ backgroundColor: color }} />
+                                  <span className="text-[13px]">{label}</span>
+                                </span>
+                              </SelectItem>
+                            )
+                          )}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -309,16 +270,13 @@ export function DealFormDialog({
                 />
               </div>
 
-              {/* Valor + Responsável */}
               <div className="grid grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
                   name="value"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={labelClass} style={monoStyle}>
-                        Valor (R$)
-                      </FormLabel>
+                      <FormLabel className={labelClass} style={monoStyle}>Valor (R$)</FormLabel>
                       <FormControl>
                         <Input
                           inputMode="numeric"
@@ -338,19 +296,15 @@ export function DealFormDialog({
                   name="owner_id"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={labelClass} style={monoStyle}>
-                        Responsável
-                      </FormLabel>
+                      <FormLabel className={labelClass} style={monoStyle}>Responsável</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus:ring-[#CAFF33]/30">
                             <SelectValue placeholder="Ninguém" />
                           </SelectTrigger>
                         </FormControl>
-                        <SelectContent
-                          style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}
-                        >
-                          {MOCK_MEMBERS.map((m) => (
+                        <SelectContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+                          {members.map((m) => (
                             <SelectItem
                               key={m.id}
                               value={m.id}
@@ -367,15 +321,12 @@ export function DealFormDialog({
                 />
               </div>
 
-              {/* Prazo */}
               <FormField
                 control={form.control}
                 name="due_date"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
-                    <FormLabel className={labelClass} style={monoStyle}>
-                      Prazo
-                    </FormLabel>
+                    <FormLabel className={labelClass} style={monoStyle}>Prazo</FormLabel>
                     <FormControl>
                       <Input
                         type="date"
@@ -392,7 +343,6 @@ export function DealFormDialog({
 
             <Separator style={{ backgroundColor: "#1E1E22" }} />
 
-            {/* Footer */}
             <div className="px-5 py-3.5 flex items-center justify-between">
               {isEditing && onDelete ? (
                 <AlertDialog>
@@ -407,13 +357,9 @@ export function DealFormDialog({
                       Excluir
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent
-                    style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}
-                  >
+                  <AlertDialogContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
                     <AlertDialogHeader>
-                      <AlertDialogTitle className="text-[#E8E8E8]">
-                        Excluir negócio?
-                      </AlertDialogTitle>
+                      <AlertDialogTitle className="text-[#E8E8E8]">Excluir negócio?</AlertDialogTitle>
                       <AlertDialogDescription className="text-[#8A8A8F]">
                         Esta ação não pode ser desfeita.
                       </AlertDialogDescription>
@@ -449,10 +395,7 @@ export function DealFormDialog({
                   type="submit"
                   size="sm"
                   className="text-[12px] font-semibold border-0"
-                  style={{
-                    backgroundColor: "#CAFF33",
-                    color: "#0C0C0E",
-                  }}
+                  style={{ backgroundColor: "#CAFF33", color: "#0C0C0E" }}
                 >
                   {isEditing ? "Salvar" : "Criar negócio"}
                 </Button>

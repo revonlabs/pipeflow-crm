@@ -1,71 +1,59 @@
-"use client";
-
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Pencil, Plus } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { LeadProfileCard } from "@/components/leads/lead-profile-card";
 import { ActivityTimeline } from "@/components/leads/activity-timeline";
-import { LeadFormDialog } from "@/components/leads/lead-form-dialog";
-import { MOCK_LEADS, MOCK_ACTIVITIES } from "@/lib/mock/leads";
-import type { Lead } from "@/types";
+import { LeadDetailClient, ActivityButton } from "@/components/leads/lead-detail-client";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { getWorkspaceContext } from "@/lib/workspace";
+import { getWorkspaceMembers } from "@/lib/members";
 
-export default function LeadDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const id = params.id as string;
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  const [lead, setLead] = useState<Lead | null>(
-    MOCK_LEADS.find((l) => l.id === id) ?? null
-  );
-  const [editOpen, setEditOpen] = useState(false);
+export default async function LeadDetailPage({ params }: PageProps) {
+  const { id } = await params;
 
-  const activities = MOCK_ACTIVITIES[id] ?? [];
+  const supabase = await getSupabaseServerClient();
+  const ctx = await getWorkspaceContext();
+  if (!ctx) return null;
 
-  if (!lead) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 gap-4">
-        <p className="text-muted-foreground">Lead não encontrado.</p>
-        <Button variant="outline" asChild>
-          <Link href="/leads">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar para Leads
-          </Link>
-        </Button>
-      </div>
-    );
-  }
+  const [{ data: lead }, { data: activitiesRaw }, members] = await Promise.all([
+    supabase
+      .from("leads")
+      .select("*")
+      .eq("id", id)
+      .eq("workspace_id", ctx.workspace.id)
+      .single(),
+    supabase
+      .from("activities")
+      .select("*")
+      .eq("lead_id", id)
+      .eq("workspace_id", ctx.workspace.id)
+      .order("created_at", { ascending: false }),
+    getWorkspaceMembers(ctx.workspace.id),
+  ]);
 
-  function handleSubmit(
-    values: { name: string; email: string; phone?: string; company?: string; role?: string; status: Lead["status"]; owner_id?: string; notes?: string },
-    _id?: string
-  ) {
-    setLead((prev) =>
-      prev
-        ? {
-            ...prev,
-            name: values.name,
-            email: values.email,
-            phone: values.phone ?? null,
-            company: values.company ?? null,
-            role: values.role ?? null,
-            status: values.status,
-            owner_id: values.owner_id ?? null,
-          }
-        : prev
-    );
-  }
+  if (!lead) notFound();
 
-  function handleDelete(_id: string) {
-    router.push("/leads");
-  }
+  // Enriquece atividades com dados do autor
+  const memberMap = new Map(members.map((m) => [m.id, m]));
+  const activities = (activitiesRaw ?? []).map((a) => {
+    const author = a.author_id ? memberMap.get(a.author_id) : undefined;
+    return {
+      ...a,
+      author: author
+        ? { id: author.id, email: author.email, user_metadata: { full_name: author.name } }
+        : undefined,
+    };
+  });
 
   return (
     <div className="space-y-6">
-      {/* Topbar de navegação */}
       <div className="flex items-center justify-between gap-4">
         <Button variant="ghost" size="sm" asChild className="-ml-2">
           <Link href="/leads">
@@ -73,21 +61,18 @@ export default function LeadDetailPage() {
             Leads
           </Link>
         </Button>
-        <Button onClick={() => setEditOpen(true)} variant="outline" size="sm" className="gap-2">
-          <Pencil className="h-3.5 w-3.5" />
-          Editar Lead
-        </Button>
+        <LeadDetailClient lead={lead} members={members} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
-        {/* Sidebar: perfil */}
         <div className="space-y-4">
-          <LeadProfileCard lead={lead} />
+          <LeadProfileCard
+            lead={lead}
+            ownerName={lead.owner_id ? (memberMap.get(lead.owner_id)?.name ?? "—") : "Sem responsável"}
+          />
         </div>
 
-        {/* Conteúdo principal */}
         <div className="space-y-6 min-w-0">
-          {/* Informações detalhadas */}
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Informações</CardTitle>
@@ -95,26 +80,20 @@ export default function LeadDetailPage() {
             <CardContent>
               <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <InfoField label="Nome completo" value={lead.name} />
-                <InfoField label="E-mail" value={lead.email} />
+                <InfoField label="E-mail" value={lead.email ?? "—"} />
                 <InfoField label="Telefone" value={lead.phone ?? "—"} />
                 <InfoField label="Empresa" value={lead.company ?? "—"} />
                 <InfoField label="Cargo" value={lead.role ?? "—"} />
                 <InfoField
                   label="Status"
                   value={
-                    {
-                      active: "Ativo",
-                      inactive: "Inativo",
-                      converted: "Convertido",
-                      lost: "Perdido",
-                    }[lead.status]
+                    { active: "Ativo", inactive: "Inativo", converted: "Convertido", lost: "Perdido" }[lead.status]
                   }
                 />
               </dl>
             </CardContent>
           </Card>
 
-          {/* Timeline de atividades */}
           <Card>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
@@ -126,16 +105,7 @@ export default function LeadDetailPage() {
                     </span>
                   )}
                 </CardTitle>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled
-                  className="gap-1.5 text-xs"
-                  title="Disponível no M8 — integração com banco de dados"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  Registrar
-                </Button>
+                <ActivityButton leadId={id} />
               </div>
             </CardHeader>
             <Separator />
@@ -145,14 +115,6 @@ export default function LeadDetailPage() {
           </Card>
         </div>
       </div>
-
-      <LeadFormDialog
-        open={editOpen}
-        lead={lead}
-        onOpenChange={setEditOpen}
-        onSubmit={handleSubmit}
-        onDelete={handleDelete}
-      />
     </div>
   );
 }

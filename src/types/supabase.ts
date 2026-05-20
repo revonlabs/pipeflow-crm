@@ -10,30 +10,17 @@ export type Database = {
   __InternalSupabase: {
     PostgrestVersion: '14.5'
   }
-  // Schema interno — não exposto via REST. Usado via .schema('internal').rpc()
   internal: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
+    Tables: { [_ in never]: never }
+    Views: { [_ in never]: never }
     Functions: {
-      create_workspace: {
-        Args: { workspace_name: string; workspace_slug: string }
-        Returns: string
-      }
       is_workspace_member: {
         Args: { p_workspace_id: string }
         Returns: boolean
       }
     }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
+    Enums: { [_ in never]: never }
+    CompositeTypes: { [_ in never]: never }
   }
   public: {
     Tables: {
@@ -279,7 +266,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      create_workspace: {
+        Args: { workspace_name: string; workspace_slug: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

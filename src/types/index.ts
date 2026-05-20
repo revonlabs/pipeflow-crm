@@ -51,7 +51,7 @@ export interface Lead {
   id: string;
   workspace_id: string;
   name: string;
-  email: string;
+  email: string | null;
   phone: string | null;
   company: string | null;
   role: string | null;
@@ -80,7 +80,7 @@ export interface Activity {
   lead_id: string;
   type: ActivityType;
   description: string;
-  author_id: string;
+  author_id: string | null;
   created_at: string;
   author?: {
     id: string;
