@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { LeadStatusBadge } from "@/components/leads/lead-status-badge";
-import { MOCK_MEMBERS } from "@/lib/mock/leads";
 import type { Lead } from "@/types";
 
 interface LeadProfileCardProps {
   lead: Lead;
+  ownerName?: string;
 }
 
 function getInitials(name: string) {
@@ -19,11 +19,6 @@ function getInitials(name: string) {
     .map((n) => n[0])
     .join("")
     .toUpperCase();
-}
-
-function getOwnerName(ownerId: string | null) {
-  if (!ownerId) return "Sem responsável";
-  return MOCK_MEMBERS.find((m) => m.id === ownerId)?.name ?? "—";
 }
 
 interface InfoRowProps {
@@ -46,7 +41,8 @@ function InfoRow({ icon: Icon, label, value }: InfoRowProps) {
   );
 }
 
-export function LeadProfileCard({ lead }: LeadProfileCardProps) {
+export function LeadProfileCard({ lead, ownerName }: LeadProfileCardProps) {
+  const displayOwner = ownerName ?? (lead.owner_id ? "—" : "Sem responsável");
   return (
     <Card>
       <CardHeader className="pb-4">
@@ -72,7 +68,7 @@ export function LeadProfileCard({ lead }: LeadProfileCardProps) {
       <Separator />
 
       <CardContent className="pt-4 space-y-3">
-        <InfoRow icon={Mail} label="E-mail" value={lead.email} />
+        {lead.email && <InfoRow icon={Mail} label="E-mail" value={lead.email} />}
         {lead.phone && (
           <InfoRow icon={Phone} label="Telefone" value={lead.phone} />
         )}
@@ -93,12 +89,12 @@ export function LeadProfileCard({ lead }: LeadProfileCardProps) {
         <div className="flex items-center gap-3">
           <Avatar className="h-7 w-7 shrink-0">
             <AvatarFallback className="text-xs bg-muted text-muted-foreground">
-              {getInitials(getOwnerName(lead.owner_id))}
+              {getInitials(displayOwner)}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
             <p className="text-xs text-muted-foreground">Responsável</p>
-            <p className="text-sm font-medium truncate">{getOwnerName(lead.owner_id)}</p>
+            <p className="text-sm font-medium truncate">{displayOwner}</p>
           </div>
         </div>
       </CardContent>

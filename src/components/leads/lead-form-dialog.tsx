@@ -41,8 +41,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { MOCK_MEMBERS } from "@/lib/mock/leads";
 import type { Lead } from "@/types";
+import type { MemberInfo } from "@/lib/members";
 
 const leadSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -60,6 +60,7 @@ type LeadFormValues = z.infer<typeof leadSchema>;
 interface LeadFormDialogProps {
   open: boolean;
   lead?: Lead | null;
+  members: MemberInfo[];
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: LeadFormValues, id?: string) => void;
   onDelete?: (id: string) => void;
@@ -68,6 +69,7 @@ interface LeadFormDialogProps {
 export function LeadFormDialog({
   open,
   lead,
+  members,
   onOpenChange,
   onSubmit,
   onDelete,
@@ -83,7 +85,7 @@ export function LeadFormDialog({
       company: "",
       role: "",
       status: "active",
-      owner_id: MOCK_MEMBERS[0].id,
+      owner_id: members[0]?.id ?? "",
       notes: "",
     },
   });
@@ -93,12 +95,12 @@ export function LeadFormDialog({
       if (lead) {
         form.reset({
           name: lead.name,
-          email: lead.email,
+          email: lead.email ?? "",
           phone: lead.phone ?? "",
           company: lead.company ?? "",
           role: lead.role ?? "",
           status: lead.status,
-          owner_id: lead.owner_id ?? MOCK_MEMBERS[0].id,
+          owner_id: lead.owner_id ?? members[0]?.id ?? "",
           notes: "",
         });
       } else {
@@ -109,12 +111,12 @@ export function LeadFormDialog({
           company: "",
           role: "",
           status: "active",
-          owner_id: MOCK_MEMBERS[0].id,
+          owner_id: members[0]?.id ?? "",
           notes: "",
         });
       }
     }
-  }, [open, lead, form]);
+  }, [open, lead, members, form]);
 
   function handleSubmit(values: LeadFormValues) {
     onSubmit(values, lead?.id);
@@ -238,7 +240,7 @@ export function LeadFormDialog({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {MOCK_MEMBERS.map((m) => (
+                        {members.map((m) => (
                           <SelectItem key={m.id} value={m.id}>
                             {m.name}
                           </SelectItem>

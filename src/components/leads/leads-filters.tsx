@@ -10,13 +10,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { MOCK_MEMBERS } from "@/lib/mock/leads";
 import type { LeadStatus } from "@/types";
+import type { MemberInfo } from "@/lib/members";
 
 interface LeadsFiltersProps {
   search: string;
   status: LeadStatus | "all";
   ownerId: string | "all";
+  members: MemberInfo[];
   onSearchChange: (value: string) => void;
   onStatusChange: (value: LeadStatus | "all") => void;
   onOwnerChange: (value: string | "all") => void;
@@ -26,6 +27,7 @@ export function LeadsFilters({
   search,
   status,
   ownerId,
+  members,
   onSearchChange,
   onStatusChange,
   onOwnerChange,
@@ -69,7 +71,7 @@ export function LeadsFilters({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">Todos</SelectItem>
-          {MOCK_MEMBERS.map((m) => (
+          {members.map((m) => (
             <SelectItem key={m.id} value={m.id}>
               {m.name}
             </SelectItem>

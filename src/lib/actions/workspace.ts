@@ -20,35 +20,16 @@ export async function createWorkspaceAction(name: string): Promise<{ error?: str
 
   if (!slug) return { error: 'Nome inválido para gerar um slug.' }
 
-  // Chama a RPC no schema internal (não exposta via REST public)
-  // .schema('internal') faz o PostgREST usar o search_path correto
+  // SECURITY DEFINER em public — acessível via PostgREST, search_path='' para segurança
   const { data: workspaceId, error: rpcError } = await supabase
-    .schema('internal')
     .rpc('create_workspace', {
       workspace_name: name,
       workspace_slug: slug,
     })
 
   if (rpcError || !workspaceId) {
-    // Fallback: slug com sufixo único para evitar conflito
-    const uniqueSlug = slug ? `${slug}-${Date.now().toString(36)}` : `ws-${Date.now().toString(36)}`
-    const { data: ws, error: wsError } = await supabase
-      .from('workspaces')
-      .insert({ name, slug: uniqueSlug, plan: 'free' })
-      .select('id')
-      .single()
-
-    if (wsError || !ws) return { error: 'Falha ao criar workspace. Tente novamente.' }
-
-    await supabase.from('workspace_members').insert({
-      workspace_id: ws.id,
-      user_id: user.id,
-      role: 'admin',
-    })
-
-    const cookieStore = await cookies()
-    cookieStore.set('pf_active_workspace', ws.id, { path: '/', maxAge: 60 * 60 * 24 * 365 })
-    redirect('/dashboard')
+    console.error('[createWorkspaceAction] rpc error:', rpcError?.message)
+    return { error: 'Falha ao criar workspace. Tente novamente.' }
   }
 
   const cookieStore = await cookies()
