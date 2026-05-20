@@ -16,7 +16,7 @@ FASE 1 — INTERFACE (UI-first, dados mockados)
   M3  Leads — Telas & Componentes  → branch: feat/leads-ui
   M4  Pipeline Kanban (UI)         → branch: feat/pipeline-kanban ✅
   M5  Dashboard de Métricas (UI)   → branch: feat/dashboard-ui
-  M6  Landing Page                 → branch: feat/landing
+  M6  Landing Page                 → branch: feat/landing ✅
 
 FASE 2 — BACKEND & INTEGRAÇÃO
   M7  Banco de Dados & Auth Real   → branch: feat/supabase-core
@@ -312,38 +312,32 @@ feat(dashboard): metric cards, sales funnel chart (Recharts), upcoming deals lis
 **Objetivo:** Landing page pública de apresentação do PipeFlow CRM, dark mode, pronta para deploy.
 
 #### Estrutura (`src/app/(marketing)/`)
-- [x] `layout.tsx` — layout público sem auth
-- [x] `page.tsx` — composição de todas as seções (496 linhas)
+- [x] `layout.tsx` — layout público sem auth, metadata SEO
+- [x] `page.tsx` — composição de todas as seções
 
 **Seções**
-- [x] Hero com orbs animados, headline, CTA "Começar Grátis" → `/register`
-- [x] Pipeline visualization terminal (animação de etapas)
-- [x] Stats section (4 métricas de impacto)
-- [x] Features grid (6 cards com ícones e descrições)
-- [x] `src/components/landing/success-cases.tsx` — 3 cards com CountUp animado
-- [x] Pricing section (Free vs Pro com destaque visual)
-- [x] CTA final com wave separators
-- [x] `src/components/landing/navbar-mobile.tsx` — menu mobile
-- [x] `src/components/shared/logo.tsx` — Logo PipeFlow com accent e linha pulsante
-- [x] `src/components/shared/wave-separator.tsx` — divisor SVG animado
-- [x] `src/components/shared/animate-on-scroll.tsx` — Intersection Observer fade-in
+- [x] Hero com orbs animados, headline, CTA "Começar Grátis" → `/register`, pipeline kanban preview
+- [x] Stats bar: +47% conversão · 3.2x leads · −62% ciclo · 1200+ times
+- [x] Features grid (6 cards com ícones Lucide e descrições)
+- [x] Pricing section: Free (R$0) vs Pro (R$49/mês) com destaque visual e badge "Popular"
+- [x] CTA final com dois botões
+- [x] Footer com logo, copyright e links
+
+**Componentes**
+- [x] `src/components/landing/navbar.tsx` — navbar com glassmorphism e menu mobile colapsável
+- [x] `src/components/landing/animate-on-scroll.tsx` — fade-in utilitário (client component)
+- [x] `src/components/landing/stat-counter.tsx` — contador animado ao entrar na viewport
 
 **UX & Brand Identity**
 - [x] Dark mode (bg `#0A0A0A`, accent chartreuse `#CAFF33`)
 - [x] Fontes: Syne (display) + DM Sans (body) + IBM Plex Mono (dados)
-- [x] Animações CSS: orbs flutuantes, wave scroll, flow pulse, page enter, stagger
-- [x] Glassmorphism e glow em botões accent
-- [x] Responsivo (mobile-first)
-- [x] Meta tags SEO no `layout.tsx` root
-
-**Auth & Onboarding (identidade visual corrigida)**
-- [x] `(auth)/layout.tsx` — dark mode com orbs e logo PipeFlow
-- [x] `(onboarding)/onboarding/page.tsx` — dark mode idêntico ao auth
-- [x] `workspace-form.tsx` — tokens PipeFlow (bg-pf-surface, accent, inputs dark)
+- [x] Animações via CSS `@keyframes fade-up` — conteúdo sempre visível no SSR, sem depender de JS
+- [x] Glassmorphism na navbar, glow nos botões accent
+- [x] Responsivo mobile-first: menu hambúrguer, colunas do kanban ocultas em mobile
 
 #### Commit Final
 ```
-feat(landing): public marketing page — dark mode, hero, features, pricing, CTA, brand identity v2
+feat(landing): public marketing page — hero, stats, features, pricing, CTA
 ```
 
 ---
@@ -674,7 +668,7 @@ feat(deploy): production deployment on Vercel + Supabase, workspace creation fix
 | `feat/leads-ui` | M3 | Leads list, detalhe, forms (UI) |
 | `feat/pipeline-kanban` | M4 | Kanban com drag-and-drop (UI) ✅ |
 | `feat/dashboard-ui` | M5 | Métricas e gráfico (UI) |
-| `feat/landing` | M6 | Landing page pública |
+| `feat/landing` | M6 | Landing page pública ✅ |
 | `feat/supabase-core` | M7 | Auth real + migrations + RLS |
 | `feat/leads-data` | M8 | CRUD real leads + pipeline |
 | `feat/collaboration` | M9 | Convites + membros + roles |
