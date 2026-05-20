@@ -1,193 +1,370 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[]
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
 export type Database = {
+  __InternalSupabase: {
+    PostgrestVersion: '14.5'
+  }
   public: {
     Tables: {
-      workspaces: {
+      activities: {
         Row: {
-          id: string
-          name: string
-          slug: string
-          plan: 'free' | 'pro' | 'payment_failed'
-          owner_id: string | null
-          stripe_customer_id: string | null
+          author_id: string | null
           created_at: string
+          description: string
+          id: string
+          lead_id: string
+          type: 'call' | 'email' | 'meeting' | 'note'
+          workspace_id: string
         }
         Insert: {
-          id?: string
-          name: string
-          slug: string
-          plan?: 'free' | 'pro' | 'payment_failed'
-          owner_id?: string | null
-          stripe_customer_id?: string | null
+          author_id?: string | null
           created_at?: string
+          description: string
+          id?: string
+          lead_id: string
+          type: 'call' | 'email' | 'meeting' | 'note'
+          workspace_id: string
         }
         Update: {
-          id?: string
-          name?: string
-          slug?: string
-          plan?: 'free' | 'pro' | 'payment_failed'
-          owner_id?: string | null
-          stripe_customer_id?: string | null
+          author_id?: string | null
           created_at?: string
-        }
-      }
-      workspace_members: {
-        Row: {
-          id: string
-          workspace_id: string
-          user_id: string
-          role: 'admin' | 'member'
-          created_at: string
-        }
-        Insert: {
+          description?: string
           id?: string
-          workspace_id: string
-          user_id: string
-          role?: 'admin' | 'member'
-          created_at?: string
-        }
-        Update: {
-          id?: string
+          lead_id?: string
+          type?: 'call' | 'email' | 'meeting' | 'note'
           workspace_id?: string
-          user_id?: string
-          role?: 'admin' | 'member'
-          created_at?: string
         }
-      }
-      leads: {
-        Row: {
-          id: string
-          workspace_id: string
-          name: string
-          email: string | null
-          phone: string | null
-          company: string | null
-          role: string | null
-          status: 'active' | 'inactive' | 'converted' | 'lost'
-          owner_id: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          workspace_id: string
-          name: string
-          email?: string | null
-          phone?: string | null
-          company?: string | null
-          role?: string | null
-          status?: 'active' | 'inactive' | 'converted' | 'lost'
-          owner_id?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          workspace_id?: string
-          name?: string
-          email?: string | null
-          phone?: string | null
-          company?: string | null
-          role?: string | null
-          status?: 'active' | 'inactive' | 'converted' | 'lost'
-          owner_id?: string | null
-          created_at?: string
-        }
+        Relationships: [
+          {
+            foreignKeyName: 'activities_lead_id_fkey'
+            columns: ['lead_id']
+            isOneToOne: false
+            referencedRelation: 'leads'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'activities_workspace_id_fkey'
+            columns: ['workspace_id']
+            isOneToOne: false
+            referencedRelation: 'workspaces'
+            referencedColumns: ['id']
+          },
+        ]
       }
       deals: {
         Row: {
+          created_at: string
+          due_date: string | null
           id: string
-          workspace_id: string
           lead_id: string | null
+          owner_id: string | null
+          position: number
+          stage: 'new_lead' | 'contacted' | 'proposal_sent' | 'negotiation' | 'won' | 'lost'
           title: string
           value: number | null
-          stage: 'new_lead' | 'contacted' | 'proposal_sent' | 'negotiation' | 'won' | 'lost'
-          position: number
-          owner_id: string | null
-          due_date: string | null
-          created_at: string
+          workspace_id: string
         }
         Insert: {
+          created_at?: string
+          due_date?: string | null
           id?: string
-          workspace_id: string
           lead_id?: string | null
+          owner_id?: string | null
+          position?: number
+          stage?: 'new_lead' | 'contacted' | 'proposal_sent' | 'negotiation' | 'won' | 'lost'
           title: string
           value?: number | null
-          stage?: 'new_lead' | 'contacted' | 'proposal_sent' | 'negotiation' | 'won' | 'lost'
-          position?: number
-          owner_id?: string | null
-          due_date?: string | null
-          created_at?: string
+          workspace_id: string
         }
         Update: {
+          created_at?: string
+          due_date?: string | null
           id?: string
-          workspace_id?: string
           lead_id?: string | null
+          owner_id?: string | null
+          position?: number
+          stage?: 'new_lead' | 'contacted' | 'proposal_sent' | 'negotiation' | 'won' | 'lost'
           title?: string
           value?: number | null
-          stage?: 'new_lead' | 'contacted' | 'proposal_sent' | 'negotiation' | 'won' | 'lost'
-          position?: number
-          owner_id?: string | null
-          due_date?: string | null
-          created_at?: string
+          workspace_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'deals_lead_id_fkey'
+            columns: ['lead_id']
+            isOneToOne: false
+            referencedRelation: 'leads'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'deals_workspace_id_fkey'
+            columns: ['workspace_id']
+            isOneToOne: false
+            referencedRelation: 'workspaces'
+            referencedColumns: ['id']
+          },
+        ]
       }
-      activities: {
+      leads: {
         Row: {
-          id: string
-          workspace_id: string
-          lead_id: string
-          type: 'call' | 'email' | 'meeting' | 'note'
-          description: string
-          author_id: string | null
+          company: string | null
           created_at: string
+          email: string | null
+          id: string
+          name: string
+          owner_id: string | null
+          phone: string | null
+          role: string | null
+          status: 'active' | 'inactive' | 'converted' | 'lost'
+          workspace_id: string
         }
         Insert: {
-          id?: string
-          workspace_id: string
-          lead_id: string
-          type: 'call' | 'email' | 'meeting' | 'note'
-          description: string
-          author_id?: string | null
+          company?: string | null
           created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          phone?: string | null
+          role?: string | null
+          status?: 'active' | 'inactive' | 'converted' | 'lost'
+          workspace_id: string
         }
         Update: {
-          id?: string
-          workspace_id?: string
-          lead_id?: string
-          type?: 'call' | 'email' | 'meeting' | 'note'
-          description?: string
-          author_id?: string | null
+          company?: string | null
           created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          phone?: string | null
+          role?: string | null
+          status?: 'active' | 'inactive' | 'converted' | 'lost'
+          workspace_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'leads_workspace_id_fkey'
+            columns: ['workspace_id']
+            isOneToOne: false
+            referencedRelation: 'workspaces'
+            referencedColumns: ['id']
+          },
+        ]
       }
       subscriptions: {
         Row: {
-          workspace_id: string
-          stripe_subscription_id: string | null
-          status: string | null
           current_period_end: string | null
+          status: string | null
+          stripe_subscription_id: string | null
+          workspace_id: string
         }
         Insert: {
-          workspace_id: string
-          stripe_subscription_id?: string | null
-          status?: string | null
           current_period_end?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          workspace_id: string
         }
         Update: {
-          workspace_id?: string
-          stripe_subscription_id?: string | null
-          status?: string | null
           current_period_end?: string | null
+          status?: string | null
+          stripe_subscription_id?: string | null
+          workspace_id?: string
         }
+        Relationships: [
+          {
+            foreignKeyName: 'subscriptions_workspace_id_fkey'
+            columns: ['workspace_id']
+            isOneToOne: true
+            referencedRelation: 'workspaces'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      workspace_members: {
+        Row: {
+          created_at: string
+          id: string
+          role: 'admin' | 'member'
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: 'admin' | 'member'
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: 'admin' | 'member'
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'workspace_members_workspace_id_fkey'
+            columns: ['workspace_id']
+            isOneToOne: false
+            referencedRelation: 'workspaces'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      workspaces: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string | null
+          plan: 'free' | 'pro' | 'payment_failed'
+          slug: string
+          stripe_customer_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id?: string | null
+          plan?: 'free' | 'pro' | 'payment_failed'
+          slug: string
+          stripe_customer_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string | null
+          plan?: 'free' | 'pro' | 'payment_failed'
+          slug?: string
+          stripe_customer_id?: string | null
+        }
+        Relationships: []
       }
     }
-    Views: Record<string, never>
+    Views: {
+      [_ in never]: never
+    }
     Functions: {
       create_workspace: {
         Args: { workspace_name: string; workspace_slug: string }
         Returns: string
       }
+      is_workspace_member: {
+        Args: { p_workspace_id: string }
+        Returns: boolean
+      }
     }
-    Enums: Record<string, never>
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
   }
 }
+
+type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    ? (DefaultSchema['Tables'] & DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema['Tables']
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema['Tables']
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
+    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema['Enums']
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
+    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+    : never
