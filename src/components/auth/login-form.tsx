@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +22,8 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite");
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
@@ -41,7 +43,11 @@ export function LoginForm() {
       setServerError("E-mail ou senha incorretos. Verifique e tente novamente.");
       return;
     }
-    router.push("/dashboard");
+    if (inviteToken) {
+      router.push(`/invite/${inviteToken}`);
+    } else {
+      router.push("/dashboard");
+    }
     router.refresh();
   }
 
@@ -125,9 +131,19 @@ export function LoginForm() {
         </Button>
       </form>
 
+      {inviteToken && (
+        <div className="mt-4 flex items-start gap-2 rounded-lg border border-[#4F8EF7]/30 bg-[#4F8EF7]/10 px-3 py-2.5 text-sm text-[#4F8EF7]">
+          <Mail className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>Você tem um convite pendente. Faça login para aceitá-lo.</span>
+        </div>
+      )}
+
       <p className="mt-6 text-center text-sm text-white/40">
         Não tem uma conta?{" "}
-        <Link href="/register" className="text-[#4F8EF7] hover:underline">
+        <Link
+          href={inviteToken ? `/register?invite=${inviteToken}` : "/register"}
+          className="text-[#4F8EF7] hover:underline"
+        >
           Criar conta grátis
         </Link>
       </p>
