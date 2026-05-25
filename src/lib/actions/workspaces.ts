@@ -5,21 +5,9 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
 import { isAdmin } from '@/lib/permissions'
 import { getWorkspaceContext } from '@/lib/workspace'
+import { canAddMember } from '@/lib/limits'
 import { getResendClient } from '@/lib/resend'
 import { renderWorkspaceInviteEmail } from '@/emails/workspace-invite'
-
-const FREE_MEMBER_LIMIT = 2
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-async function getActiveMemberCount(workspaceId: string): Promise<number> {
-  const supabase = await getSupabaseServerClient()
-  const { count } = await supabase
-    .from('workspace_members')
-    .select('id', { count: 'exact', head: true })
-    .eq('workspace_id', workspaceId)
-  return count ?? 0
-}
 
 // ─── inviteMemberAction ───────────────────────────────────────────────────────
 
@@ -38,12 +26,9 @@ export async function inviteMemberAction(
 
   if (!(await isAdmin(workspaceId))) return { error: 'Apenas administradores podem convidar membros' }
 
-  // Verifica limite do plano Free
-  if (ctx.workspace.plan === 'free') {
-    const count = await getActiveMemberCount(workspaceId)
-    if (count >= FREE_MEMBER_LIMIT) {
-      return { error: `O plano Free permite no máximo ${FREE_MEMBER_LIMIT} membros. Faça upgrade para Pro.` }
-    }
+  const { allowed, limit } = await canAddMember()
+  if (!allowed) {
+    return { error: `O plano Free permite no máximo ${limit} membros. Faça upgrade para Pro.` }
   }
 
   // Verifica se já é membro
