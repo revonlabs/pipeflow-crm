@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
+import { canAddLead } from "@/lib/limits";
 import type { LeadStatus } from "@/types";
 
 interface LeadPayload {
@@ -22,6 +23,11 @@ export async function createLeadAction(payload: LeadPayload) {
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return { error: "Não autenticado" };
+
+  const { allowed, current, limit } = await canAddLead();
+  if (!allowed) {
+    return { error: `Limite de ${limit} leads atingido no plano Free. Faça upgrade para Pro para adicionar mais.`, limitReached: true, current, limit };
+  }
 
   const { error } = await supabase.from("leads").insert({
     workspace_id: ctx.workspace.id,
