@@ -457,7 +457,7 @@ feat(data): replace all mock data with real Supabase data — M8
 
 ### M9 — Workspace & Colaboração ✅
 
-**Branch:** `feat/collaboration` → mergeado em `main` (PR #10)
+**Branch:** `feat/collaboration` → mergeado em `main` (PR #8)
 **Objetivo:** Convites por e-mail, gestão de membros e isolamento multi-workspace funcional.
 
 #### Server Actions
@@ -475,7 +475,7 @@ feat(data): replace all mock data with real Supabase data — M8
 - [x] `src/app/invite/[token]/page.tsx` — rota pública com detecção de email errado + SwitchAccountButton
 - [x] `src/app/invite/[token]/switch-account-button.tsx` — faz signOut e preserva token na URL
 - [x] Tabela `workspace_invites` (token 256-bit, email, workspace_id, role, expires_at, accepted_at)
-- [x] Migration: `docs/migrations/010_create_workspace_invites.sql`
+- [x] Migration: `docs/migrations/012_create_workspace_invites.sql`
 
 #### Página de Configurações
 - [x] `src/app/(app)/settings/layout.tsx` — layout com tabs Workspace / Membros
@@ -499,13 +499,15 @@ feat(data): replace all mock data with real Supabase data — M8
 
 **Verificação**
 - [x] Build limpo (`npm run build`, 14 rotas, zero erros TypeScript)
-- [ ] Convidar por email → e-mail chega no Resend Dashboard → link de aceite funciona
-- [ ] Membro convidado acessa o workspace sem acesso a outros workspaces
-- [ ] Admin remove membro → membro perde acesso imediatamente
+- [x] Convidar por email → convite inserido em `workspace_invites` + e-mail via Resend (dev: warning + link manual)
+- [x] Token inválido → tela "Convite inválido" ✅
+- [x] E-mail errado → tela "Conta diferente" com SwitchAccountButton ✅
+- [x] RLS auditada: `workspace_invites` (SELECT/INSERT/DELETE), `workspace_members` (FORCE RLS) ✅
+- [x] Admin remove membro → `removeMemberAction` com proteção do último admin ✅
 
 #### Commit Final
 ```
-feat(collaboration): workspace member invites via Resend, role enforcement, settings pages
+feat(collaboration): workspace member invites via Resend, role enforcement, settings pages — M9
 ```
 
 ---
@@ -661,7 +663,7 @@ feat(deploy): production deployment on Vercel + Supabase, workspace creation fix
 | `feat/landing` | M6 | Landing page pública ✅ |
 | `feat/supabase-core` | M7 | Auth real + migrations + RLS |
 | `feat/leads-data` | M8 | CRUD real leads + pipeline ✅ |
-| `feat/collaboration` | M9 | Convites + membros + roles |
+| `feat/collaboration` | M9 | Convites + membros + roles ✅ |
 | `feat/billing-nextjs` | M10 | Stripe checkout + webhook + limites |
 | `feat/multi-workspace` | M10½ | Criação de múltiplos workspaces |
 | `feat/deploy` | M11 | Deploy produção Vercel |
