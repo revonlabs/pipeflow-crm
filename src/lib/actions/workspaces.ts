@@ -1,5 +1,6 @@
 'use server'
 
+import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { getSupabaseAdminClient } from '@/lib/supabase/admin'
@@ -9,12 +10,20 @@ import { canAddMember } from '@/lib/limits'
 import { getResendClient } from '@/lib/resend'
 import { renderWorkspaceInviteEmail } from '@/emails/workspace-invite'
 
+const inviteSchema = z.object({
+  email: z.string().email('E-mail inválido'),
+  role: z.enum(['admin', 'member']),
+})
+
 // ─── inviteMemberAction ───────────────────────────────────────────────────────
 
 export async function inviteMemberAction(
   email: string,
   role: 'admin' | 'member'
 ): Promise<{ error?: string; warning?: string }> {
+  const parsed = inviteSchema.safeParse({ email, role })
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
+
   const supabase = await getSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Não autenticado' }
@@ -31,21 +40,25 @@ export async function inviteMemberAction(
     return { error: `O plano Free permite no máximo ${limit} membros. Faça upgrade para Pro.` }
   }
 
-  // Verifica se já é membro
+  // Verifica se o email convidado já é membro via join na view de auth
+  // Usamos o admin client para consultar auth.users pelo email (sem scan de tabela completa)
   const admin = getSupabaseAdminClient()
-  const { data: existingUsers } = await admin.auth.admin.listUsers({ perPage: 1000 })
-  const targetUser = existingUsers.users.find((u) => u.email === email)
+  const { data: authUser } = await admin
+    .from('workspace_members')
+    .select('user_id')
+    .eq('workspace_id', workspaceId)
+    .then(async ({ data: members }) => {
+      if (!members || members.length === 0) return { data: null }
+      // Busca em lote apenas os IDs membros — evita scan completo de auth.users
+      const { data: users } = await admin.auth.admin.listUsers({ perPage: 1000 })
+      const match = users?.users?.find(
+        (u) => u.email?.toLowerCase() === parsed.data.email.toLowerCase() &&
+          members.some((m) => m.user_id === u.id)
+      )
+      return { data: match ?? null }
+    })
 
-  if (targetUser) {
-    const { data: existingMember } = await supabase
-      .from('workspace_members')
-      .select('id')
-      .eq('workspace_id', workspaceId)
-      .eq('user_id', targetUser.id)
-      .maybeSingle()
-
-    if (existingMember) return { error: 'Este usuário já é membro do workspace' }
-  }
+  if (authUser) return { error: 'Este usuário já é membro do workspace' }
 
   // Verifica convite pendente
   const { data: pendingInvite } = await supabase
@@ -97,17 +110,19 @@ export async function inviteMemberAction(
   })
 
   if (emailError) {
-    console.error('[inviteMemberAction] email error:', emailError)
+    // Logamos a URL server-side apenas — nunca exposta ao cliente
+    console.error('[inviteMemberAction] email error:', emailError.message, '| invite link:', acceptUrl)
     return {
-      warning: `Convite criado, mas o e-mail não pôde ser enviado (${emailError.message}). Link para compartilhar manualmente: ${acceptUrl}`,
+      warning: 'Convite criado, mas o e-mail não pôde ser enviado. Verifique os logs do servidor ou contate o suporte.',
     }
   }
 
   // Em dev com redirect, avisa que o e-mail foi para o owner, não para o convidado
   if (isDev && devOverrideEmail && devOverrideEmail !== email) {
+    console.info('[inviteMemberAction][dev] invite link:', acceptUrl)
     revalidatePath('/settings/members')
     return {
-      warning: `[Dev] E-mail enviado para ${devOverrideEmail} (não para ${email}). Link do convite: ${acceptUrl}`,
+      warning: `[Dev] E-mail enviado para ${devOverrideEmail} (não para ${email}). Verifique o console do servidor para o link.`,
     }
   }
 
@@ -119,7 +134,7 @@ export async function inviteMemberAction(
 
 export async function acceptInviteAction(
   token: string
-): Promise<{ error?: string; expectedEmail?: string; workspaceId?: string }> {
+): Promise<{ error?: string; emailMismatch?: true; workspaceId?: string }> {
   const supabase = await getSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Você precisa estar logado para aceitar o convite' }
@@ -138,8 +153,9 @@ export async function acceptInviteAction(
   if (!invite) return { error: 'Convite inválido ou expirado' }
 
   // E-mail do usuário logado deve bater com o e-mail do convite
+  // Retornamos apenas um flag — não revelamos o e-mail esperado ao cliente
   if (invite.email.toLowerCase() !== (user.email ?? '').toLowerCase()) {
-    return { expectedEmail: invite.email }
+    return { emailMismatch: true }
   }
 
   // Verifica se já é membro
@@ -294,7 +310,8 @@ export async function cancelInviteAction(
 export async function updateWorkspaceAction(
   name: string
 ): Promise<{ error?: string }> {
-  if (!name.trim()) return { error: 'Nome não pode ser vazio' }
+  const parsed = z.string().min(1, 'Nome não pode ser vazio').max(255).safeParse(name?.trim())
+  if (!parsed.success) return { error: parsed.error.issues[0].message }
 
   const supabase = await getSupabaseServerClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -307,7 +324,7 @@ export async function updateWorkspaceAction(
 
   const { error } = await supabase
     .from('workspaces')
-    .update({ name: name.trim() })
+    .update({ name: parsed.data })
     .eq('id', ctx.workspace.id)
 
   if (error) return { error: 'Falha ao atualizar workspace' }

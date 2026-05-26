@@ -63,10 +63,20 @@ export default async function InvitePage({ params }: InvitePageProps) {
     return <InviteLayout icon="error" title="Erro ao aceitar" description={result.error} />
   }
 
+  if (result.emailMismatch) {
+    return <InviteLayout icon="error" title="Convite inválido" description="Este convite não corresponde à sua conta. Faça login com o e-mail correto." />
+  }
+
   // Define o workspace ativo e redireciona
   if (result.workspaceId) {
     const cookieStore = await cookies()
-    cookieStore.set('pf_active_workspace', result.workspaceId, { path: '/', maxAge: 60 * 60 * 24 * 365 })
+    cookieStore.set('pf_active_workspace', result.workspaceId, {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    })
   }
 
   return (

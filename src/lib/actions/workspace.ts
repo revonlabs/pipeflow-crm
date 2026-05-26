@@ -33,7 +33,13 @@ export async function createWorkspaceAction(name: string): Promise<{ error?: str
   }
 
   const cookieStore = await cookies()
-  cookieStore.set('pf_active_workspace', workspaceId as string, { path: '/', maxAge: 60 * 60 * 24 * 365 })
+  cookieStore.set('pf_active_workspace', workspaceId as string, {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  })
   redirect('/dashboard')
 }
 
@@ -54,6 +60,12 @@ export async function switchWorkspaceAction(workspaceId: string) {
   if (!membership) return { error: 'Acesso negado' }
 
   const cookieStore = await cookies()
-  cookieStore.set('pf_active_workspace', workspaceId, { path: '/', maxAge: 60 * 60 * 24 * 365 })
+  cookieStore.set('pf_active_workspace', workspaceId, {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  })
   redirect('/dashboard')
 }

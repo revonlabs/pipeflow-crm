@@ -1,3 +1,4 @@
+import 'server-only'
 import { cookies } from 'next/headers'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import type { Workspace, WorkspaceRole } from '@/types'

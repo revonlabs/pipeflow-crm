@@ -1,39 +1,63 @@
 "use server";
 
+import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
-import type { DealStage } from "@/types";
 
-interface DealPayload {
-  title: string;
-  lead_id: string;
-  value?: number | null;
-  stage: DealStage;
-  owner_id?: string | null;
-  due_date?: string | null;
+const DEAL_STAGES = ["new_lead", "contacted", "proposal_sent", "negotiation", "won", "lost"] as const;
+
+const dealSchema = z.object({
+  title: z.string().min(1, "Título é obrigatório").max(255),
+  lead_id: z.string().uuid("lead_id inválido"),
+  value: z.number().min(0).nullable().optional(),
+  stage: z.enum(DEAL_STAGES),
+  owner_id: z.string().uuid().nullable().optional(),
+  due_date: z.string().nullable().optional(),
+});
+
+const moveSchema = z.object({
+  id: z.string().uuid(),
+  stage: z.enum(DEAL_STAGES),
+  position: z.number().int().min(0),
+});
+
+async function verifyLeadOwnership(supabase: Awaited<ReturnType<typeof getSupabaseServerClient>>, leadId: string, workspaceId: string) {
+  const { data } = await supabase
+    .from("leads")
+    .select("id")
+    .eq("id", leadId)
+    .eq("workspace_id", workspaceId)
+    .maybeSingle();
+  return !!data;
 }
 
-export async function createDealAction(payload: DealPayload) {
+export async function createDealAction(payload: unknown) {
+  const parsed = dealSchema.safeParse(payload);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+
   const supabase = await getSupabaseServerClient();
   const ctx = await getWorkspaceContext();
   if (!ctx) return { error: "Workspace não encontrado" };
 
-  // Calcula próxima posição na coluna
+  // Garante que o lead pertence ao workspace (previne referência cruzada)
+  const leadExists = await verifyLeadOwnership(supabase, parsed.data.lead_id, ctx.workspace.id);
+  if (!leadExists) return { error: "Lead não encontrado" };
+
   const { count } = await supabase
     .from("deals")
     .select("id", { count: "exact", head: true })
     .eq("workspace_id", ctx.workspace.id)
-    .eq("stage", payload.stage);
+    .eq("stage", parsed.data.stage);
 
   const { error } = await supabase.from("deals").insert({
     workspace_id: ctx.workspace.id,
-    title: payload.title,
-    lead_id: payload.lead_id,
-    value: payload.value ?? null,
-    stage: payload.stage,
-    owner_id: payload.owner_id ?? null,
-    due_date: payload.due_date ?? null,
+    title: parsed.data.title,
+    lead_id: parsed.data.lead_id,
+    value: parsed.data.value ?? null,
+    stage: parsed.data.stage,
+    owner_id: parsed.data.owner_id ?? null,
+    due_date: parsed.data.due_date ?? null,
     position: count ?? 0,
   });
 
@@ -44,20 +68,29 @@ export async function createDealAction(payload: DealPayload) {
   return { success: true };
 }
 
-export async function updateDealAction(id: string, payload: DealPayload) {
+export async function updateDealAction(id: string, payload: unknown) {
+  if (!id || typeof id !== "string") return { error: "ID inválido" };
+
+  const parsed = dealSchema.safeParse(payload);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+
   const supabase = await getSupabaseServerClient();
   const ctx = await getWorkspaceContext();
   if (!ctx) return { error: "Workspace não encontrado" };
 
+  // Garante que o lead pertence ao workspace
+  const leadExists = await verifyLeadOwnership(supabase, parsed.data.lead_id, ctx.workspace.id);
+  if (!leadExists) return { error: "Lead não encontrado" };
+
   const { error } = await supabase
     .from("deals")
     .update({
-      title: payload.title,
-      lead_id: payload.lead_id,
-      value: payload.value ?? null,
-      stage: payload.stage,
-      owner_id: payload.owner_id ?? null,
-      due_date: payload.due_date ?? null,
+      title: parsed.data.title,
+      lead_id: parsed.data.lead_id,
+      value: parsed.data.value ?? null,
+      stage: parsed.data.stage,
+      owner_id: parsed.data.owner_id ?? null,
+      due_date: parsed.data.due_date ?? null,
     })
     .eq("id", id)
     .eq("workspace_id", ctx.workspace.id);
@@ -71,17 +104,20 @@ export async function updateDealAction(id: string, payload: DealPayload) {
 
 export async function moveDealAction(
   id: string,
-  stage: DealStage,
+  stage: string,
   position: number
 ) {
+  const parsed = moveSchema.safeParse({ id, stage, position });
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+
   const supabase = await getSupabaseServerClient();
   const ctx = await getWorkspaceContext();
   if (!ctx) return { error: "Workspace não encontrado" };
 
   const { error } = await supabase
     .from("deals")
-    .update({ stage, position })
-    .eq("id", id)
+    .update({ stage: parsed.data.stage, position: parsed.data.position })
+    .eq("id", parsed.data.id)
     .eq("workspace_id", ctx.workspace.id);
 
   if (error) return { error: error.message };
@@ -92,6 +128,8 @@ export async function moveDealAction(
 }
 
 export async function deleteDealAction(id: string) {
+  if (!id || typeof id !== "string") return { error: "ID inválido" };
+
   const supabase = await getSupabaseServerClient();
   const ctx = await getWorkspaceContext();
   if (!ctx) return { error: "Workspace não encontrado" };
