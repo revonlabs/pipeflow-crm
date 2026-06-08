@@ -41,8 +41,18 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { Lead } from "@/types";
+import type { Lead, LeadSource } from "@/types";
 import type { MemberInfo } from "@/lib/members";
+
+const LEAD_SOURCES = ["manual", "meta_ads", "google_ads", "organic", "proposal"] as const;
+
+const SOURCE_LABELS: Record<LeadSource, string> = {
+  manual: "Manual",
+  meta_ads: "Meta Ads",
+  google_ads: "Google Ads",
+  organic: "Orgânico",
+  proposal: "Proposta",
+};
 
 const leadSchema = z.object({
   name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
@@ -51,6 +61,7 @@ const leadSchema = z.object({
   company: z.string().optional(),
   role: z.string().optional(),
   status: z.enum(["active", "inactive", "converted", "lost"]),
+  source: z.enum(LEAD_SOURCES).optional().nullable(),
   owner_id: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -85,6 +96,7 @@ export function LeadFormDialog({
       company: "",
       role: "",
       status: "active",
+      source: null,
       owner_id: members[0]?.id ?? "",
       notes: "",
     },
@@ -100,6 +112,7 @@ export function LeadFormDialog({
           company: lead.company ?? "",
           role: lead.role ?? "",
           status: lead.status,
+          source: lead.source ?? null,
           owner_id: lead.owner_id ?? members[0]?.id ?? "",
           notes: "",
         });
@@ -111,6 +124,7 @@ export function LeadFormDialog({
           company: "",
           role: "",
           status: "active",
+          source: null,
           owner_id: members[0]?.id ?? "",
           notes: "",
         });
@@ -220,6 +234,31 @@ export function LeadFormDialog({
                         <SelectItem value="inactive">Inativo</SelectItem>
                         <SelectItem value="converted">Convertido</SelectItem>
                         <SelectItem value="lost">Perdido</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="source"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Origem</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value ?? ""}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione a origem" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {LEAD_SOURCES.map((s) => (
+                          <SelectItem key={s} value={s}>
+                            {SOURCE_LABELS[s]}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                     <FormMessage />

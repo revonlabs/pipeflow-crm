@@ -39,7 +39,8 @@ export function MobileSidebarTrigger({
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent
           side="left"
-          className="p-0 w-60 bg-[#1B2559] border-r-0 [&>button]:hidden"
+          className="p-0 w-60 border-r-0 [&>button]:hidden"
+          style={{ backgroundColor: "#141416", borderRight: "1px solid #1E1E22" }}
         >
           <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
           <Sidebar

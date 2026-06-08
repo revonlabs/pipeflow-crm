@@ -187,7 +187,7 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-2.5 mb-4 shrink-0">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-4 shrink-0">
         <StatCard icon={BarChart3} label="Pipeline ativo" value={formatBRL(pipelineValue)} sub={`${openDeals.length} negócios`} color="#5B7FFF" delay={0} />
         <StatCard icon={Trophy} label="Receita ganha" value={formatBRL(wonValue)} sub={`${wonDeals.length} fechados`} color="#2ED573" delay={60} />
         <StatCard icon={Target} label="Taxa de conversão" value={`${conversionRate}%`} sub="do total de deals" color="#CAFF33" delay={120} />
@@ -209,6 +209,28 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
             ) : null;
           }
         )}
+      </div>
+
+      {/* Scroll hint — mobile only */}
+      <div className="flex items-center gap-1.5 mb-2 sm:hidden shrink-0">
+        <div className="flex gap-0.5">
+          {[0,1,2,3].map((i) => (
+            <div
+              key={i}
+              className="h-1 rounded-full transition-all"
+              style={{
+                width: i === 0 ? "16px" : "6px",
+                backgroundColor: i === 0 ? "#CAFF33" : "#2A2A2E",
+              }}
+            />
+          ))}
+        </div>
+        <p
+          className="text-[10px] text-[#555559]"
+          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+        >
+          deslize para ver todas as etapas
+        </p>
       </div>
 
       <div className="flex-1 overflow-hidden min-h-0">

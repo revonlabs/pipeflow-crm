@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/supabase'
 
-const PROTECTED_PREFIXES = ['/dashboard', '/leads', '/pipeline', '/settings']
+const PROTECTED_PREFIXES = ['/dashboard', '/leads', '/pipeline', '/settings', '/onboarding', '/invite']
 const AUTH_ONLY_ROUTES = ['/login', '/register', '/forgot-password']
 
 export async function proxy(request: NextRequest) {

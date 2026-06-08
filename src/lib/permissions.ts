@@ -1,3 +1,4 @@
+import 'server-only'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import type { WorkspaceRole } from '@/types'
 
