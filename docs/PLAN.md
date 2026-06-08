@@ -24,7 +24,8 @@ FASE 2 — BACKEND & INTEGRAÇÃO
   M9  Workspace & Colaboração      → branch: feat/collaboration
   M10  Monetização (Stripe)          → branch: feat/billing-nextjs
   M10½ Multi-Workspace              → branch: feat/multi-workspace
-  M11  Deploy & Produção            → branch: feat/deploy
+  M11  Deploy & Produção            → branch: feat/deploy ✅
+  M12  Lead Source Tracking         → branch: main (direto)
 ```
 
 ---
@@ -639,15 +640,46 @@ feat(workspace): enable multi-workspace creation with plan-based limits
 - [x] `create_workspace` RPC usa `auth.uid()` (sem IDOR)
 
 #### Stripe em Produção
-- [x] Webhook criado via API: `we_1TeyMRIMAKteUjC5aqVtOYMH` → `https://pipeflow-crm-3e8i.vercel.app/api/webhooks/stripe`
+- [x] Webhook criado no Stripe Dashboard → `https://crm.revonlabs.com.br/api/webhooks/stripe`
   - Eventos: `checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.deleted`, `invoice.payment_failed`
-- [x] `STRIPE_WEBHOOK_SECRET` atualizado no Vercel (production) via CLI
-- [x] Redeploy em produção: `https://pipeflow-crm-3e8i.vercel.app` (dpl_Fn13ochwfUmMZEiTb22TG5XgTLE1)
+- [x] `STRIPE_WEBHOOK_SECRET` atualizado no Vercel (production)
+- [x] Redeploy em produção: `https://crm.revonlabs.com.br` (PR #10)
 
-#### Commit Final
+#### Domínio de Produção
+- [x] Domínio `crm.revonlabs.com.br` configurado no Vercel (projeto `pipeflow-crm-3e8i`)
+- [x] DNS autoconfigado via Cloudflare (integração nativa Vercel ↔ Cloudflare)
+- [x] `NEXT_PUBLIC_APP_URL` atualizado para `https://crm.revonlabs.com.br` no Vercel e `.env.local`
+- [x] Supabase Auth — Site URL e Redirect URLs atualizados para `https://crm.revonlabs.com.br`
+- [x] Fluxo completo testado em produção: login → dashboard → leads → pipeline → settings → billing
+
+#### Commits Finais
 ```
-feat(deploy): production deployment on Vercel + Supabase, workspace creation fix, security hardening
+feat(deploy): production domain, lead source tracking — M11   (PR #10 → main)
+feat(leads): add source field — manual, meta_ads, google_ads, organic, proposal
 ```
+
+---
+
+### M12 — Lead Source Tracking ✅
+
+**Branch:** `main` (direto, via PR #10)
+**Objetivo:** Campo de origem nos leads para rastreamento de canal de aquisição.
+
+#### Banco de Dados
+- [x] Coluna `source` adicionada na tabela `leads` (Supabase MCP)
+  - Valores permitidos: `manual | meta_ads | google_ads | organic | proposal`
+  - Nullable — leads existentes não são afetados
+
+#### Tipos TypeScript
+- [x] `src/types/index.ts` — `LeadSource` type adicionado
+- [x] Interface `Lead` atualizada com campo `source: LeadSource | null`
+
+#### Server Actions
+- [x] `src/lib/actions/leads.ts` — `createLeadAction` e `updateLeadAction` recebem e persistem `source`
+
+#### UI
+- [x] `src/components/leads/lead-form-dialog.tsx` — campo "Origem" (Select) no formulário de criação/edição
+- [x] `src/components/leads/leads-table.tsx` — coluna "Origem" na tabela de leads (desktop)
 
 ---
 
@@ -667,7 +699,8 @@ feat(deploy): production deployment on Vercel + Supabase, workspace creation fix
 | `feat/collaboration` | M9 | Convites + membros + roles ✅ |
 | `feat/billing-nextjs` | M10 | Stripe checkout + webhook + limites |
 | `feat/multi-workspace` | M10½ | Criação de múltiplos workspaces |
-| `feat/deploy` | M11 | Deploy produção Vercel |
+| `feat/deploy` | M11 | Deploy produção Vercel ✅ |
+| `main` | M12 | Lead source tracking ✅ |
 
 ---
 
@@ -685,7 +718,8 @@ feat/leads-data    → main
 feat/collaboration → main
 feat/billing-nextjs  → main
 feat/multi-workspace → main
-feat/deploy          → main  ← produção
+feat/deploy          → main  ← produção ✅ (PR #10)
+main                 ← lead source tracking ✅
 ```
 
 Cada merge deve passar em `npm run build` e `npm run lint` sem erros.
