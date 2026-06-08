@@ -47,7 +47,8 @@ export async function createLeadAction(payload: unknown) {
     status: data.status,
     source: data.source || null,
     owner_id: data.owner_id || null,
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } as any);
 
   if (error) return { error: error.message };
 
@@ -68,6 +69,7 @@ export async function updateLeadAction(id: string, payload: unknown) {
   const data = parsed.data;
   const { error } = await supabase
     .from("leads")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .update({
       name: data.name,
       email: data.email,
@@ -77,7 +79,7 @@ export async function updateLeadAction(id: string, payload: unknown) {
       status: data.status,
       source: data.source || null,
       owner_id: data.owner_id || null,
-    })
+    } as any)
     .eq("id", id)
     .eq("workspace_id", ctx.workspace.id);
 

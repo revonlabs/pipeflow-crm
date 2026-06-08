@@ -3,6 +3,7 @@ import { getWorkspaceContext } from "@/lib/workspace";
 import { getWorkspaceMembers } from "@/lib/members";
 import { PageHeader } from "@/components/shared/page-header";
 import { LeadsTable } from "@/components/leads/leads-table";
+import type { Lead } from "@/types";
 
 export default async function LeadsPage() {
   const supabase = await getSupabaseServerClient();
@@ -18,7 +19,7 @@ export default async function LeadsPage() {
     getWorkspaceMembers(ctx.workspace.id),
   ]);
 
-  const allLeads = leads ?? [];
+  const allLeads = (leads ?? []) as unknown as Lead[];
 
   return (
     <div className="space-y-6">

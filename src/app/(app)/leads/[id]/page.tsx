@@ -10,6 +10,7 @@ import { LeadDetailClient, ActivityButton } from "@/components/leads/lead-detail
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
 import { getWorkspaceMembers } from "@/lib/members";
+import type { Lead } from "@/types";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -39,6 +40,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
   ]);
 
   if (!lead) notFound();
+  const typedLead = lead as unknown as Lead;
 
   // Enriquece atividades com dados do autor
   const memberMap = new Map(members.map((m) => [m.id, m]));
@@ -61,14 +63,14 @@ export default async function LeadDetailPage({ params }: PageProps) {
             Leads
           </Link>
         </Button>
-        <LeadDetailClient lead={lead} members={members} />
+        <LeadDetailClient lead={typedLead} members={members} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
         <div className="space-y-4">
           <LeadProfileCard
-            lead={lead}
-            ownerName={lead.owner_id ? (memberMap.get(lead.owner_id)?.name ?? "—") : "Sem responsável"}
+            lead={typedLead}
+            ownerName={typedLead.owner_id ? (memberMap.get(typedLead.owner_id)?.name ?? "—") : "Sem responsável"}
           />
         </div>
 
@@ -79,15 +81,15 @@ export default async function LeadDetailPage({ params }: PageProps) {
             </CardHeader>
             <CardContent>
               <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <InfoField label="Nome completo" value={lead.name} />
-                <InfoField label="E-mail" value={lead.email ?? "—"} />
-                <InfoField label="Telefone" value={lead.phone ?? "—"} />
-                <InfoField label="Empresa" value={lead.company ?? "—"} />
-                <InfoField label="Cargo" value={lead.role ?? "—"} />
+                <InfoField label="Nome completo" value={typedLead.name} />
+                <InfoField label="E-mail" value={typedLead.email ?? "—"} />
+                <InfoField label="Telefone" value={typedLead.phone ?? "—"} />
+                <InfoField label="Empresa" value={typedLead.company ?? "—"} />
+                <InfoField label="Cargo" value={typedLead.role ?? "—"} />
                 <InfoField
                   label="Status"
                   value={
-                    { active: "Ativo", inactive: "Inativo", converted: "Convertido", lost: "Perdido" }[lead.status]
+                    { active: "Ativo", inactive: "Inativo", converted: "Convertido", lost: "Perdido" }[typedLead.status]
                   }
                 />
               </dl>
