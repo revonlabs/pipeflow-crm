@@ -37,7 +37,7 @@ import { LeadsFilters } from "@/components/leads/leads-filters";
 import { LeadFormDialog } from "@/components/leads/lead-form-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { createLeadAction, updateLeadAction, deleteLeadAction } from "@/lib/actions/leads";
-import type { Lead, LeadStatus } from "@/types";
+import type { Lead, LeadStatus, LeadSource } from "@/types";
 import type { MemberInfo } from "@/lib/members";
 
 interface LeadsTableProps {
@@ -60,6 +60,14 @@ function getInitials(name: string) {
 }
 
 const PAGE_SIZE = 8;
+
+const SOURCE_LABELS: Record<LeadSource, string> = {
+  manual: "Manual",
+  meta_ads: "Meta Ads",
+  google_ads: "Google Ads",
+  organic: "Orgânico",
+  proposal: "Proposta",
+};
 
 export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
@@ -95,7 +103,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
   function handleOpenEdit(lead: Lead) { setEditingLead(lead); setDialogOpen(true); }
 
   function handleSubmit(
-    values: { name: string; email: string; phone?: string; company?: string; role?: string; status: Lead["status"]; owner_id?: string },
+    values: { name: string; email: string; phone?: string; company?: string; role?: string; status: Lead["status"]; source?: LeadSource | null; owner_id?: string },
     id?: string
   ) {
     if (id) {
@@ -103,7 +111,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
       setLeads((prev) =>
         prev.map((l) =>
           l.id === id
-            ? { ...l, ...values, phone: values.phone ?? null, company: values.company ?? null, role: values.role ?? null, owner_id: values.owner_id ?? null }
+            ? { ...l, ...values, phone: values.phone ?? null, company: values.company ?? null, role: values.role ?? null, source: values.source ?? null, owner_id: values.owner_id ?? null }
             : l
         )
       );
@@ -127,6 +135,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
         company: values.company ?? null,
         role: values.role ?? null,
         status: values.status,
+        source: values.source ?? null,
         owner_id: values.owner_id ?? null,
       };
       setLeads((prev) => [optimistic, ...prev]);
@@ -185,7 +194,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
       </AlertDialog>
 
       <div className="space-y-4">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <LeadsFilters
             search={search}
             status={status}
@@ -195,7 +204,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
             onStatusChange={handleStatusChange}
             onOwnerChange={handleOwnerChange}
           />
-          <Button onClick={handleOpenCreate} className="gap-2 shrink-0" disabled={isPending}>
+          <Button onClick={handleOpenCreate} className="gap-2 shrink-0 w-full sm:w-auto" disabled={isPending}>
             <Plus className="h-4 w-4" />
             Novo Lead
           </Button>
@@ -209,7 +218,52 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
           />
         ) : (
           <>
-            <div className="rounded-lg border border-border overflow-hidden">
+            {/* Card view — mobile only */}
+            <div className="sm:hidden space-y-2">
+              {paginated.map((lead) => (
+                <div
+                  key={lead.id}
+                  className="rounded-lg border border-border bg-card p-3 flex items-start gap-3"
+                >
+                  <Avatar className="h-9 w-9 shrink-0 mt-0.5">
+                    <AvatarFallback className="text-xs bg-muted text-muted-foreground">
+                      {getInitials(lead.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <Link
+                        href={`/leads/${lead.id}`}
+                        className="font-medium text-sm hover:text-primary transition-colors truncate block"
+                      >
+                        {lead.name}
+                      </Link>
+                      <LeadStatusBadge status={lead.status} />
+                    </div>
+                    {lead.company && (
+                      <p className="text-xs text-muted-foreground truncate mt-0.5">{lead.company}</p>
+                    )}
+                    <div className="flex items-center gap-3 mt-2">
+                      <button
+                        onClick={() => handleOpenEdit(lead)}
+                        className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => setDeleteConfirm({ open: true, lead })}
+                        className="text-xs text-destructive hover:text-destructive/80 transition-colors"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Table view — sm+ */}
+            <div className="hidden sm:block rounded-lg border border-border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/40 hover:bg-muted/40">
@@ -217,6 +271,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
                     <TableHead className="hidden sm:table-cell">Empresa</TableHead>
                     <TableHead className="hidden md:table-cell">Cargo</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className="hidden lg:table-cell">Origem</TableHead>
                     <TableHead className="hidden lg:table-cell">Responsável</TableHead>
                     <TableHead className="hidden lg:table-cell">Criado em</TableHead>
                     <TableHead className="w-[48px]" />
@@ -253,6 +308,9 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
                       </TableCell>
                       <TableCell>
                         <LeadStatusBadge status={lead.status} />
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
+                        {lead.source ? SOURCE_LABELS[lead.source] : "—"}
                       </TableCell>
                       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                         {getMemberName(lead.owner_id)}

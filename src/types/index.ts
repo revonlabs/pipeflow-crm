@@ -4,6 +4,8 @@ export type WorkspaceRole = "admin" | "member";
 
 export type LeadStatus = "active" | "inactive" | "converted" | "lost";
 
+export type LeadSource = "manual" | "meta_ads" | "google_ads" | "organic" | "proposal";
+
 export type DealStage =
   | "new_lead"
   | "contacted"
@@ -56,6 +58,7 @@ export interface Lead {
   company: string | null;
   role: string | null;
   status: LeadStatus;
+  source: LeadSource | null;
   owner_id: string | null;
   created_at: string;
 }

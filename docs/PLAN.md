@@ -626,7 +626,7 @@ feat(workspace): enable multi-workspace creation with plan-based limits
 - [x] Repositório GitHub conectado ao Vercel (deploy automático na `main`)
 - [x] Variáveis de ambiente configuradas no Vercel Dashboard
 - [x] Deploy em produção: `https://pipeflow-crm.vercel.app`
-- [x] Build sem erros (16 rotas, Next.js 16.2.1 + Turbopack)
+- [x] Build sem erros (17 rotas, Next.js 16.2.6 + Turbopack)
 
 #### Segurança
 - [x] Security headers: CSP (com `fonts.googleapis.com`), HSTS, X-Frame-Options, X-Content-Type-Options
@@ -638,10 +638,11 @@ feat(workspace): enable multi-workspace creation with plan-based limits
 - [x] RLS hardening: workspace_invites SELECT/UPDATE restritos, subscriptions INSERT admin-only
 - [x] `create_workspace` RPC usa `auth.uid()` (sem IDOR)
 
-#### Stripe em Produção (pendente webhook live)
-- [ ] Criar webhook no Stripe Dashboard → `https://pipeflow-crm.vercel.app/api/webhooks/stripe`
+#### Stripe em Produção
+- [x] Webhook criado via API: `we_1TeyMRIMAKteUjC5aqVtOYMH` → `https://pipeflow-crm-3e8i.vercel.app/api/webhooks/stripe`
   - Eventos: `checkout.session.completed`, `invoice.payment_succeeded`, `customer.subscription.deleted`, `invoice.payment_failed`
-- [ ] Copiar Signing Secret → atualizar `STRIPE_WEBHOOK_SECRET` no Vercel
+- [x] `STRIPE_WEBHOOK_SECRET` atualizado no Vercel (production) via CLI
+- [x] Redeploy em produção: `https://pipeflow-crm-3e8i.vercel.app` (dpl_Fn13ochwfUmMZEiTb22TG5XgTLE1)
 
 #### Commit Final
 ```

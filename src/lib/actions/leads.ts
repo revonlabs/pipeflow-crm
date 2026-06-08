@@ -7,6 +7,7 @@ import { getWorkspaceContext } from "@/lib/workspace";
 import { canAddLead } from "@/lib/limits";
 
 const LEAD_STATUSES = ["active", "inactive", "converted", "lost"] as const;
+const LEAD_SOURCES = ["manual", "meta_ads", "google_ads", "organic", "proposal"] as const;
 
 const leadSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório").max(255),
@@ -15,6 +16,7 @@ const leadSchema = z.object({
   company: z.string().max(255).optional(),
   role: z.string().max(255).optional(),
   status: z.enum(LEAD_STATUSES),
+  source: z.enum(LEAD_SOURCES).optional().nullable(),
   owner_id: z.string().uuid().optional().nullable(),
 });
 
@@ -43,6 +45,7 @@ export async function createLeadAction(payload: unknown) {
     company: data.company || null,
     role: data.role || null,
     status: data.status,
+    source: data.source || null,
     owner_id: data.owner_id || null,
   });
 
@@ -72,6 +75,7 @@ export async function updateLeadAction(id: string, payload: unknown) {
       company: data.company || null,
       role: data.role || null,
       status: data.status,
+      source: data.source || null,
       owner_id: data.owner_id || null,
     })
     .eq("id", id)
