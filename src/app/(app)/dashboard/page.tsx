@@ -4,6 +4,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { MetricCardsGrid } from "@/components/dashboard/metric-cards-grid";
 import { FunnelChart } from "@/components/dashboard/funnel-chart";
 import { UpcomingDeals } from "@/components/dashboard/upcoming-deals";
+import { PendingTasks } from "@/components/dashboard/pending-tasks";
 import type { DealStage } from "@/types";
 
 const STAGE_ORDER: DealStage[] = ["new_lead", "contacted", "proposal_sent", "negotiation", "won", "lost"];
@@ -41,15 +42,22 @@ export default async function DashboardPage() {
 
   const wid = ctx.workspace.id;
 
-  const [{ count: totalLeads }, { data: deals }] = await Promise.all([
+  const [{ count: totalLeads }, { data: deals }, { data: pendingTasks }] = await Promise.all([
     supabase
       .from("leads")
       .select("id", { count: "exact", head: true })
       .eq("workspace_id", wid),
     supabase
       .from("deals")
-      .select("id, stage, value, title, lead_id, owner_id, due_date, position, created_at, workspace_id, lead:leads(id, name, company, email)")
+      .select("id, stage, value, recurring_value, setup_value, title, lead_id, owner_id, due_date, position, created_at, workspace_id, lead:leads(id, name, company, email)")
       .eq("workspace_id", wid),
+    supabase
+      .from("tasks")
+      .select("id, title, due_at, deal:deals(id, title, stage)")
+      .eq("workspace_id", wid)
+      .is("completed_at", null)
+      .order("due_at", { ascending: true })
+      .limit(6),
   ]);
 
   const allDeals = deals ?? [];
@@ -116,6 +124,12 @@ export default async function DashboardPage() {
           daysUntilDue: d.daysUntilDue,
           lead: d.lead as { name: string; company: string | null } | null,
         }))}
+        stageLabels={STAGE_LABELS}
+        stageColors={STAGE_COLORS}
+      />
+
+      <PendingTasks
+        tasks={(pendingTasks ?? []) as Parameters<typeof PendingTasks>[0]["tasks"]}
         stageLabels={STAGE_LABELS}
         stageColors={STAGE_COLORS}
       />

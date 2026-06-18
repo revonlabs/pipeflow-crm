@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -40,6 +40,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { CurrencyInput, parseCurrencyInput, formatCurrencyValue } from "@/components/ui/currency-input";
 import { STAGE_CONFIG } from "./kanban-board";
 import type { Deal, DealStage } from "@/types";
 import type { MemberInfo } from "@/lib/members";
@@ -54,7 +55,8 @@ interface LeadOption {
 const dealSchema = z.object({
   title: z.string().min(2, "Mínimo 2 caracteres"),
   lead_id: z.string().min(1, "Selecione um lead"),
-  value: z.string().optional(),
+  recurring_value: z.string().optional(),
+  setup_value: z.string().optional(),
   stage: z.enum(["new_lead", "contacted", "proposal_sent", "negotiation", "won", "lost"]),
   owner_id: z.string().optional(),
   due_date: z.string().optional(),
@@ -71,6 +73,7 @@ interface DealFormDialogProps {
   onOpenChange: (open: boolean) => void;
   onSubmit: (deal: Deal) => void;
   onDelete?: (id: string) => void;
+  onScheduleTask?: (dealId: string, dueAt: string) => void;
 }
 
 const monoStyle = { fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" } as const;
@@ -85,15 +88,18 @@ export function DealFormDialog({
   onOpenChange,
   onSubmit,
   onDelete,
+  onScheduleTask,
 }: DealFormDialogProps) {
   const isEditing = !!deal;
+  const [nextContact, setNextContact] = useState("");
 
   const form = useForm<DealFormValues>({
     resolver: zodResolver(dealSchema),
     defaultValues: {
       title: "",
       lead_id: "",
-      value: "",
+      recurring_value: "",
+      setup_value: "",
       stage: defaultStage,
       owner_id: "",
       due_date: "",
@@ -106,28 +112,31 @@ export function DealFormDialog({
         form.reset({
           title: deal.title,
           lead_id: deal.lead_id,
-          value: deal.value !== null ? String(deal.value) : "",
+          recurring_value: deal.recurring_value ? formatCurrencyValue(deal.recurring_value) : "",
+          setup_value: deal.setup_value ? formatCurrencyValue(deal.setup_value) : "",
           stage: deal.stage,
           owner_id: deal.owner_id ?? "",
           due_date: deal.due_date ?? "",
         });
+        setNextContact(deal.next_task?.due_at ? deal.next_task.due_at.slice(0, 16) : "");
       } else {
         form.reset({
           title: "",
           lead_id: "",
-          value: "",
+          recurring_value: "",
+          setup_value: "",
           stage: defaultStage,
           owner_id: "",
           due_date: "",
         });
+        setNextContact("");
       }
     }
   }, [open, deal, defaultStage, form]);
 
   function handleSubmit(values: DealFormValues) {
-    const rawValue = values.value?.replace(/\./g, "").replace(",", ".");
-    const parsedValue = rawValue ? parseFloat(rawValue) : null;
-    const value = parsedValue && !isNaN(parsedValue) ? parsedValue : null;
+    const recurring_value = parseCurrencyInput(values.recurring_value);
+    const setup_value = parseCurrencyInput(values.setup_value);
 
     const leadOption = leads.find((l) => l.id === values.lead_id);
 
@@ -136,7 +145,9 @@ export function DealFormDialog({
       workspace_id: deal?.workspace_id ?? "",
       lead_id: values.lead_id,
       title: values.title,
-      value,
+      value: recurring_value + setup_value,
+      recurring_value,
+      setup_value,
       stage: values.stage as DealStage,
       owner_id: values.owner_id || null,
       due_date: values.due_date || null,
@@ -145,9 +156,15 @@ export function DealFormDialog({
       lead: leadOption
         ? { id: leadOption.id, name: leadOption.name, company: leadOption.company, email: leadOption.email }
         : deal?.lead,
+      next_task: deal?.next_task,
     };
 
     onSubmit(result);
+
+    if (nextContact && onScheduleTask) {
+      onScheduleTask(result.id, new Date(nextContact).toISOString());
+    }
+
     onOpenChange(false);
   }
 
@@ -273,17 +290,17 @@ export function DealFormDialog({
               <div className="grid grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
-                  name="value"
+                  name="recurring_value"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className={labelClass} style={monoStyle}>Valor (R$)</FormLabel>
+                      <FormLabel className={labelClass} style={monoStyle}>Valor recorrente (R$/mês)</FormLabel>
                       <FormControl>
-                        <Input
-                          inputMode="numeric"
-                          placeholder="0"
+                        <CurrencyInput
+                          placeholder="0,00"
                           className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
                           style={monoStyle}
-                          {...field}
+                          value={field.value ?? ""}
+                          onValueChange={field.onChange}
                         />
                       </FormControl>
                       <FormMessage />
@@ -291,6 +308,28 @@ export function DealFormDialog({
                   )}
                 />
 
+                <FormField
+                  control={form.control}
+                  name="setup_value"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={labelClass} style={monoStyle}>Valor de setup (R$)</FormLabel>
+                      <FormControl>
+                        <CurrencyInput
+                          placeholder="0,00"
+                          className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                          style={monoStyle}
+                          value={field.value ?? ""}
+                          onValueChange={field.onChange}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
                 <FormField
                   control={form.control}
                   name="owner_id"
@@ -321,24 +360,39 @@ export function DealFormDialog({
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="due_date"
-                render={({ field }) => (
-                  <FormItem className="w-1/2">
-                    <FormLabel className={labelClass} style={monoStyle}>Prazo</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="date"
-                        className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
-                        style={monoStyle}
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-3">
+                <FormField
+                  control={form.control}
+                  name="due_date"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className={labelClass} style={monoStyle}>Previsão de fechamento</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="date"
+                          className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                          style={monoStyle}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormItem>
+                  <FormLabel className={labelClass} style={monoStyle}>Próximo contato</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="datetime-local"
+                      className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                      style={monoStyle}
+                      value={nextContact}
+                      onChange={(e) => setNextContact(e.target.value)}
+                    />
+                  </FormControl>
+                </FormItem>
+              </div>
             </div>
 
             <Separator style={{ backgroundColor: "#1E1E22" }} />

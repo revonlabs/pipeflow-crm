@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
 import { canAddLead } from "@/lib/limits";
+import { unformatDocument } from "@/lib/format-document";
 
 const LEAD_STATUSES = ["active", "inactive", "converted", "lost"] as const;
 const LEAD_SOURCES = ["manual", "meta_ads", "google_ads", "organic", "proposal"] as const;
@@ -17,6 +18,7 @@ const leadSchema = z.object({
   role: z.string().max(255).optional(),
   status: z.enum(LEAD_STATUSES),
   source: z.enum(LEAD_SOURCES).optional().nullable(),
+  cnpj: z.string().max(18).optional().nullable(),
   owner_id: z.string().uuid().optional().nullable(),
 });
 
@@ -46,6 +48,7 @@ export async function createLeadAction(payload: unknown) {
     role: data.role || null,
     status: data.status,
     source: data.source || null,
+    cnpj: data.cnpj ? unformatDocument(data.cnpj) : null,
     owner_id: data.owner_id || null,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any);
@@ -78,6 +81,7 @@ export async function updateLeadAction(id: string, payload: unknown) {
       role: data.role || null,
       status: data.status,
       source: data.source || null,
+      cnpj: data.cnpj ? unformatDocument(data.cnpj) : null,
       owner_id: data.owner_id || null,
     } as any)
     .eq("id", id)

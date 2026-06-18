@@ -10,7 +10,8 @@ const DEAL_STAGES = ["new_lead", "contacted", "proposal_sent", "negotiation", "w
 const dealSchema = z.object({
   title: z.string().min(1, "Título é obrigatório").max(255),
   lead_id: z.string().uuid("lead_id inválido"),
-  value: z.number().min(0).nullable().optional(),
+  recurring_value: z.number().min(0).nullable().optional(),
+  setup_value: z.number().min(0).nullable().optional(),
   stage: z.enum(DEAL_STAGES),
   owner_id: z.string().uuid().nullable().optional(),
   due_date: z.string().nullable().optional(),
@@ -50,11 +51,16 @@ export async function createDealAction(payload: unknown) {
     .eq("workspace_id", ctx.workspace.id)
     .eq("stage", parsed.data.stage);
 
+  const recurring_value = parsed.data.recurring_value ?? 0;
+  const setup_value = parsed.data.setup_value ?? 0;
+
   const { error } = await supabase.from("deals").insert({
     workspace_id: ctx.workspace.id,
     title: parsed.data.title,
     lead_id: parsed.data.lead_id,
-    value: parsed.data.value ?? null,
+    recurring_value,
+    setup_value,
+    value: recurring_value + setup_value,
     stage: parsed.data.stage,
     owner_id: parsed.data.owner_id ?? null,
     due_date: parsed.data.due_date ?? null,
@@ -82,12 +88,17 @@ export async function updateDealAction(id: string, payload: unknown) {
   const leadExists = await verifyLeadOwnership(supabase, parsed.data.lead_id, ctx.workspace.id);
   if (!leadExists) return { error: "Lead não encontrado" };
 
+  const recurring_value = parsed.data.recurring_value ?? 0;
+  const setup_value = parsed.data.setup_value ?? 0;
+
   const { error } = await supabase
     .from("deals")
     .update({
       title: parsed.data.title,
       lead_id: parsed.data.lead_id,
-      value: parsed.data.value ?? null,
+      recurring_value,
+      setup_value,
+      value: recurring_value + setup_value,
       stage: parsed.data.stage,
       owner_id: parsed.data.owner_id ?? null,
       due_date: parsed.data.due_date ?? null,

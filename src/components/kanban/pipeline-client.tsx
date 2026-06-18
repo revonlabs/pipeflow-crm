@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { KanbanBoard, STAGE_CONFIG } from "@/components/kanban/kanban-board";
 import { DealFormDialog } from "@/components/kanban/deal-form-dialog";
 import { createDealAction, updateDealAction, moveDealAction, deleteDealAction } from "@/lib/actions/deals";
+import { createTaskAction } from "@/lib/actions/tasks";
 import type { Deal, DealStage } from "@/types";
 import type { MemberInfo } from "@/lib/members";
 
@@ -126,7 +127,8 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
         await updateDealAction(deal.id, {
           title: deal.title,
           lead_id: deal.lead_id,
-          value: deal.value,
+          recurring_value: deal.recurring_value,
+          setup_value: deal.setup_value,
           stage: deal.stage,
           owner_id: deal.owner_id,
           due_date: deal.due_date,
@@ -140,7 +142,8 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
         const result = await createDealAction({
           title: deal.title,
           lead_id: deal.lead_id,
-          value: deal.value,
+          recurring_value: deal.recurring_value,
+          setup_value: deal.setup_value,
           stage: deal.stage,
           owner_id: deal.owner_id,
           due_date: deal.due_date,
@@ -150,6 +153,13 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
         }
       });
     }
+  }
+
+  function handleScheduleTask(dealId: string, dueAt: string) {
+    if (dealId.startsWith("deal-") || dealId.startsWith("optimistic-")) return;
+    startTransition(async () => {
+      await createTaskAction({ deal_id: dealId, due_at: dueAt });
+    });
   }
 
   function handleDelete(id: string) {
@@ -251,6 +261,7 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
+        onScheduleTask={handleScheduleTask}
       />
     </div>
   );
