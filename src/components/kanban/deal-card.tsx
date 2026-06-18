@@ -2,8 +2,8 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Calendar, CalendarX } from "lucide-react";
-import { format } from "date-fns";
+import { Calendar, CalendarX, Clock, AlarmClock } from "lucide-react";
+import { format, isToday, isPast } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import type { Deal } from "@/types";
@@ -60,6 +60,10 @@ export function DealCard({
   const isOverdue =
     deal.due_date ? new Date(deal.due_date) < new Date() : false;
 
+  const nextTaskDate = deal.next_task?.due_at ? new Date(deal.next_task.due_at) : null;
+  const isTaskToday = nextTaskDate ? isToday(nextTaskDate) : false;
+  const isTaskOverdue = nextTaskDate ? isPast(nextTaskDate) && !isTaskToday : false;
+
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -108,15 +112,27 @@ export function DealCard({
           {/* Bottom row */}
           <div className="flex items-center justify-between gap-2">
             {/* Valor — IBM Plex Mono, cor do stage */}
-            {deal.value !== null ? (
-              <span
-                className="text-[12px] font-semibold tracking-tight"
-                style={{
-                  fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)",
-                  color: stageColor,
-                }}
-              >
-                {formatBRL(deal.value)}
+            {deal.recurring_value || deal.setup_value ? (
+              <span className="flex flex-col leading-tight">
+                {deal.recurring_value > 0 && (
+                  <span
+                    className="text-[12px] font-semibold tracking-tight"
+                    style={{
+                      fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)",
+                      color: stageColor,
+                    }}
+                  >
+                    {formatBRL(deal.recurring_value)}/mês
+                  </span>
+                )}
+                {deal.setup_value > 0 && (
+                  <span
+                    className="text-[10px] text-[#8A8A8F]"
+                    style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+                  >
+                    + {formatBRL(deal.setup_value)} setup
+                  </span>
+                )}
               </span>
             ) : (
               <span
@@ -146,6 +162,33 @@ export function DealCard({
                     <Calendar className="h-[9px] w-[9px]" />
                   )}
                   {format(new Date(deal.due_date), "dd MMM", { locale: ptBR })}
+                </span>
+              )}
+
+              {/* Próximo contato */}
+              {nextTaskDate && (
+                <span
+                  className={cn(
+                    "flex items-center gap-[3px] text-[10px] font-medium px-1.5 py-0.5 rounded border",
+                    "uppercase tracking-wide",
+                    isTaskOverdue
+                      ? "text-[#FF4757] bg-[#FF4757]/8 border-[#FF4757]/20"
+                      : isTaskToday
+                      ? "text-[#FFC107] bg-[#FFC107]/8 border-[#FFC107]/20"
+                      : "text-[#555559] bg-[#1A1A1E] border-[#2A2A2E]"
+                  )}
+                  style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+                >
+                  {isTaskOverdue ? (
+                    <AlarmClock className="h-[9px] w-[9px]" />
+                  ) : (
+                    <Clock className="h-[9px] w-[9px]" />
+                  )}
+                  {isTaskToday
+                    ? "Hoje"
+                    : isTaskOverdue
+                    ? "Atrasado"
+                    : format(nextTaskDate, "dd MMM", { locale: ptBR })}
                 </span>
               )}
 

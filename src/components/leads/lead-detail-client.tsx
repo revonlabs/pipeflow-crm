@@ -7,15 +7,16 @@ import { Button } from "@/components/ui/button";
 import { LeadFormDialog } from "@/components/leads/lead-form-dialog";
 import { ActivityFormDialog } from "@/components/leads/activity-form-dialog";
 import { updateLeadAction, deleteLeadAction } from "@/lib/actions/leads";
-import type { Lead } from "@/types";
+import type { Lead, Tag } from "@/types";
 import type { MemberInfo } from "@/lib/members";
 
 interface LeadDetailClientProps {
   lead: Lead;
   members: MemberInfo[];
+  workspaceTags: Tag[];
 }
 
-export function LeadDetailClient({ lead, members }: LeadDetailClientProps) {
+export function LeadDetailClient({ lead, members, workspaceTags }: LeadDetailClientProps) {
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [, startTransition] = useTransition();
@@ -48,6 +49,7 @@ export function LeadDetailClient({ lead, members }: LeadDetailClientProps) {
         open={editOpen}
         lead={lead}
         members={members}
+        workspaceTags={workspaceTags}
         onOpenChange={setEditOpen}
         onSubmit={handleSubmit}
         onDelete={handleDelete}

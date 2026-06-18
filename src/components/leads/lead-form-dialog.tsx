@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -41,7 +41,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import type { Lead, LeadSource } from "@/types";
+import { TagMultiSelect } from "@/components/leads/tag-multi-select";
+import { setLeadTagsAction } from "@/lib/actions/tags";
+import { formatCpfCnpj } from "@/lib/format-document";
+import type { Lead, LeadSource, Tag } from "@/types";
 import type { MemberInfo } from "@/lib/members";
 
 const LEAD_SOURCES = ["manual", "meta_ads", "google_ads", "organic", "proposal"] as const;
@@ -62,6 +65,7 @@ const leadSchema = z.object({
   role: z.string().optional(),
   status: z.enum(["active", "inactive", "converted", "lost"]),
   source: z.enum(LEAD_SOURCES).optional().nullable(),
+  cnpj: z.string().optional(),
   owner_id: z.string().optional(),
   notes: z.string().optional(),
 });
@@ -72,6 +76,7 @@ interface LeadFormDialogProps {
   open: boolean;
   lead?: Lead | null;
   members: MemberInfo[];
+  workspaceTags: Tag[];
   onOpenChange: (open: boolean) => void;
   onSubmit: (values: LeadFormValues, id?: string) => void;
   onDelete?: (id: string) => void;
@@ -81,11 +86,13 @@ export function LeadFormDialog({
   open,
   lead,
   members,
+  workspaceTags,
   onOpenChange,
   onSubmit,
   onDelete,
 }: LeadFormDialogProps) {
   const isEditing = !!lead;
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
   const form = useForm<LeadFormValues>({
     resolver: zodResolver(leadSchema),
@@ -97,6 +104,7 @@ export function LeadFormDialog({
       role: "",
       status: "active",
       source: null,
+      cnpj: "",
       owner_id: members[0]?.id ?? "",
       notes: "",
     },
@@ -113,9 +121,11 @@ export function LeadFormDialog({
           role: lead.role ?? "",
           status: lead.status,
           source: lead.source ?? null,
+          cnpj: formatCpfCnpj(lead.cnpj),
           owner_id: lead.owner_id ?? members[0]?.id ?? "",
           notes: "",
         });
+        setSelectedTags(lead.tags ?? []);
       } else {
         form.reset({
           name: "",
@@ -125,15 +135,23 @@ export function LeadFormDialog({
           role: "",
           status: "active",
           source: null,
+          cnpj: "",
           owner_id: members[0]?.id ?? "",
           notes: "",
         });
+        setSelectedTags([]);
       }
     }
   }, [open, lead, members, form]);
 
   function handleSubmit(values: LeadFormValues) {
     onSubmit(values, lead?.id);
+
+    const leadId = lead?.id;
+    if (leadId) {
+      setLeadTagsAction(leadId, selectedTags.map((t) => t.id));
+    }
+
     onOpenChange(false);
   }
 
@@ -211,6 +229,24 @@ export function LeadFormDialog({
                     <FormLabel>Cargo</FormLabel>
                     <FormControl>
                       <Input placeholder="Ex: Diretor de TI" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="cnpj"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>CPF/CNPJ</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="000.000.000-00"
+                        {...field}
+                        onChange={(e) => field.onChange(formatCpfCnpj(e.target.value))}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -309,6 +345,15 @@ export function LeadFormDialog({
                   </FormItem>
                 )}
               />
+
+              <div className="sm:col-span-2 space-y-2">
+                <FormLabel>Tags</FormLabel>
+                <TagMultiSelect
+                  workspaceTags={workspaceTags}
+                  selected={selectedTags}
+                  onChange={setSelectedTags}
+                />
+              </div>
             </div>
 
             {isEditing && onDelete && (

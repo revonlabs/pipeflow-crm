@@ -7,10 +7,16 @@ import { Separator } from "@/components/ui/separator";
 import { LeadProfileCard } from "@/components/leads/lead-profile-card";
 import { ActivityTimeline } from "@/components/leads/activity-timeline";
 import { LeadDetailClient, ActivityButton } from "@/components/leads/lead-detail-client";
+import { LeadDealsSection } from "@/components/leads/lead-deals-section";
+import { LeadDealMetricCard } from "@/components/dashboard/lead-deal-metric-card";
+import { formatCurrencyValue } from "@/components/ui/currency-input";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
 import { getWorkspaceMembers } from "@/lib/members";
-import type { Lead } from "@/types";
+import { getWorkspaceTags } from "@/lib/actions/tags";
+import type { Lead, Deal, Tag, DealStage } from "@/types";
+
+const OPEN_STAGES: DealStage[] = ["new_lead", "contacted", "proposal_sent", "negotiation"];
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -23,10 +29,10 @@ export default async function LeadDetailPage({ params }: PageProps) {
   const ctx = await getWorkspaceContext();
   if (!ctx) return null;
 
-  const [{ data: lead }, { data: activitiesRaw }, members] = await Promise.all([
+  const [{ data: lead }, { data: activitiesRaw }, { data: dealsRaw }, members, workspaceTags] = await Promise.all([
     supabase
       .from("leads")
-      .select("*")
+      .select("*, lead_tags(tags(*))")
       .eq("id", id)
       .eq("workspace_id", ctx.workspace.id)
       .single(),
@@ -36,11 +42,24 @@ export default async function LeadDetailPage({ params }: PageProps) {
       .eq("lead_id", id)
       .eq("workspace_id", ctx.workspace.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("deals")
+      .select("*, lead:leads(id, name, company, email)")
+      .eq("lead_id", id)
+      .eq("workspace_id", ctx.workspace.id)
+      .order("created_at", { ascending: false }),
     getWorkspaceMembers(ctx.workspace.id),
+    getWorkspaceTags(ctx.workspace.id),
   ]);
 
   if (!lead) notFound();
-  const typedLead = lead as unknown as Lead;
+  const { lead_tags, ...leadRest } = lead as typeof lead & { lead_tags: { tags: Tag }[] };
+  const typedLead = { ...leadRest, tags: (lead_tags ?? []).map((lt) => lt.tags) } as unknown as Lead;
+  const deals = (dealsRaw ?? []) as unknown as Deal[];
+
+  const openSum = deals.filter((d) => OPEN_STAGES.includes(d.stage)).reduce((s, d) => s + (d.value ?? 0), 0);
+  const wonSum = deals.filter((d) => d.stage === "won").reduce((s, d) => s + (d.value ?? 0), 0);
+  const lostSum = deals.filter((d) => d.stage === "lost").reduce((s, d) => s + (d.value ?? 0), 0);
 
   // Enriquece atividades com dados do autor
   const memberMap = new Map(members.map((m) => [m.id, m]));
@@ -63,7 +82,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
             Leads
           </Link>
         </Button>
-        <LeadDetailClient lead={typedLead} members={members} />
+        <LeadDetailClient lead={typedLead} members={members} workspaceTags={workspaceTags} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[280px_1fr]">
@@ -75,6 +94,27 @@ export default async function LeadDetailPage({ params }: PageProps) {
         </div>
 
         <div className="space-y-6 min-w-0">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <LeadDealMetricCard
+              label="Em aberto"
+              value={`R$ ${formatCurrencyValue(openSum)}`}
+              count={deals.filter((d) => OPEN_STAGES.includes(d.stage)).length}
+              accentColor="#4A90E2"
+            />
+            <LeadDealMetricCard
+              label="Ganho"
+              value={`R$ ${formatCurrencyValue(wonSum)}`}
+              count={deals.filter((d) => d.stage === "won").length}
+              accentColor="#2ED573"
+            />
+            <LeadDealMetricCard
+              label="Perdido"
+              value={`R$ ${formatCurrencyValue(lostSum)}`}
+              count={deals.filter((d) => d.stage === "lost").length}
+              accentColor="#FF4757"
+            />
+          </div>
+
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Informações</CardTitle>
@@ -115,6 +155,15 @@ export default async function LeadDetailPage({ params }: PageProps) {
               <ActivityTimeline activities={activities} />
             </CardContent>
           </Card>
+
+          <LeadDealsSection
+            leadId={typedLead.id}
+            leadName={typedLead.name}
+            leadCompany={typedLead.company}
+            leadEmail={typedLead.email}
+            deals={deals}
+            members={members}
+          />
         </div>
       </div>
     </div>

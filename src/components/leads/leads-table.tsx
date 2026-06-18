@@ -31,18 +31,20 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { LeadStatusBadge } from "@/components/leads/lead-status-badge";
 import { LeadsFilters } from "@/components/leads/leads-filters";
 import { LeadFormDialog } from "@/components/leads/lead-form-dialog";
 import { EmptyState } from "@/components/shared/empty-state";
 import { createLeadAction, updateLeadAction, deleteLeadAction } from "@/lib/actions/leads";
-import type { Lead, LeadStatus, LeadSource } from "@/types";
+import type { Lead, LeadStatus, LeadSource, Tag } from "@/types";
 import type { MemberInfo } from "@/lib/members";
 
 interface LeadsTableProps {
   leads: Lead[];
   members: MemberInfo[];
+  workspaceTags: Tag[];
 }
 
 interface DeleteConfirmState {
@@ -69,7 +71,7 @@ const SOURCE_LABELS: Record<LeadSource, string> = {
   proposal: "Proposta",
 };
 
-export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
+export function LeadsTable({ leads: initialLeads, members, workspaceTags }: LeadsTableProps) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
   useEffect(() => { setLeads(initialLeads); }, [initialLeads]);
   const [search, setSearch] = useState("");
@@ -271,6 +273,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
                     <TableHead className="hidden sm:table-cell">Empresa</TableHead>
                     <TableHead className="hidden md:table-cell">Cargo</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead className="hidden lg:table-cell">Tags</TableHead>
                     <TableHead className="hidden lg:table-cell">Origem</TableHead>
                     <TableHead className="hidden lg:table-cell">Responsável</TableHead>
                     <TableHead className="hidden lg:table-cell">Criado em</TableHead>
@@ -308,6 +311,19 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
                       </TableCell>
                       <TableCell>
                         <LeadStatusBadge status={lead.status} />
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {lead.tags && lead.tags.length > 0 ? (
+                          <div className="flex flex-wrap gap-1">
+                            {lead.tags.map((tag) => (
+                              <Badge key={tag.id} variant="secondary" className="text-xs">
+                                {tag.name}
+                              </Badge>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-sm text-muted-foreground">—</span>
+                        )}
                       </TableCell>
                       <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                         {lead.source ? SOURCE_LABELS[lead.source] : "—"}
@@ -390,6 +406,7 @@ export function LeadsTable({ leads: initialLeads, members }: LeadsTableProps) {
         open={dialogOpen}
         lead={editingLead}
         members={members}
+        workspaceTags={workspaceTags}
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
         onDelete={handleDelete}

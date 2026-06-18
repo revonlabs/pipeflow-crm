@@ -49,6 +49,13 @@ export interface Invite {
   created_at: string;
 }
 
+export interface Tag {
+  id: string;
+  workspace_id: string;
+  name: string;
+  created_at: string;
+}
+
 export interface Lead {
   id: string;
   workspace_id: string;
@@ -59,7 +66,20 @@ export interface Lead {
   role: string | null;
   status: LeadStatus;
   source: LeadSource | null;
+  cnpj: string | null;
   owner_id: string | null;
+  created_at: string;
+  tags?: Tag[];
+}
+
+export interface Task {
+  id: string;
+  workspace_id: string;
+  deal_id: string;
+  title: string;
+  due_at: string;
+  completed_at: string | null;
+  created_by: string | null;
   created_at: string;
 }
 
@@ -69,12 +89,15 @@ export interface Deal {
   lead_id: string;
   title: string;
   value: number | null;
+  recurring_value: number;
+  setup_value: number;
   stage: DealStage;
   owner_id: string | null;
   due_date: string | null;
   position: number;
   created_at: string;
   lead?: Pick<Lead, "id" | "name" | "company" | "email">;
+  next_task?: Pick<Task, "id" | "due_at" | "title"> | null;
 }
 
 export interface Activity {

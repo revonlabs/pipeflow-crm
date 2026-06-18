@@ -1,10 +1,12 @@
-import { Mail, Phone, Building2, Briefcase, Calendar } from "lucide-react";
+import { Mail, Phone, Building2, Briefcase, Calendar, IdCard } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { LeadStatusBadge } from "@/components/leads/lead-status-badge";
+import { formatCpfCnpj } from "@/lib/format-document";
 import type { Lead } from "@/types";
 
 interface LeadProfileCardProps {
@@ -62,6 +64,15 @@ export function LeadProfileCard({ lead, ownerName }: LeadProfileCardProps) {
             )}
           </div>
           <LeadStatusBadge status={lead.status} />
+          {lead.tags && lead.tags.length > 0 && (
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {lead.tags.map((tag) => (
+                <Badge key={tag.id} variant="secondary" className="text-xs">
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          )}
         </div>
       </CardHeader>
 
@@ -77,6 +88,9 @@ export function LeadProfileCard({ lead, ownerName }: LeadProfileCardProps) {
         )}
         {lead.role && (
           <InfoRow icon={Briefcase} label="Cargo" value={lead.role} />
+        )}
+        {lead.cnpj && (
+          <InfoRow icon={IdCard} label="CPF/CNPJ" value={formatCpfCnpj(lead.cnpj)} />
         )}
         <InfoRow
           icon={Calendar}
