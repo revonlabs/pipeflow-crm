@@ -40,7 +40,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { CurrencyInput, parseCurrencyInput, formatCurrencyValue } from "@/components/ui/currency-input";
+import { CurrencyInput } from "@/components/ui/currency-input";
+import { parseCurrencyInput, formatCurrencyValue } from "@/lib/format-currency";
 import { STAGE_CONFIG } from "./kanban-board";
 import type { Deal, DealStage } from "@/types";
 import type { MemberInfo } from "@/lib/members";

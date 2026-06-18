@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DealFormDialog } from "@/components/kanban/deal-form-dialog";
 import { STAGE_CONFIG } from "@/components/kanban/kanban-board";
 import { createDealAction, updateDealAction, deleteDealAction } from "@/lib/actions/deals";
-import { formatCurrencyValue } from "@/components/ui/currency-input";
+import { formatCurrencyValue } from "@/lib/format-currency";
 import type { Deal } from "@/types";
 import type { MemberInfo } from "@/lib/members";
 

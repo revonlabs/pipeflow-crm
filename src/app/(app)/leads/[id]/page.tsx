@@ -9,7 +9,7 @@ import { ActivityTimeline } from "@/components/leads/activity-timeline";
 import { LeadDetailClient, ActivityButton } from "@/components/leads/lead-detail-client";
 import { LeadDealsSection } from "@/components/leads/lead-deals-section";
 import { LeadDealMetricCard } from "@/components/dashboard/lead-deal-metric-card";
-import { formatCurrencyValue } from "@/components/ui/currency-input";
+import { formatCurrencyValue } from "@/lib/format-currency";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
 import { getWorkspaceMembers } from "@/lib/members";
