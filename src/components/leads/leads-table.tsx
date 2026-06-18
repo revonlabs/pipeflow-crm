@@ -138,6 +138,7 @@ export function LeadsTable({ leads: initialLeads, members, workspaceTags }: Lead
         role: values.role ?? null,
         status: values.status,
         source: values.source ?? null,
+        cnpj: null,
         owner_id: values.owner_id ?? null,
       };
       setLeads((prev) => [optimistic, ...prev]);
