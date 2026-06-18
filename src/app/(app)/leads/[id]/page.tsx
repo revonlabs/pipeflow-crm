@@ -14,7 +14,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
 import { getWorkspaceMembers } from "@/lib/members";
 import { getWorkspaceTags } from "@/lib/actions/tags";
-import type { Lead, Deal, Tag, DealStage } from "@/types";
+import type { Lead, Deal, Tag, DealStage, ActivityType } from "@/types";
 
 const OPEN_STAGES: DealStage[] = ["new_lead", "contacted", "proposal_sent", "negotiation"];
 
@@ -67,6 +67,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
     const author = a.author_id ? memberMap.get(a.author_id) : undefined;
     return {
       ...a,
+      type: a.type as ActivityType,
       author: author
         ? { id: author.id, email: author.email, user_metadata: { full_name: author.name } }
         : undefined,
