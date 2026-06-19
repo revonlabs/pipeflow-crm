@@ -27,13 +27,13 @@ Checklist de acompanhamento da transição de identidade visual. Plano completo 
 - [x] **Escopo adicional descoberto durante a execução**: havia uma segunda paleta legada não documentada no plano original ("lime/charcoal" — `#CAFF33`, `#0A0A0A`/`#0C0C0E`/`#141416`, cinzas `#E8E8E8`/`#8A8A8F`/`#555559`, stage colors `#5B7FFF`/`#00B4D8`/`#2ED573`/`#FF6B35`/`#FF4757`) espalhada por 27 arquivos. Migrada para os tokens `crm-*` (Fox Fire) junto com o escopo original.
 - [x] **Checkpoint**: `grep -rn -E "#1B2559|#4F8EF7|#22C55E|#EF4444|#F8FAFC|#CAFF33|#0A0A0A|#0C0C0E|#141416|#E8E8E8|#8A8A8F|#555559|#5B7FFF|#00B4D8|#2ED573|#FF6B35|#FF4757" src/` retorna zero resultados; `npm run build` passa sem erros de tipo (18 rotas)
 
-## M3 — Strings de marca e metadata 🔴
+## M3 — Strings de marca e metadata 🟢
 
-- [ ] Metadata titles (auth pages, marketing layout, onboarding)
-- [ ] Wordmark visual (auth layout, landing navbar, sidebar — com contraste de peso 900/300)
-- [ ] Mensagens de boas-vindas (login-form, billing page)
-- [ ] Email de convite (`workspace-invite.tsx`, `lib/actions/workspaces.ts`)
-- [ ] **Checkpoint**: grep por "PipeFlow" em `src/` retorna zero resultados
+- [x] Metadata titles (auth pages, marketing layout, onboarding)
+- [x] Wordmark visual (auth layout, landing navbar, sidebar — com contraste de peso 900/300: "Revon" black + "Studio CRM" light uppercase)
+- [x] Mensagens de boas-vindas (login-form, billing page)
+- [x] Email de convite (`lib/actions/workspaces.ts` — `from`/`subject`; template `workspace-invite.tsx` já trocado no M2)
+- [x] **Checkpoint**: `grep -rn "PipeFlow" src/` retorna zero resultados; `npm run build` passa sem erros de tipo (18 rotas)
 
 ## M4 — Assets (logo, favicon, package.json) 🔴
 

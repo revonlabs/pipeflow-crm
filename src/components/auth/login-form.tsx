@@ -56,7 +56,7 @@ export function LoginForm() {
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-white">Entrar</h1>
         <p className="mt-1 text-sm text-white/50">
-          Bem-vindo de volta ao PipeFlow
+          Bem-vindo de volta ao Revon Studio CRM
         </p>
       </div>
 

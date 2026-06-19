@@ -32,7 +32,10 @@ export function LandingNavbar() {
                 />
               </svg>
             </div>
-            <span className="font-display text-sm font-bold text-white">PipeFlow</span>
+            <span className="font-display text-sm tracking-tight text-white">
+              <span className="font-black">Revon</span>{" "}
+              <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em] text-[11px]">Studio CRM</span>
+            </span>
           </Link>
 
           {/* Desktop nav */}

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const metadata: Metadata = { title: "Recuperar senha — PipeFlow" };
+export const metadata: Metadata = { title: "Recuperar senha — Revon Studio CRM" };
 
 export default function ForgotPasswordPage() {
   return (

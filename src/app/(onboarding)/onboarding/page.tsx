@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { WorkspaceForm } from "@/components/auth/workspace-form";
 
-export const metadata: Metadata = { title: "Configurar workspace — PipeFlow" };
+export const metadata: Metadata = { title: "Configurar workspace — Revon Studio CRM" };
 
 export default function OnboardingPage() {
   return (
@@ -29,8 +29,9 @@ export default function OnboardingPage() {
               <path d="M10 2L3 7v11h5v-5h4v5h5V7L10 2z" fill="currentColor" />
             </svg>
           </div>
-          <span className="text-xl font-semibold tracking-tight text-white">
-            PipeFlow
+          <span className="text-xl tracking-tight text-white">
+            <span className="font-black">Revon</span>{" "}
+            <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em]">Studio CRM</span>
           </span>
         </div>
 
