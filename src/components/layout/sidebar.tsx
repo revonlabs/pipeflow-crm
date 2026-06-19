@@ -33,7 +33,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
         className="flex items-center px-4 py-5 border-b"
         style={{ borderColor: "#1E1E22" }}
       >
-        <Logo iconSize={28} />
+        <Logo height={28} />
       </div>
 
       {/* Workspace switcher */}
