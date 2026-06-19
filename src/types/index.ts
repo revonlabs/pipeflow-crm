@@ -56,6 +56,13 @@ export interface Tag {
   created_at: string;
 }
 
+export interface LostReason {
+  id: string;
+  workspace_id: string;
+  name: string;
+  created_at: string;
+}
+
 export interface Lead {
   id: string;
   workspace_id: string;
@@ -96,14 +103,17 @@ export interface Deal {
   due_date: string | null;
   position: number;
   created_at: string;
+  lost_reason_id: string | null;
   lead?: Pick<Lead, "id" | "name" | "company" | "email">;
   next_task?: Pick<Task, "id" | "due_at" | "title"> | null;
+  lost_reason?: Pick<LostReason, "id" | "name"> | null;
 }
 
 export interface Activity {
   id: string;
   workspace_id: string;
   lead_id: string;
+  deal_id: string | null;
   type: ActivityType;
   description: string;
   author_id: string | null;

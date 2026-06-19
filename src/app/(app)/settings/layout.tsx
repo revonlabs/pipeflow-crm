@@ -5,6 +5,7 @@ import { getWorkspaceContext } from '@/lib/workspace'
 const TABS = [
   { href: '/settings/workspace', label: 'Workspace' },
   { href: '/settings/members', label: 'Membros' },
+  { href: '/settings/lost-reasons', label: 'Motivos de Perda' },
   { href: '/settings/billing', label: 'Assinatura' },
 ]
 

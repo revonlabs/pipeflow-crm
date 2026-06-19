@@ -7,21 +7,33 @@ import { getWorkspaceContext } from "@/lib/workspace";
 
 const DEAL_STAGES = ["new_lead", "contacted", "proposal_sent", "negotiation", "won", "lost"] as const;
 
-const dealSchema = z.object({
-  title: z.string().min(1, "Título é obrigatório").max(255),
-  lead_id: z.string().uuid("lead_id inválido"),
-  recurring_value: z.number().min(0).nullable().optional(),
-  setup_value: z.number().min(0).nullable().optional(),
-  stage: z.enum(DEAL_STAGES),
-  owner_id: z.string().uuid().nullable().optional(),
-  due_date: z.string().nullable().optional(),
-});
+const dealSchema = z
+  .object({
+    title: z.string().min(1, "Título é obrigatório").max(255),
+    lead_id: z.string().uuid("lead_id inválido"),
+    recurring_value: z.number().min(0).nullable().optional(),
+    setup_value: z.number().min(0).nullable().optional(),
+    stage: z.enum(DEAL_STAGES),
+    owner_id: z.string().uuid().nullable().optional(),
+    due_date: z.string().nullable().optional(),
+    lost_reason_id: z.string().uuid().nullable().optional(),
+  })
+  .refine((data) => data.stage !== "lost" || !!data.lost_reason_id, {
+    message: "Selecione um motivo de perda",
+    path: ["lost_reason_id"],
+  });
 
-const moveSchema = z.object({
-  id: z.string().uuid(),
-  stage: z.enum(DEAL_STAGES),
-  position: z.number().int().min(0),
-});
+const moveSchema = z
+  .object({
+    id: z.string().uuid(),
+    stage: z.enum(DEAL_STAGES),
+    position: z.number().int().min(0),
+    lost_reason_id: z.string().uuid().nullable().optional(),
+  })
+  .refine((data) => data.stage !== "lost" || !!data.lost_reason_id, {
+    message: "Selecione um motivo de perda",
+    path: ["lost_reason_id"],
+  });
 
 async function verifyLeadOwnership(supabase: Awaited<ReturnType<typeof getSupabaseServerClient>>, leadId: string, workspaceId: string) {
   const { data } = await supabase
@@ -64,6 +76,7 @@ export async function createDealAction(payload: unknown) {
     stage: parsed.data.stage,
     owner_id: parsed.data.owner_id ?? null,
     due_date: parsed.data.due_date ?? null,
+    lost_reason_id: parsed.data.stage === "lost" ? parsed.data.lost_reason_id ?? null : null,
     position: count ?? 0,
   });
 
@@ -102,6 +115,7 @@ export async function updateDealAction(id: string, payload: unknown) {
       stage: parsed.data.stage,
       owner_id: parsed.data.owner_id ?? null,
       due_date: parsed.data.due_date ?? null,
+      lost_reason_id: parsed.data.stage === "lost" ? parsed.data.lost_reason_id ?? null : null,
     })
     .eq("id", id)
     .eq("workspace_id", ctx.workspace.id);
@@ -116,9 +130,10 @@ export async function updateDealAction(id: string, payload: unknown) {
 export async function moveDealAction(
   id: string,
   stage: string,
-  position: number
+  position: number,
+  lostReasonId?: string | null
 ) {
-  const parsed = moveSchema.safeParse({ id, stage, position });
+  const parsed = moveSchema.safeParse({ id, stage, position, lost_reason_id: lostReasonId });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
   const supabase = await getSupabaseServerClient();
@@ -127,7 +142,11 @@ export async function moveDealAction(
 
   const { error } = await supabase
     .from("deals")
-    .update({ stage: parsed.data.stage, position: parsed.data.position })
+    .update({
+      stage: parsed.data.stage,
+      position: parsed.data.position,
+      lost_reason_id: parsed.data.stage === "lost" ? parsed.data.lost_reason_id ?? null : null,
+    })
     .eq("id", parsed.data.id)
     .eq("workspace_id", ctx.workspace.id);
 
