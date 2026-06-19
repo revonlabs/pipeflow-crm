@@ -30,10 +30,10 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
     >
       {/* Logo */}
       <div
-        className="flex items-center px-4 py-5 border-b"
+        className="flex items-center px-3 py-4 border-b"
         style={{ borderColor: "#1E1E22" }}
       >
-        <Logo height={28} />
+        <Logo height={40} />
       </div>
 
       {/* Workspace switcher */}
