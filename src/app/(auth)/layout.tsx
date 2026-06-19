@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function AuthLayout({
   children,
 }: {
@@ -17,24 +19,15 @@ export default function AuthLayout({
 
       <div className="relative z-10 w-full max-w-md px-4 py-12">
         {/* Logo */}
-        <div className="mb-8 flex flex-col items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-crm-accent">
-            <svg
-              viewBox="0 0 20 20"
-              fill="none"
-              className="h-6 w-6 text-white"
-              aria-hidden
-            >
-              <path
-                d="M10 2L3 7v11h5v-5h4v5h5V7L10 2z"
-                fill="currentColor"
-              />
-            </svg>
-          </div>
-          <span className="text-xl tracking-tight text-white">
-            <span className="font-black">Revon</span>{" "}
-            <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em]">Studio CRM</span>
-          </span>
+        <div className="mb-8 flex justify-center">
+          <Image
+            src="/Logo CRM.png"
+            alt="Revon Studio CRM"
+            width={180}
+            height={46}
+            className="h-11 w-auto"
+            priority
+          />
         </div>
 
         {children}

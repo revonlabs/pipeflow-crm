@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
@@ -18,24 +19,15 @@ export function LandingNavbar() {
       <div className="mx-auto max-w-6xl px-4 pt-4">
         <nav className="flex items-center justify-between rounded-xl border border-[#2A2A2E] bg-[#060B14]/80 px-5 py-3 backdrop-blur-md">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FF7043]">
-              <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" aria-hidden>
-                <circle cx="5" cy="10" r="2.5" fill="#060B14" />
-                <circle cx="10" cy="6" r="2.5" fill="#060B14" />
-                <circle cx="15" cy="10" r="2.5" fill="#060B14" />
-                <path
-                  d="M7.5 10h5M10 8.5v-2.5"
-                  stroke="#060B14"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </div>
-            <span className="font-display text-sm tracking-tight text-white">
-              <span className="font-black">Revon</span>{" "}
-              <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em] text-[11px]">Studio CRM</span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/Logo CRM.png"
+              alt="Revon Studio CRM"
+              width={120}
+              height={30}
+              className="h-7 w-auto"
+              priority
+            />
           </Link>
 
           {/* Desktop nav */}
