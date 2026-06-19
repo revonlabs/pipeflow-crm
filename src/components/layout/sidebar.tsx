@@ -1,8 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Kanban, Settings, Zap } from "lucide-react";
+import { LayoutDashboard, Users, Kanban, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { WorkspaceSwitcher } from "./workspace-switcher";
 import type { Workspace } from "@/types";
@@ -29,22 +30,17 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
     >
       {/* Logo */}
       <div
-        className="flex items-center gap-2.5 px-4 py-5 border-b"
+        className="flex items-center px-4 py-5 border-b"
         style={{ borderColor: "#1E1E22" }}
       >
-        <div
-          className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
-          style={{ backgroundColor: "#FF7043" }}
-        >
-          <Zap className="h-4 w-4" style={{ color: "#060B14" }} />
-        </div>
-        <span
-          className="text-[17px] tracking-tight"
-          style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
-        >
-          <span className="font-black text-[#F0F8FF]">Revon</span>{" "}
-          <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em] text-[13px]">Studio CRM</span>
-        </span>
+        <Image
+          src="/Logo CRM.png"
+          alt="Revon Studio CRM"
+          width={140}
+          height={36}
+          className="h-9 w-auto"
+          priority
+        />
       </div>
 
       {/* Workspace switcher */}

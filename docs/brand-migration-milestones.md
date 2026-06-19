@@ -35,12 +35,13 @@ Checklist de acompanhamento da transição de identidade visual. Plano completo 
 - [x] Email de convite (`lib/actions/workspaces.ts` — `from`/`subject`; template `workspace-invite.tsx` já trocado no M2)
 - [x] **Checkpoint**: `grep -rn "PipeFlow" src/` retorna zero resultados; `npm run build` passa sem erros de tipo (18 rotas)
 
-## M4 — Assets (logo, favicon, package.json) 🔴
+## M4 — Assets (logo, favicon, package.json) 🟢
 
-- [ ] Mover `Logo CRM.png` para `public/`
-- [ ] Aplicar logo na sidebar, auth layout, landing navbar
-- [ ] Gerar favicon derivado do logo, substituir `src/app/favicon.ico`
-- [ ] `package.json`: `"pipeflow-crm"` → `"revon-studio-crm"`
+- [x] Mover `Logo CRM.png` para `public/` (removida cópia duplicada da raiz)
+- [x] Aplicar logo na sidebar, auth layout, landing navbar — substituindo o wordmark textual pela imagem (`next/image`)
+- [x] Gerar favicon derivado do logo, substituir `src/app/favicon.ico` (copiado de `public/Logo CRM.ico`)
+- [x] `package.json`: `"pipeflow-crm"` → `"revon-studio-crm"`
+- [x] **Checkpoint**: `npm run build` passa sem erros de tipo (18 rotas)
 
 ## M5 — QA visual e regressão final 🔴
 
