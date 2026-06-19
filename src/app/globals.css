@@ -9,7 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-  --font-heading: var(--font-display);
+  --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -47,94 +47,94 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
-  /* PipeFlow Brand v2 */
-  --color-pf-bg:           #0C0C0E;
-  --color-pf-surface:      #141416;
-  --color-pf-surface-2:    #1A1A1E;
-  --color-pf-border:       #2A2A2E;
-  --color-pf-border-s:     #1E1E22;
-  --color-pf-text:         #E8E8E8;
-  --color-pf-text-sec:     #8A8A8F;
-  --color-pf-text-muted:   #555559;
-  --color-pf-accent:       #CAFF33;
-  --color-pf-positive:     #2ED573;
-  --color-pf-negative:     #FF4757;
-  --color-pf-warm:         #FF6B35;
-  --color-pf-cool:         #5B7FFF;
+  /* Revon Studio CRM Brand v1 */
+  --color-crm-bg:           #060B14;
+  --color-crm-surface:      #0D1B2E;
+  --color-crm-surface-2:    #112240;
+  --color-crm-border:       #2A2A2E;
+  --color-crm-border-s:     #1E1E22;
+  --color-crm-text:         #F0F8FF;
+  --color-crm-text-sec:     #8BACD4;
+  --color-crm-text-muted:   #4A6785;
+  --color-crm-accent:       #FF7043;
+  --color-crm-positive:     #3BFFA0;
+  --color-crm-negative:     #FF4444;
+  --color-crm-warm:         #FFAB40;
+  --color-crm-cool:         #4A90E2;
 }
 
 /* ─── Light mode (páginas públicas: login, landing) ─── */
 :root {
-  --background: #0C0C0E;
-  --foreground: #E8E8E8;
-  --card: #141416;
-  --card-foreground: #E8E8E8;
-  --popover: #141416;
-  --popover-foreground: #E8E8E8;
-  --primary: #CAFF33;
-  --primary-foreground: #0C0C0E;
-  --secondary: #1A1A1E;
-  --secondary-foreground: #E8E8E8;
-  --muted: #1A1A1E;
-  --muted-foreground: #8A8A8F;
-  --accent: #1A1A1E;
-  --accent-foreground: #E8E8E8;
-  --destructive: #FF4757;
+  --background: #060B14;
+  --foreground: #F0F8FF;
+  --card: #0D1B2E;
+  --card-foreground: #F0F8FF;
+  --popover: #0D1B2E;
+  --popover-foreground: #F0F8FF;
+  --primary: #FF7043;
+  --primary-foreground: #F0F8FF;
+  --secondary: #112240;
+  --secondary-foreground: #F0F8FF;
+  --muted: #112240;
+  --muted-foreground: #8BACD4;
+  --accent: #112240;
+  --accent-foreground: #F0F8FF;
+  --destructive: #FF4444;
   --border: #2A2A2E;
-  --input: #1A1A1E;
-  --ring: #CAFF33;
-  --chart-1: #5B7FFF;
-  --chart-2: #00B4D8;
-  --chart-3: #CAFF33;
-  --chart-4: #FF6B35;
-  --chart-5: #2ED573;
+  --input: #112240;
+  --ring: #FF7043;
+  --chart-1: #4A90E2;
+  --chart-2: #CE59B2;
+  --chart-3: #FF7043;
+  --chart-4: #FFAB40;
+  --chart-5: #3BFFA0;
   --radius: 0.5rem;
 
-  /* Sidebar — surface escura, não navy */
-  --sidebar: #141416;
-  --sidebar-foreground: #E8E8E8;
-  --sidebar-primary: #CAFF33;
-  --sidebar-primary-foreground: #0C0C0E;
-  --sidebar-accent: rgba(202, 255, 51, 0.08);
-  --sidebar-accent-foreground: #CAFF33;
+  /* Sidebar — Night Deep */
+  --sidebar: #060B14;
+  --sidebar-foreground: #F0F8FF;
+  --sidebar-primary: #FF7043;
+  --sidebar-primary-foreground: #F0F8FF;
+  --sidebar-accent: rgba(255, 112, 67, 0.10);
+  --sidebar-accent-foreground: #FF7043;
   --sidebar-border: #1E1E22;
-  --sidebar-ring: #CAFF33;
+  --sidebar-ring: #FF7043;
 }
 
 /* ─── Dark mode (mesmo esquema, área autenticada) ─── */
 .dark {
-  --background: #0C0C0E;
-  --foreground: #E8E8E8;
-  --card: #141416;
-  --card-foreground: #E8E8E8;
-  --popover: #141416;
-  --popover-foreground: #E8E8E8;
-  --primary: #CAFF33;
-  --primary-foreground: #0C0C0E;
-  --secondary: #1A1A1E;
-  --secondary-foreground: #E8E8E8;
-  --muted: #1A1A1E;
-  --muted-foreground: #8A8A8F;
-  --accent: #1A1A1E;
-  --accent-foreground: #E8E8E8;
-  --destructive: #FF4757;
+  --background: #060B14;
+  --foreground: #F0F8FF;
+  --card: #0D1B2E;
+  --card-foreground: #F0F8FF;
+  --popover: #0D1B2E;
+  --popover-foreground: #F0F8FF;
+  --primary: #FF7043;
+  --primary-foreground: #F0F8FF;
+  --secondary: #112240;
+  --secondary-foreground: #F0F8FF;
+  --muted: #112240;
+  --muted-foreground: #8BACD4;
+  --accent: #112240;
+  --accent-foreground: #F0F8FF;
+  --destructive: #FF4444;
   --border: #2A2A2E;
-  --input: #1A1A1E;
-  --ring: #CAFF33;
-  --chart-1: #5B7FFF;
-  --chart-2: #00B4D8;
-  --chart-3: #CAFF33;
-  --chart-4: #FF6B35;
-  --chart-5: #2ED573;
+  --input: #112240;
+  --ring: #FF7043;
+  --chart-1: #4A90E2;
+  --chart-2: #CE59B2;
+  --chart-3: #FF7043;
+  --chart-4: #FFAB40;
+  --chart-5: #3BFFA0;
 
-  --sidebar: #141416;
-  --sidebar-foreground: #E8E8E8;
-  --sidebar-primary: #CAFF33;
-  --sidebar-primary-foreground: #0C0C0E;
-  --sidebar-accent: rgba(202, 255, 51, 0.08);
-  --sidebar-accent-foreground: #CAFF33;
+  --sidebar: #060B14;
+  --sidebar-foreground: #F0F8FF;
+  --sidebar-primary: #FF7043;
+  --sidebar-primary-foreground: #F0F8FF;
+  --sidebar-accent: rgba(255, 112, 67, 0.10);
+  --sidebar-accent-foreground: #FF7043;
   --sidebar-border: #1E1E22;
-  --sidebar-ring: #CAFF33;
+  --sidebar-ring: #FF7043;
 }
 
 @layer base {
@@ -143,20 +143,20 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-sans), 'DM Sans', sans-serif;
+    font-family: var(--font-sans), 'Inter', sans-serif;
   }
   html {
-    font-family: var(--font-sans), 'DM Sans', sans-serif;
+    font-family: var(--font-sans), 'Inter', sans-serif;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display), 'Syne', sans-serif;
+    font-family: var(--font-sans), 'Inter', sans-serif;
   }
 }
 
 /* ─── Tipografia utilitária ─── */
-.font-display { font-family: var(--font-display), 'Syne', sans-serif; }
-.font-body    { font-family: var(--font-sans),    'DM Sans', sans-serif; }
-.font-data    { font-family: var(--font-mono),    'IBM Plex Mono', monospace; }
+.font-display { font-family: var(--font-sans), 'Inter', sans-serif; }
+.font-body    { font-family: var(--font-sans), 'Inter', sans-serif; }
+.font-data    { font-family: var(--font-mono), 'JetBrains Mono', monospace; }
 
 /* ─── Kanban animations ─── */
 @keyframes column-enter {
@@ -201,7 +201,7 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: var(--deal-card-color, #CAFF33);
+  background: var(--deal-card-color, #FF7043);
   width: 0;
   transition: width 0.35s ease;
   border-radius: 8px 8px 0 0;
@@ -210,9 +210,9 @@
   width: 100%;
 }
 .deal-card-inner:hover {
-  border-color: color-mix(in srgb, var(--deal-card-color, #CAFF33) 25%, #2A2A2E) !important;
+  border-color: color-mix(in srgb, var(--deal-card-color, #FF7043) 25%, #2A2A2E) !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px -4px color-mix(in srgb, var(--deal-card-color, #CAFF33) 18%, transparent);
+  box-shadow: 0 8px 24px -4px color-mix(in srgb, var(--deal-card-color, #FF7043) 18%, transparent);
 }
 
 /* ─── Scrollbars ─── */

@@ -86,7 +86,7 @@ interface DealFormDialogProps {
   onScheduleTask?: (dealId: string, dueAt: string) => void;
 }
 
-const monoStyle = { fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" } as const;
+const monoStyle = { fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" } as const;
 const labelClass = "text-[10px] font-medium uppercase tracking-[0.14em] text-[#555559]";
 
 export function DealFormDialog({
@@ -285,7 +285,7 @@ export function DealFormDialog({
                 <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: stageColor }} />
                 <SheetTitle
                   className="text-[15px] font-bold text-[#E8E8E8]"
-                  style={{ fontFamily: "var(--font-display, 'Syne', sans-serif)" }}
+                  style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
                 >
                   {isEditing ? "Editar negócio" : "Novo negócio"}
                 </SheetTitle>

@@ -84,7 +84,7 @@ export function PendingTasks({ tasks, stageLabels, stageColors }: PendingTasksPr
                     style={{ color: isOverdue ? "#FF4757" : "#FFC107" }}
                   >
                     {isOverdue ? <AlarmClock className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
-                    <span className="font-mono text-xs" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+                    <span className="font-mono text-xs" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                       {formatDueAt(task.due_at)}
                     </span>
                   </div>

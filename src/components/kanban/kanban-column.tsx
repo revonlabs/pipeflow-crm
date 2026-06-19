@@ -61,7 +61,7 @@ export function KanbanColumn({
         {/* Nome do stage — IBM Plex Mono uppercase */}
         <span
           className="text-[11px] font-medium uppercase tracking-[0.12em] flex-1 truncate text-[#8A8A8F]"
-          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+          style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {stageLabel}
         </span>
@@ -70,7 +70,7 @@ export function KanbanColumn({
         <span
           className="text-[11px] font-semibold px-1.5 py-0.5 rounded border shrink-0"
           style={{
-            fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)",
+            fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
             color: stageColor,
             backgroundColor: `${stageColor}10`,
             borderColor: `${stageColor}25`,
@@ -98,14 +98,14 @@ export function KanbanColumn({
       >
         <span
           className="text-[13px] font-bold text-[#E8E8E8]"
-          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+          style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {totalValue > 0 ? formatBRL(totalValue) : "—"}
         </span>
         {totalValue > 0 && (
           <span
             className="text-[10px] uppercase tracking-wider text-[#555559]"
-            style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+            style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
           >
             {deals.length} deal{deals.length !== 1 ? "s" : ""}
           </span>
@@ -147,7 +147,7 @@ export function KanbanColumn({
             />
             <p
               className="text-[10px] uppercase tracking-wider text-center text-[#555559]"
-              style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+              style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
             >
               Arraste aqui
             </p>

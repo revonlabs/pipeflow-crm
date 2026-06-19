@@ -46,11 +46,11 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Toolti
       </p>
       <p style={{ color: "#8A8A8F" }}>
         Negócios:{" "}
-        <span style={{ color: "#E8E8E8", fontFamily: "'IBM Plex Mono', monospace" }}>{d.count}</span>
+        <span style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}>{d.count}</span>
       </p>
       <p style={{ color: "#8A8A8F" }}>
         Valor:{" "}
-        <span style={{ color: "#E8E8E8", fontFamily: "'IBM Plex Mono', monospace" }}>
+        <span style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}>
           {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(d.value)}
         </span>
       </p>
@@ -72,7 +72,7 @@ export function FunnelChart({ data }: FunnelChartProps) {
             <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2E" vertical={false} />
             <XAxis dataKey="label" tick={{ fill: "#8A8A8F", fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis
-              tick={{ fill: "#555559", fontSize: 10, fontFamily: "'IBM Plex Mono', monospace" }}
+              tick={{ fill: "#555559", fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
               axisLine={false}
               tickLine={false}
               tickFormatter={formatCurrency}
@@ -92,7 +92,7 @@ export function FunnelChart({ data }: FunnelChartProps) {
             <div key={entry.stage} className="flex items-center gap-1.5">
               <div className="h-2 w-2 rounded-full" style={{ background: entry.color }} />
               <span className="text-xs" style={{ color: "#8A8A8F" }}>{entry.label}</span>
-              <span className="text-xs font-semibold" style={{ color: entry.color, fontFamily: "'IBM Plex Mono', monospace" }}>
+              <span className="text-xs font-semibold" style={{ color: entry.color, fontFamily: "'JetBrains Mono', monospace" }}>
                 {entry.count}
               </span>
             </div>

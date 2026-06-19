@@ -45,7 +45,7 @@ export function MetricCard({
               className="mt-2 text-2xl font-bold leading-none tracking-tight"
               style={{
                 color: "#E8E8E8",
-                fontFamily: "'IBM Plex Mono', monospace",
+                fontFamily: "'JetBrains Mono', monospace",
               }}
             >
               {value}
@@ -65,7 +65,7 @@ export function MetricCard({
             className="text-xs font-semibold"
             style={{
               color: trendColor,
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'JetBrains Mono', monospace",
             }}
           >
             {isPositive ? "+" : ""}

@@ -16,15 +16,15 @@ import { KanbanColumn } from "./kanban-column";
 import { DealCard } from "./deal-card";
 import type { Deal, DealStage } from "@/types";
 
-// Cores do brand guide v2
+// Cores do Revon Studio CRM Brand Guidelines v1
 export const STAGE_CONFIG: Record<DealStage, { label: string; color: string }> =
   {
-    new_lead:      { label: "Novo Lead",        color: "#5B7FFF" },
-    contacted:     { label: "Contatado",         color: "#00B4D8" },
-    proposal_sent: { label: "Proposta Enviada", color: "#CAFF33" },
-    negotiation:   { label: "Negociação",        color: "#FF6B35" },
-    won:           { label: "Ganho",             color: "#2ED573" },
-    lost:          { label: "Perdido",           color: "#FF4757" },
+    new_lead:      { label: "Novo Lead",        color: "#4A90E2" },
+    contacted:     { label: "Contatado",         color: "#FFAB40" },
+    proposal_sent: { label: "Proposta Enviada", color: "#FF7043" },
+    negotiation:   { label: "Negociação",        color: "#CE59B2" },
+    won:           { label: "Ganho",             color: "#3BFFA0" },
+    lost:          { label: "Perdido",           color: "#4A6785" },
   };
 
 export const DEAL_STAGES: DealStage[] = [

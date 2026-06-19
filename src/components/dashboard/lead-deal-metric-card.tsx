@@ -28,7 +28,7 @@ export function LeadDealMetricCard({
         </p>
         <p
           className="mt-2 text-xl font-bold leading-none tracking-tight"
-          style={{ color: "#E8E8E8", fontFamily: "'IBM Plex Mono', monospace" }}
+          style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}
         >
           {value}
         </p>

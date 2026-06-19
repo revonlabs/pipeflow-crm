@@ -84,7 +84,7 @@ export function UpcomingDeals({ deals, stageLabels, stageColors }: UpcomingDeals
 
                   <span
                     className="hidden shrink-0 font-mono text-xs font-semibold md:block"
-                    style={{ color: "#E8E8E8", fontFamily: "'IBM Plex Mono', monospace" }}
+                    style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}
                   >
                     {deal.value != null
                       ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(deal.value)
@@ -96,7 +96,7 @@ export function UpcomingDeals({ deals, stageLabels, stageColors }: UpcomingDeals
                     style={{ color: isOverdue ? "#FF4757" : isUrgent ? "#FF6B35" : "#555559" }}
                   >
                     {isOverdue ? <CalendarX className="h-3.5 w-3.5" /> : <CalendarClock className="h-3.5 w-3.5" />}
-                    <span className="font-mono text-xs" style={{ fontFamily: "'IBM Plex Mono', monospace" }}>
+                    <span className="font-mono text-xs" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
                       {isOverdue
                         ? `${Math.abs(deal.daysUntilDue)}d atraso`
                         : deal.daysUntilDue === 0
@@ -107,7 +107,7 @@ export function UpcomingDeals({ deals, stageLabels, stageColors }: UpcomingDeals
 
                   <div
                     className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-                    style={{ background: `${ac}22`, color: ac, fontFamily: "'IBM Plex Mono', monospace" }}
+                    style={{ background: `${ac}22`, color: ac, fontFamily: "'JetBrains Mono', monospace" }}
                   >
                     {ownerInitials(deal.owner_id)}
                   </div>

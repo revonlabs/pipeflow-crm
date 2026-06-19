@@ -40,7 +40,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
         </div>
         <span
           className="font-bold text-[17px] text-[#E8E8E8] tracking-tight"
-          style={{ fontFamily: "var(--font-display, 'Syne', sans-serif)" }}
+          style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
         >
           PipeFlow
         </span>
@@ -68,7 +68,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
               )}
               style={{
                 backgroundColor: isActive ? "rgba(202,255,51,0.08)" : "transparent",
-                fontFamily: "var(--font-sans, 'DM Sans', sans-serif)",
+                fontFamily: "var(--font-sans, 'Inter', sans-serif)",
               }}
             >
               <Icon
@@ -91,7 +91,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
       <div className="px-4 py-4 border-t" style={{ borderColor: "#1E1E22" }}>
         <p
           className="text-[10px] uppercase tracking-[0.14em] text-[#333337]"
-          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+          style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           PipeFlow CRM · v0.1
         </p>

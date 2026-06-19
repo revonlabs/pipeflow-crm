@@ -37,7 +37,7 @@ export function DealActivitySection({ dealId, leadId, workspaceId }: DealActivit
       <div className="flex items-center justify-between">
         <h3
           className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#8A8A8F]"
-          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+          style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           Atividades
           {activities.length > 0 && (

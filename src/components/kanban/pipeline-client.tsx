@@ -60,18 +60,18 @@ function StatCard({ icon: Icon, label, value, sub, color, delay }: StatCardProps
       <div className="min-w-0">
         <p
           className="text-[10px] uppercase tracking-[0.12em] leading-none mb-1 truncate text-[#555559]"
-          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+          style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {label}
         </p>
         <p
           className="text-[13px] font-bold leading-none text-[#E8E8E8]"
-          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+          style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {value}
         </p>
         {sub && (
-          <p className="text-[10px] text-[#555559] mt-0.5" style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}>
+          <p className="text-[10px] text-[#555559] mt-0.5" style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}>
             {sub}
           </p>
         )}
@@ -196,13 +196,13 @@ export function PipelineClient({ initialDeals, leads, members, lostReasons, work
         <div>
           <h1
             className="text-xl font-bold text-[#E8E8E8]"
-            style={{ fontFamily: "var(--font-display, 'Syne', sans-serif)" }}
+            style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
           >
             Pipeline
           </h1>
           <p
             className="text-[12px] text-[#555559] mt-0.5"
-            style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+            style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
           >
             Acompanhe seus negócios em cada etapa do funil
           </p>
@@ -258,7 +258,7 @@ export function PipelineClient({ initialDeals, leads, members, lostReasons, work
         </div>
         <p
           className="text-[10px] text-[#555559]"
-          style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+          style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           deslize para ver todas as etapas
         </p>

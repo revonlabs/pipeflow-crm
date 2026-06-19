@@ -94,7 +94,7 @@ export function DealCard({
           {/* Título — Syne (herda h* style do CSS base) */}
           <p
             className="text-[13px] font-semibold leading-snug line-clamp-2 text-[#E8E8E8] mb-1.5"
-            style={{ fontFamily: "var(--font-display, 'Syne', sans-serif)" }}
+            style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
           >
             {deal.title}
           </p>
@@ -118,7 +118,7 @@ export function DealCard({
                   <span
                     className="text-[12px] font-semibold tracking-tight"
                     style={{
-                      fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)",
+                      fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)",
                       color: stageColor,
                     }}
                   >
@@ -128,7 +128,7 @@ export function DealCard({
                 {deal.setup_value > 0 && (
                   <span
                     className="text-[10px] text-[#8A8A8F]"
-                    style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+                    style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
                   >
                     + {formatBRL(deal.setup_value)} setup
                   </span>
@@ -137,7 +137,7 @@ export function DealCard({
             ) : (
               <span
                 className="text-[11px] text-[#555559] italic"
-                style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+                style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
               >
                 sem valor
               </span>
@@ -154,7 +154,7 @@ export function DealCard({
                       ? "text-[#FF4757] bg-[#FF4757]/8 border-[#FF4757]/20"
                       : "text-[#555559] bg-[#1A1A1E] border-[#2A2A2E]"
                   )}
-                  style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+                  style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
                 >
                   {isOverdue ? (
                     <CalendarX className="h-[9px] w-[9px]" />
@@ -177,7 +177,7 @@ export function DealCard({
                       ? "text-[#FFC107] bg-[#FFC107]/8 border-[#FFC107]/20"
                       : "text-[#555559] bg-[#1A1A1E] border-[#2A2A2E]"
                   )}
-                  style={{ fontFamily: "var(--font-mono, 'IBM Plex Mono', monospace)" }}
+                  style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
                 >
                   {isTaskOverdue ? (
                     <AlarmClock className="h-[9px] w-[9px]" />
@@ -200,7 +200,7 @@ export function DealCard({
                     backgroundColor: `${ownerColor}15`,
                     color: ownerColor,
                     borderColor: `${ownerColor}30`,
-                    fontFamily: "var(--font-display, 'Syne', sans-serif)",
+                    fontFamily: "var(--font-sans, 'Inter', sans-serif)",
                   }}
                 >
                   {ownerInitial(deal.owner_id)}
