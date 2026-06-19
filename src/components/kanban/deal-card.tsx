@@ -91,7 +91,7 @@ export function DealCard({
         style={{ "--deal-card-color": stageColor } as React.CSSProperties}
       >
         <div className="p-3">
-          {/* Título — Syne (herda h* style do CSS base) */}
+          {/* Título */}
           <p
             className="text-[13px] font-semibold leading-snug line-clamp-2 text-[#F0F8FF] mb-1.5"
             style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
@@ -99,7 +99,7 @@ export function DealCard({
             {deal.title}
           </p>
 
-          {/* Lead + Empresa — DM Sans, secondary */}
+          {/* Lead + Empresa */}
           {deal.lead && (
             <p className="text-[11px] text-[#8BACD4] truncate mb-3 leading-none">
               {deal.lead.name}
@@ -111,7 +111,7 @@ export function DealCard({
 
           {/* Bottom row */}
           <div className="flex items-center justify-between gap-2">
-            {/* Valor — IBM Plex Mono, cor do stage */}
+            {/* Valor — cor do stage */}
             {deal.recurring_value || deal.setup_value ? (
               <span className="flex flex-col leading-tight">
                 {deal.recurring_value > 0 && (

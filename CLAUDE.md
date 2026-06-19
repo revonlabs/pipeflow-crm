@@ -1,4 +1,4 @@
-# PipeFlow CRM — Project Briefing for Claude Code
+# Revon Studio CRM — Project Briefing for Claude Code
 
 SaaS de gestão de clientes e vendas com pipeline Kanban visual, multi-empresa, planos Free/Pro. Público-alvo: PMEs, freelancers e times de vendas brasileiros.
 
@@ -106,18 +106,27 @@ Tipos de atividade: `call | email | meeting | note`
 
 ## Identidade Visual
 
-| Elemento | Valor |
-|---|---|
-| Primária (navy) | `#1B2559` |
-| Acento (blue) | `#4F8EF7` |
-| Sucesso | `#22C55E` (green-500) |
-| Perigo | `#EF4444` (red-500) |
-| Background | `#F8FAFC` (slate-50) |
-| Sidebar bg | `#1B2559` com texto branco |
-| Tipografia | Inter (next/font/google) |
-| Border radius | `rounded-lg` (8px) padrão shadcn New York |
-| Sombra | `shadow-sm` — sem sombras pesadas |
-| Motion | `transition-all duration-200` — sem animações complexas |
+Paleta Fox Fire / Night Sky (tokens `--color-crm-*` em `src/app/globals.css`), seguindo o brand system da Revon Labs. Fundo sempre escuro — não existe modo claro.
+
+| Elemento | Valor | Token CSS |
+|---|---|---|
+| Background | `#060B14` | `--color-crm-bg` |
+| Surface (sidebar, cards) | `#0D1B2E` | `--color-crm-surface` |
+| Surface 2 | `#112240` | `--color-crm-surface-2` |
+| Border | `#2A2A2E` | `--color-crm-border` |
+| Border sutil | `#1E1E22` | `--color-crm-border-s` |
+| Texto primário | `#F0F8FF` | `--color-crm-text` |
+| Texto secundário | `#8BACD4` | `--color-crm-text-sec` |
+| Texto muted | `#4A6785` | `--color-crm-text-muted` |
+| Acento (CTA, ativo) | `#FF7043` | `--color-crm-accent` |
+| Positivo | `#3BFFA0` | `--color-crm-positive` |
+| Negativo | `#FF4444` | `--color-crm-negative` |
+| Aviso | `#FFAB40` | `--color-crm-warm` |
+| Informação | `#4A90E2` | `--color-crm-cool` |
+| Tipografia | Inter (next/font/google) + JetBrains Mono | — |
+| Border radius | `rounded-lg` (8px) padrão shadcn New York | — |
+| Sombra | `shadow-sm` — sem sombras pesadas | — |
+| Motion | `transition-all duration-200` — sem animações complexas | — |
 
 shadcn/ui **New York** style. Não criar componentes custom quando shadcn já cobre o caso de uso.
 

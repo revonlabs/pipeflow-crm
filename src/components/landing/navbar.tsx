@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, ArrowRight } from "lucide-react";
+import { Logo } from "@/components/shared/logo";
 
 const NAV_LINKS = [
   { label: "Funcionalidades", href: "#features" },
@@ -20,14 +20,7 @@ export function LandingNavbar() {
         <nav className="flex items-center justify-between rounded-xl border border-[#2A2A2E] bg-[#060B14]/80 px-5 py-3 backdrop-blur-md">
           {/* Logo */}
           <Link href="/" className="flex items-center">
-            <Image
-              src="/Logo CRM.png"
-              alt="Revon Studio CRM"
-              width={120}
-              height={30}
-              className="h-7 w-auto"
-              priority
-            />
+            <Logo iconSize={24} brandTextSize={15} tagTextSize={10} />
           </Link>
 
           {/* Desktop nav */}

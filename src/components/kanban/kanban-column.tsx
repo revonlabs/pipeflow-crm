@@ -58,7 +58,7 @@ export function KanbanColumn({
           style={{ backgroundColor: stageColor }}
         />
 
-        {/* Nome do stage — IBM Plex Mono uppercase */}
+        {/* Nome do stage — uppercase */}
         <span
           className="text-[11px] font-medium uppercase tracking-[0.12em] flex-1 truncate text-[#8BACD4]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
