@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Users, Kanban, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo } from "@/components/shared/logo";
 import { WorkspaceSwitcher } from "./workspace-switcher";
 import type { Workspace } from "@/types";
 
@@ -33,14 +33,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
         className="flex items-center px-4 py-5 border-b"
         style={{ borderColor: "#1E1E22" }}
       >
-        <Image
-          src="/Logo CRM.png"
-          alt="Revon Studio CRM"
-          width={140}
-          height={36}
-          className="h-9 w-auto"
-          priority
-        />
+        <Logo iconSize={28} />
       </div>
 
       {/* Workspace switcher */}

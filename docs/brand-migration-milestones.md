@@ -43,10 +43,11 @@ Checklist de acompanhamento da transição de identidade visual. Plano completo 
 - [x] `package.json`: `"pipeflow-crm"` → `"revon-studio-crm"`
 - [x] **Checkpoint**: `npm run build` passa sem erros de tipo (18 rotas)
 
-## M5 — QA visual e regressão final 🔴
+## M5 — QA visual e regressão final 🟢
 
-- [ ] `npm run build` sem erros de tipo
-- [ ] Navegação manual por todas as rotas (login, register, forgot-password, onboarding, dashboard, leads, leads/[id], pipeline com drag-and-drop, settings/workspace, settings/billing, landing)
-- [ ] Verificar hover de deal-card, gráfico de funil, scrollbars, prefers-reduced-motion
-- [ ] Grep final de regressão: zero hex antigo, zero "PipeFlow", zero Syne/DM Sans/IBM Plex Mono
-- [ ] Atualizar `CLAUDE.md` do projeto com a nova paleta/identidade
+- [x] `npm run build` sem erros de tipo — 18 rotas, build limpo
+- [x] Navegação manual — `/login`, `/register`, `/forgot-password` validados via screenshot (Playwright + Chrome local): paleta Fox Fire/Night Sky aplicada, sem resquício visual de PipeFlow. `/` redireciona para `/login` — comportamento esperado (não há landing pública separada). Rotas autenticadas (`/dashboard`, `/leads`, `/pipeline`, `/settings/workspace`, `/settings/billing`) validadas pelo usuário diretamente no navegador.
+- [x] Hover de deal-card, gráfico de funil, scrollbars, prefers-reduced-motion — validados pelo usuário em sessão autenticada
+- [x] Grep final de regressão: zero hex antigo, zero "PipeFlow" em `src/`; restavam comentários residuais citando Syne/DM Sans/IBM Plex Mono em `deal-card.tsx` e `kanban-column.tsx` (não afetavam CSS real) — limpos
+- [x] Atualizar `CLAUDE.md` do projeto com a nova paleta/identidade (tokens `--color-crm-*` Fox Fire/Night Sky) e título "Revon Studio CRM"
+- [x] Logo da sidebar/auth/landing-navbar substituída — ícone "streaks" extraído de `public/logo.png` com fundo removido (`public/brand/icon-streaks.png`, transparente), wordmark "Revon Studio CRM" recriada em código (`src/components/shared/logo.tsx`) já que o texto original estava ilegível (branco quase puro sobre fundo branco). Validada via screenshot — íconе e texto nítidos sobre fundo escuro, sem caixa.

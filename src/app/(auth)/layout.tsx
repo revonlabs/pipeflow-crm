@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "@/components/shared/logo";
 
 export default function AuthLayout({
   children,
@@ -20,14 +20,7 @@ export default function AuthLayout({
       <div className="relative z-10 w-full max-w-md px-4 py-12">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <Image
-            src="/Logo CRM.png"
-            alt="Revon Studio CRM"
-            width={180}
-            height={46}
-            className="h-11 w-auto"
-            priority
-          />
+          <Logo iconSize={36} brandTextSize={22} tagTextSize={13} />
         </div>
 
         {children}
