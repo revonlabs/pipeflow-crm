@@ -2,10 +2,9 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LeadFormDialog } from "@/components/leads/lead-form-dialog";
-import { ActivityFormDialog } from "@/components/leads/activity-form-dialog";
 import { updateLeadAction, deleteLeadAction } from "@/lib/actions/leads";
 import type { Lead, Tag } from "@/types";
 import type { MemberInfo } from "@/lib/members";
@@ -53,30 +52,6 @@ export function LeadDetailClient({ lead, members, workspaceTags }: LeadDetailCli
         onOpenChange={setEditOpen}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
-      />
-    </>
-  );
-}
-
-export function ActivityButton({ leadId }: { leadId: string }) {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <Button
-        size="sm"
-        variant="outline"
-        className="gap-1.5 text-xs"
-        onClick={() => setOpen(true)}
-      >
-        <Plus className="h-3.5 w-3.5" />
-        Registrar
-      </Button>
-
-      <ActivityFormDialog
-        open={open}
-        leadId={leadId}
-        onOpenChange={setOpen}
       />
     </>
   );

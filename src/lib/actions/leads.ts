@@ -22,6 +22,13 @@ const leadSchema = z.object({
   owner_id: z.string().uuid().optional().nullable(),
 });
 
+const leadInlineSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório").max(255),
+  email: z.string().email("E-mail inválido"),
+  phone: z.string().max(30).optional(),
+  company: z.string().max(255).optional(),
+});
+
 export async function createLeadAction(payload: unknown) {
   const parsed = leadSchema.safeParse(payload);
   if (!parsed.success) return { error: parsed.error.issues[0].message };
@@ -57,6 +64,45 @@ export async function createLeadAction(payload: unknown) {
 
   revalidatePath("/leads");
   return { success: true };
+}
+
+export async function createLeadInlineAction(
+  payload: unknown
+): Promise<{ error: string; limitReached?: boolean; current?: number; limit?: number } | { success: true; lead: { id: string; name: string; company: string | null; email: string | null } }> {
+  const parsed = leadInlineSchema.safeParse(payload);
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+
+  const supabase = await getSupabaseServerClient();
+  const ctx = await getWorkspaceContext();
+  if (!ctx) return { error: "Workspace não encontrado" };
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Não autenticado" };
+
+  const { allowed, current, limit } = await canAddLead();
+  if (!allowed) {
+    return { error: `Limite de ${limit} leads atingido no plano Free. Faça upgrade para Pro para adicionar mais.`, limitReached: true, current, limit };
+  }
+
+  const data = parsed.data;
+  const { data: lead, error } = await supabase
+    .from("leads")
+    .insert({
+      workspace_id: ctx.workspace.id,
+      name: data.name,
+      email: data.email,
+      phone: data.phone || null,
+      company: data.company || null,
+      status: "active",
+      source: "manual",
+    })
+    .select("id, name, company, email")
+    .single();
+
+  if (error) return { error: error.message };
+
+  revalidatePath("/leads");
+  return { success: true, lead };
 }
 
 export async function updateLeadAction(id: string, payload: unknown) {

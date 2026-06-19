@@ -41,6 +41,7 @@ type ActivityFormValues = z.infer<typeof activitySchema>;
 interface ActivityFormDialogProps {
   open: boolean;
   leadId: string;
+  dealId: string;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
 }
@@ -55,6 +56,7 @@ const TYPE_LABELS: Record<ActivityType, string> = {
 export function ActivityFormDialog({
   open,
   leadId,
+  dealId,
   onOpenChange,
   onSuccess,
 }: ActivityFormDialogProps) {
@@ -69,7 +71,7 @@ export function ActivityFormDialog({
   function handleSubmit(values: ActivityFormValues) {
     setError(null);
     startTransition(async () => {
-      const result = await createActivityAction(leadId, values.type, values.description);
+      const result = await createActivityAction(leadId, dealId, values.type, values.description);
       if (result.error) {
         setError(result.error);
         return;

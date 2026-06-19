@@ -1,6 +1,7 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
 import { getWorkspaceMembers } from "@/lib/members";
+import { getWorkspaceLostReasons } from "@/lib/actions/lost-reasons";
 import { PipelineClient } from "@/components/kanban/pipeline-client";
 import type { Task } from "@/types";
 
@@ -9,7 +10,7 @@ export default async function PipelinePage() {
   const ctx = await getWorkspaceContext();
   if (!ctx) return null;
 
-  const [{ data: deals }, { data: leads }, members] = await Promise.all([
+  const [{ data: deals }, { data: leads }, members, lostReasons] = await Promise.all([
     supabase
       .from("deals")
       .select("*, lead:leads(id, name, company, email), tasks(id, due_at, title, completed_at)")
@@ -21,6 +22,7 @@ export default async function PipelinePage() {
       .eq("workspace_id", ctx.workspace.id)
       .order("name", { ascending: true }),
     getWorkspaceMembers(ctx.workspace.id),
+    getWorkspaceLostReasons(ctx.workspace.id),
   ]);
 
   const dealsWithNextTask = (deals ?? []).map((deal) => {
@@ -36,6 +38,8 @@ export default async function PipelinePage() {
       initialDeals={dealsWithNextTask as Parameters<typeof PipelineClient>[0]["initialDeals"]}
       leads={leads ?? []}
       members={members}
+      lostReasons={lostReasons}
+      workspaceId={ctx.workspace.id}
     />
   );
 }

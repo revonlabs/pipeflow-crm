@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { LeadProfileCard } from "@/components/leads/lead-profile-card";
 import { ActivityTimeline } from "@/components/leads/activity-timeline";
-import { LeadDetailClient, ActivityButton } from "@/components/leads/lead-detail-client";
+import { LeadDetailClient } from "@/components/leads/lead-detail-client";
 import { LeadDealsSection } from "@/components/leads/lead-deals-section";
 import { LeadDealMetricCard } from "@/components/dashboard/lead-deal-metric-card";
 import { formatCurrencyValue } from "@/lib/format-currency";
@@ -14,7 +14,8 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getWorkspaceContext } from "@/lib/workspace";
 import { getWorkspaceMembers } from "@/lib/members";
 import { getWorkspaceTags } from "@/lib/actions/tags";
-import type { Lead, Deal, Tag, DealStage, ActivityType } from "@/types";
+import { getWorkspaceLostReasons } from "@/lib/actions/lost-reasons";
+import type { Lead, Deal, Tag, DealStage, Activity, ActivityType } from "@/types";
 
 const OPEN_STAGES: DealStage[] = ["new_lead", "contacted", "proposal_sent", "negotiation"];
 
@@ -29,7 +30,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
   const ctx = await getWorkspaceContext();
   if (!ctx) return null;
 
-  const [{ data: lead }, { data: activitiesRaw }, { data: dealsRaw }, members, workspaceTags] = await Promise.all([
+  const [{ data: lead }, { data: activitiesRaw }, { data: dealsRaw }, members, workspaceTags, lostReasons] = await Promise.all([
     supabase
       .from("leads")
       .select("*, lead_tags(tags(*))")
@@ -50,6 +51,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
       .order("created_at", { ascending: false }),
     getWorkspaceMembers(ctx.workspace.id),
     getWorkspaceTags(ctx.workspace.id),
+    getWorkspaceLostReasons(ctx.workspace.id),
   ]);
 
   if (!lead) notFound();
@@ -72,7 +74,20 @@ export default async function LeadDetailPage({ params }: PageProps) {
         ? { id: author.id, email: author.email, user_metadata: { full_name: author.name } }
         : undefined,
     };
-  });
+  }) as Activity[];
+
+  // Atividades antigas: criadas antes da migração de timeline para o deal (sem deal_id)
+  const legacyActivities = activities.filter((a) => !a.deal_id);
+
+  // Última atividade por deal — para o resumo dentro de LeadDealsSection
+  const lastActivityByDeal: Record<string, Activity> = {};
+  for (const activity of activities) {
+    if (!activity.deal_id) continue;
+    const current = lastActivityByDeal[activity.deal_id];
+    if (!current || new Date(activity.created_at) > new Date(current.created_at)) {
+      lastActivityByDeal[activity.deal_id] = activity;
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -137,26 +152,6 @@ export default async function LeadDetailPage({ params }: PageProps) {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base">
-                  Atividades
-                  {activities.length > 0 && (
-                    <span className="ml-2 text-xs font-normal text-muted-foreground">
-                      ({activities.length})
-                    </span>
-                  )}
-                </CardTitle>
-                <ActivityButton leadId={id} />
-              </div>
-            </CardHeader>
-            <Separator />
-            <CardContent className="pt-4">
-              <ActivityTimeline activities={activities} />
-            </CardContent>
-          </Card>
-
           <LeadDealsSection
             leadId={typedLead.id}
             leadName={typedLead.name}
@@ -164,7 +159,30 @@ export default async function LeadDetailPage({ params }: PageProps) {
             leadEmail={typedLead.email}
             deals={deals}
             members={members}
+            lostReasons={lostReasons}
+            workspaceId={ctx.workspace.id}
+            lastActivityByDeal={lastActivityByDeal}
           />
+
+          {legacyActivities.length > 0 && (
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">
+                  Atividades antigas
+                  <span className="ml-2 text-xs font-normal text-muted-foreground">
+                    ({legacyActivities.length})
+                  </span>
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  Registradas antes da timeline migrar para cada negociação. Somente leitura.
+                </p>
+              </CardHeader>
+              <Separator />
+              <CardContent className="pt-4">
+                <ActivityTimeline activities={legacyActivities} />
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

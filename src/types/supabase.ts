@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           author_id: string | null
           created_at: string
+          deal_id: string | null
           description: string
           id: string
           lead_id: string
@@ -27,6 +28,7 @@ export type Database = {
         Insert: {
           author_id?: string | null
           created_at?: string
+          deal_id?: string | null
           description: string
           id?: string
           lead_id: string
@@ -36,6 +38,7 @@ export type Database = {
         Update: {
           author_id?: string | null
           created_at?: string
+          deal_id?: string | null
           description?: string
           id?: string
           lead_id?: string
@@ -43,6 +46,13 @@ export type Database = {
           workspace_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "activities_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "deals"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "activities_lead_id_fkey"
             columns: ["lead_id"]
@@ -65,6 +75,7 @@ export type Database = {
           due_date: string | null
           id: string
           lead_id: string | null
+          lost_reason_id: string | null
           owner_id: string | null
           position: number
           recurring_value: number
@@ -79,6 +90,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           lead_id?: string | null
+          lost_reason_id?: string | null
           owner_id?: string | null
           position?: number
           recurring_value?: number
@@ -93,6 +105,7 @@ export type Database = {
           due_date?: string | null
           id?: string
           lead_id?: string | null
+          lost_reason_id?: string | null
           owner_id?: string | null
           position?: number
           recurring_value?: number
@@ -108,6 +121,13 @@ export type Database = {
             columns: ["lead_id"]
             isOneToOne: false
             referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "deals_lost_reason_id_fkey"
+            columns: ["lost_reason_id"]
+            isOneToOne: false
+            referencedRelation: "lost_reasons"
             referencedColumns: ["id"]
           },
           {
@@ -195,6 +215,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "leads_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lost_reasons: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lost_reasons_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"

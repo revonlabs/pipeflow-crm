@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { Plus } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,8 +11,15 @@ import { DealFormDialog } from "@/components/kanban/deal-form-dialog";
 import { STAGE_CONFIG } from "@/components/kanban/kanban-board";
 import { createDealAction, updateDealAction, deleteDealAction } from "@/lib/actions/deals";
 import { formatCurrencyValue } from "@/lib/format-currency";
-import type { Deal } from "@/types";
+import type { Deal, LostReason, Activity, ActivityType } from "@/types";
 import type { MemberInfo } from "@/lib/members";
+
+const ACTIVITY_TYPE_LABELS: Record<ActivityType, string> = {
+  call: "Ligação",
+  email: "E-mail",
+  meeting: "Reunião",
+  note: "Nota",
+};
 
 interface LeadDealsSectionProps {
   leadId: string;
@@ -19,6 +28,9 @@ interface LeadDealsSectionProps {
   leadEmail: string | null;
   deals: Deal[];
   members: MemberInfo[];
+  lostReasons: LostReason[];
+  workspaceId: string;
+  lastActivityByDeal: Record<string, Activity>;
 }
 
 export function LeadDealsSection({
@@ -28,6 +40,9 @@ export function LeadDealsSection({
   leadEmail,
   deals,
   members,
+  lostReasons,
+  workspaceId,
+  lastActivityByDeal,
 }: LeadDealsSectionProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null);
@@ -54,6 +69,7 @@ export function LeadDealsSection({
       stage: deal.stage,
       owner_id: deal.owner_id,
       due_date: deal.due_date,
+      lost_reason_id: deal.lost_reason_id,
     };
 
     startTransition(async () => {
@@ -96,6 +112,7 @@ export function LeadDealsSection({
           <div className="divide-y divide-border">
             {deals.map((deal) => {
               const stage = STAGE_CONFIG[deal.stage];
+              const lastActivity = lastActivityByDeal[deal.id];
               return (
                 <button
                   key={deal.id}
@@ -111,6 +128,12 @@ export function LeadDealsSection({
                         ` ${(deal.recurring_value ?? 0) > 0 ? "+ " : ""}R$ ${formatCurrencyValue(deal.setup_value)} setup`}
                       {(deal.recurring_value ?? 0) === 0 && (deal.setup_value ?? 0) === 0 && "Sem valor"}
                     </p>
+                    {lastActivity && (
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
+                        Última atividade: {ACTIVITY_TYPE_LABELS[lastActivity.type]} em{" "}
+                        {format(new Date(lastActivity.created_at), "dd MMM, HH:mm", { locale: ptBR })}
+                      </p>
+                    )}
                   </div>
                   <Badge
                     style={{
@@ -134,6 +157,8 @@ export function LeadDealsSection({
         deal={editingDeal}
         leads={leadOptions}
         members={members}
+        lostReasons={lostReasons}
+        workspaceId={workspaceId}
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
         onDelete={handleDelete}

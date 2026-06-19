@@ -41,6 +41,7 @@ interface KanbanBoardProps {
   onMoveDeals: (updated: Deal[]) => void;
   onEditDeal: (deal: Deal) => void;
   onAddDeal?: (stage: DealStage) => void;
+  onRequestLostConfirm?: (deal: Deal, updated: Deal[]) => void;
 }
 
 export function KanbanBoard({
@@ -48,6 +49,7 @@ export function KanbanBoard({
   onMoveDeals,
   onEditDeal,
   onAddDeal,
+  onRequestLostConfirm,
 }: KanbanBoardProps) {
   const dndId = useId();
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -120,7 +122,11 @@ export function KanbanBoard({
     }
 
     // Move to a different stage
-    const movedDeal: Deal = { ...activeDeal, stage: targetStage };
+    const movedDeal: Deal = {
+      ...activeDeal,
+      stage: targetStage,
+      lost_reason_id: targetStage === "lost" ? activeDeal.lost_reason_id : null,
+    };
     const withoutActive = deals.filter((d) => d.id !== activeId);
 
     let insertIndex: number;
@@ -145,6 +151,11 @@ export function KanbanBoard({
       const stageDeals = withMoved.filter((x) => x.stage === d.stage);
       return { ...d, position: stageDeals.indexOf(d) };
     });
+
+    if (targetStage === "lost" && activeStage !== "lost" && onRequestLostConfirm) {
+      onRequestLostConfirm(activeDeal, updated);
+      return;
+    }
 
     onMoveDeals(updated);
   }

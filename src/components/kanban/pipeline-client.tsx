@@ -5,9 +5,10 @@ import { Plus, TrendingUp, Target, Trophy, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { KanbanBoard, STAGE_CONFIG } from "@/components/kanban/kanban-board";
 import { DealFormDialog } from "@/components/kanban/deal-form-dialog";
+import { LostReasonDialog } from "@/components/kanban/lost-reason-dialog";
 import { createDealAction, updateDealAction, moveDealAction, deleteDealAction } from "@/lib/actions/deals";
 import { createTaskAction } from "@/lib/actions/tasks";
-import type { Deal, DealStage } from "@/types";
+import type { Deal, DealStage, LostReason } from "@/types";
 import type { MemberInfo } from "@/lib/members";
 
 interface LeadOption {
@@ -21,6 +22,8 @@ interface PipelineClientProps {
   initialDeals: Deal[];
   leads: LeadOption[];
   members: MemberInfo[];
+  lostReasons: LostReason[];
+  workspaceId: string;
 }
 
 function formatBRL(value: number) {
@@ -77,12 +80,13 @@ function StatCard({ icon: Icon, label, value, sub, color, delay }: StatCardProps
   );
 }
 
-export function PipelineClient({ initialDeals, leads, members }: PipelineClientProps) {
+export function PipelineClient({ initialDeals, leads, members, lostReasons, workspaceId }: PipelineClientProps) {
   const [deals, setDeals] = useState<Deal[]>(initialDeals);
   useEffect(() => { setDeals(initialDeals); }, [initialDeals]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingDeal, setEditingDeal] = useState<Deal | null>(null);
   const [defaultStage, setDefaultStage] = useState<DealStage>("new_lead");
+  const [pendingLostMove, setPendingLostMove] = useState<{ deal: Deal; updated: Deal[] } | null>(null);
   const [, startTransition] = useTransition();
 
   const openDeals = deals.filter((d) => d.stage !== "won" && d.stage !== "lost");
@@ -113,11 +117,28 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
 
     startTransition(async () => {
       const results = await Promise.all(
-        changed.map((d) => moveDealAction(d.id, d.stage, d.position))
+        changed.map((d) => moveDealAction(d.id, d.stage, d.position, d.lost_reason_id))
       );
       const anyError = results.some((r) => r?.error);
       if (anyError) setDeals(prev);
     });
+  }
+
+  function handleRequestLostConfirm(deal: Deal, updated: Deal[]) {
+    setPendingLostMove({ deal, updated });
+  }
+
+  function handleLostConfirm(reasonId: string) {
+    if (!pendingLostMove) return;
+    const updated = pendingLostMove.updated.map((d) =>
+      d.id === pendingLostMove.deal.id ? { ...d, lost_reason_id: reasonId } : d
+    );
+    setPendingLostMove(null);
+    handleMoveDeals(updated);
+  }
+
+  function handleLostCancel() {
+    setPendingLostMove(null);
   }
 
   function handleSubmit(deal: Deal) {
@@ -249,6 +270,7 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
           onMoveDeals={handleMoveDeals}
           onEditDeal={handleOpenEdit}
           onAddDeal={handleOpenCreate}
+          onRequestLostConfirm={handleRequestLostConfirm}
         />
       </div>
 
@@ -258,10 +280,20 @@ export function PipelineClient({ initialDeals, leads, members }: PipelineClientP
         defaultStage={defaultStage}
         leads={leads}
         members={members}
+        lostReasons={lostReasons}
+        workspaceId={workspaceId}
         onOpenChange={setDialogOpen}
         onSubmit={handleSubmit}
         onDelete={handleDelete}
         onScheduleTask={handleScheduleTask}
+      />
+
+      <LostReasonDialog
+        open={!!pendingLostMove}
+        dealTitle={pendingLostMove?.deal.title ?? ""}
+        reasons={lostReasons}
+        onConfirm={handleLostConfirm}
+        onCancel={handleLostCancel}
       />
     </div>
   );
