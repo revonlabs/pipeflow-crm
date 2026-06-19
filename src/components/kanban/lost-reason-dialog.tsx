@@ -52,33 +52,33 @@ export function LostReasonDialog({
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent
         className="sm:max-w-[420px]"
-        style={{ backgroundColor: "#141416", border: "1px solid #2A2A2E" }}
+        style={{ backgroundColor: "#0D1B2E", border: "1px solid #2A2A2E" }}
       >
         <DialogHeader>
-          <DialogTitle className="text-[#E8E8E8]">Motivo da perda</DialogTitle>
+          <DialogTitle className="text-[#F0F8FF]">Motivo da perda</DialogTitle>
         </DialogHeader>
 
-        <p className="text-[13px] text-[#8A8A8F]">
-          Por que <span className="text-[#E8E8E8] font-medium">{dealTitle}</span> foi
+        <p className="text-[13px] text-[#8BACD4]">
+          Por que <span className="text-[#F0F8FF] font-medium">{dealTitle}</span> foi
           perdido? Selecione um motivo para confirmar.
         </p>
 
         {reasons.length === 0 ? (
-          <p className="text-[12px] text-[#8A8A8F] rounded-md border border-[#2A2A2E] bg-[#1A1A1E] p-3">
+          <p className="text-[12px] text-[#8BACD4] rounded-md border border-[#2A2A2E] bg-[#0D1B2E] p-3">
             Nenhum motivo de perda cadastrado ainda. Peça a um administrador para
             cadastrar em Configurações → Motivos de Perda.
           </p>
         ) : (
           <Select value={reasonId} onValueChange={setReasonId}>
-            <SelectTrigger className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus:ring-[#CAFF33]/30">
+            <SelectTrigger className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] focus:ring-[#FF7043]/30">
               <SelectValue placeholder="Selecionar motivo" />
             </SelectTrigger>
-            <SelectContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+            <SelectContent style={{ backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}>
               {reasons.map((reason) => (
                 <SelectItem
                   key={reason.id}
                   value={reason.id}
-                  className="text-[#E8E8E8] focus:bg-[#1A1A1E] focus:text-[#CAFF33]"
+                  className="text-[#F0F8FF] focus:bg-[#0D1B2E] focus:text-[#FF7043]"
                 >
                   {reason.name}
                 </SelectItem>
@@ -91,7 +91,7 @@ export function LostReasonDialog({
           <Button
             type="button"
             variant="ghost"
-            className="text-[#8A8A8F] hover:text-[#E8E8E8] hover:bg-[#1A1A1E]"
+            className="text-[#8BACD4] hover:text-[#F0F8FF] hover:bg-[#0D1B2E]"
             onClick={() => handleOpenChange(false)}
           >
             Cancelar
@@ -101,7 +101,7 @@ export function LostReasonDialog({
             disabled={!reasonId}
             onClick={handleConfirm}
             className="font-semibold border-0 disabled:opacity-40"
-            style={{ backgroundColor: "#FF4757", color: "#0C0C0E" }}
+            style={{ backgroundColor: "#FF4444", color: "#060B14" }}
           >
             Marcar como perdido
           </Button>

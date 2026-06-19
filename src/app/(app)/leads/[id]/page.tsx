@@ -121,13 +121,13 @@ export default async function LeadDetailPage({ params }: PageProps) {
               label="Ganho"
               value={`R$ ${formatCurrencyValue(wonSum)}`}
               count={deals.filter((d) => d.stage === "won").length}
-              accentColor="#2ED573"
+              accentColor="#3BFFA0"
             />
             <LeadDealMetricCard
               label="Perdido"
               value={`R$ ${formatCurrencyValue(lostSum)}`}
               count={deals.filter((d) => d.stage === "lost").length}
-              accentColor="#FF4757"
+              accentColor="#4A6785"
             />
           </div>
 

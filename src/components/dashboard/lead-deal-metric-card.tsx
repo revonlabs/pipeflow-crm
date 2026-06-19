@@ -11,28 +11,28 @@ export function LeadDealMetricCard({
   label,
   value,
   count,
-  accentColor = "#CAFF33",
+  accentColor = "#FF7043",
 }: LeadDealMetricCardProps) {
   return (
     <Card
       className="relative overflow-hidden border-0"
-      style={{ background: "#141416", border: "1px solid #2A2A2E" }}
+      style={{ background: "#0D1B2E", border: "1px solid #2A2A2E" }}
     >
       <div
         className="absolute top-0 left-0 h-0.5 w-full"
         style={{ background: accentColor, opacity: 0.6 }}
       />
       <CardContent className="p-4">
-        <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "#8A8A8F" }}>
+        <p className="text-xs font-medium uppercase tracking-wider" style={{ color: "#8BACD4" }}>
           {label}
         </p>
         <p
           className="mt-2 text-xl font-bold leading-none tracking-tight"
-          style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}
+          style={{ color: "#F0F8FF", fontFamily: "'JetBrains Mono', monospace" }}
         >
           {value}
         </p>
-        <p className="mt-1.5 text-xs" style={{ color: "#555559" }}>
+        <p className="mt-1.5 text-xs" style={{ color: "#4A6785" }}>
           {count} negocia{count === 1 ? "ção" : "ções"}
         </p>
       </CardContent>

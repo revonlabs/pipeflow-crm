@@ -22,10 +22,10 @@ interface UpcomingDealsProps {
   stageColors: Record<DealStage, string>;
 }
 
-const AVATAR_COLORS = ["#5B7FFF", "#00B4D8", "#FF6B35", "#2ED573", "#CAFF33"];
+const AVATAR_COLORS = ["#4A90E2", "#FFAB40", "#CE59B2", "#3BFFA0", "#FF7043"];
 
 function avatarColor(ownerId: string | null) {
-  if (!ownerId) return "#8A8A8F";
+  if (!ownerId) return "#8BACD4";
   // Gera cor consistente baseada no ID
   let hash = 0;
   for (let i = 0; i < ownerId.length; i++) hash = ownerId.charCodeAt(i) + ((hash << 5) - hash);
@@ -39,15 +39,15 @@ function ownerInitials(ownerId: string | null) {
 
 export function UpcomingDeals({ deals, stageLabels, stageColors }: UpcomingDealsProps) {
   return (
-    <Card className="border-0" style={{ background: "#141416", border: "1px solid #2A2A2E" }}>
+    <Card className="border-0" style={{ background: "#0D1B2E", border: "1px solid #2A2A2E" }}>
       <CardHeader className="pb-2 pt-5 px-5">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#8A8A8F" }}>
+        <CardTitle className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#8BACD4" }}>
           Negócios com Prazo Próximo
         </CardTitle>
       </CardHeader>
       <CardContent className="px-0 pb-2">
         {deals.length === 0 ? (
-          <p className="px-5 py-4 text-sm" style={{ color: "#555559" }}>
+          <p className="px-5 py-4 text-sm" style={{ color: "#4A6785" }}>
             Nenhum negócio com prazo definido.
           </p>
         ) : (
@@ -63,14 +63,14 @@ export function UpcomingDeals({ deals, stageLabels, stageColors }: UpcomingDeals
                   key={deal.id}
                   className="flex items-center gap-4 px-5 py-3 transition-colors"
                   style={{ background: "transparent" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#1A1A1E")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#0D1B2E")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <div className="h-7 w-0.5 shrink-0 rounded-full" style={{ background: stageColor }} />
 
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium" style={{ color: "#E8E8E8" }}>{deal.title}</p>
-                    <p className="truncate text-xs" style={{ color: "#8A8A8F" }}>
+                    <p className="truncate text-sm font-medium" style={{ color: "#F0F8FF" }}>{deal.title}</p>
+                    <p className="truncate text-xs" style={{ color: "#8BACD4" }}>
                       {deal.lead?.name ?? "—"} · {deal.lead?.company ?? ""}
                     </p>
                   </div>
@@ -84,7 +84,7 @@ export function UpcomingDeals({ deals, stageLabels, stageColors }: UpcomingDeals
 
                   <span
                     className="hidden shrink-0 font-mono text-xs font-semibold md:block"
-                    style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}
+                    style={{ color: "#F0F8FF", fontFamily: "'JetBrains Mono', monospace" }}
                   >
                     {deal.value != null
                       ? new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(deal.value)
@@ -93,7 +93,7 @@ export function UpcomingDeals({ deals, stageLabels, stageColors }: UpcomingDeals
 
                   <div
                     className="flex shrink-0 items-center gap-1"
-                    style={{ color: isOverdue ? "#FF4757" : isUrgent ? "#FF6B35" : "#555559" }}
+                    style={{ color: isOverdue ? "#FF4444" : isUrgent ? "#CE59B2" : "#4A6785" }}
                   >
                     {isOverdue ? <CalendarX className="h-3.5 w-3.5" /> : <CalendarClock className="h-3.5 w-3.5" />}
                     <span className="font-mono text-xs" style={{ fontFamily: "'JetBrains Mono', monospace" }}>

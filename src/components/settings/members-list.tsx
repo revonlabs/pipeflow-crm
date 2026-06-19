@@ -102,7 +102,7 @@ function MemberRow({
 
       <Badge
         variant="outline"
-        className={`shrink-0 gap-1 ${member.role === 'admin' ? 'border-[#CAFF33]/30 text-[#CAFF33]' : 'text-muted-foreground'}`}
+        className={`shrink-0 gap-1 ${member.role === 'admin' ? 'border-[#FF7043]/30 text-[#FF7043]' : 'text-muted-foreground'}`}
       >
         {member.role === 'admin' ? <Crown className="h-3 w-3" /> : <User className="h-3 w-3" />}
         {member.role === 'admin' ? 'Admin' : 'Membro'}

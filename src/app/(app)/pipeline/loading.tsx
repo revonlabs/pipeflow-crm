@@ -18,7 +18,7 @@ export default function PipelineLoading() {
           <div
             key={i}
             className="flex items-center gap-3 px-4 py-2.5 rounded-lg border"
-            style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}
+            style={{ backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}
           >
             <Skeleton className="h-7 w-7 rounded-md shrink-0" />
             <div className="space-y-1.5 min-w-0">
@@ -38,7 +38,7 @@ export default function PipelineLoading() {
           <div
             key={i}
             className="w-[272px] shrink-0 rounded-xl flex flex-col gap-2 p-3"
-            style={{ backgroundColor: "#141416", border: "1px solid #2A2A2E" }}
+            style={{ backgroundColor: "#0D1B2E", border: "1px solid #2A2A2E" }}
           >
             {/* Column header */}
             <div className="flex items-center justify-between pb-2">
@@ -53,7 +53,7 @@ export default function PipelineLoading() {
               <div
                 key={j}
                 className="rounded-lg p-3 space-y-2.5"
-                style={{ backgroundColor: "#0C0C0E", border: "1px solid #1E1E22" }}
+                style={{ backgroundColor: "#060B14", border: "1px solid #1E1E22" }}
               >
                 <Skeleton className="h-4 w-3/4" />
                 <Skeleton className="h-3 w-1/2" />

@@ -19,12 +19,12 @@ const STAGE_LABELS: Record<DealStage, string> = {
 };
 
 const STAGE_COLORS: Record<DealStage, string> = {
-  new_lead: "#5B7FFF",
-  contacted: "#00B4D8",
-  proposal_sent: "#CAFF33",
-  negotiation: "#FF6B35",
-  won: "#2ED573",
-  lost: "#FF4757",
+  new_lead: "#4A90E2",
+  contacted: "#FFAB40",
+  proposal_sent: "#FF7043",
+  negotiation: "#CE59B2",
+  won: "#3BFFA0",
+  lost: "#4A6785",
 };
 
 function formatCurrency(value: number) {

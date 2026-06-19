@@ -87,7 +87,7 @@ interface DealFormDialogProps {
 }
 
 const monoStyle = { fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" } as const;
-const labelClass = "text-[10px] font-medium uppercase tracking-[0.14em] text-[#555559]";
+const labelClass = "text-[10px] font-medium uppercase tracking-[0.14em] text-[#4A6785]";
 
 export function DealFormDialog({
   open,
@@ -270,21 +270,21 @@ export function DealFormDialog({
   }
 
   const currentStage = form.watch("stage") as DealStage;
-  const stageColor = STAGE_CONFIG[currentStage]?.color ?? "#CAFF33";
+  const stageColor = STAGE_CONFIG[currentStage]?.color ?? "#FF7043";
 
   return (
     <>
       <Sheet open={open} onOpenChange={onOpenChange}>
         <SheetContent
           className="w-full sm:max-w-[640px] sm:min-w-[560px] p-0 gap-0 overflow-y-auto"
-          style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}
+          style={{ backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}
         >
           <div className="px-5 pt-5 pb-4 border-b shrink-0" style={{ borderColor: "#1E1E22" }}>
             <SheetHeader className="p-0">
               <div className="flex items-center gap-2.5">
                 <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: stageColor }} />
                 <SheetTitle
-                  className="text-[15px] font-bold text-[#E8E8E8]"
+                  className="text-[15px] font-bold text-[#F0F8FF]"
                   style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
                 >
                   {isEditing ? "Editar negócio" : "Novo negócio"}
@@ -305,7 +305,7 @@ export function DealFormDialog({
                       <FormControl>
                         <Input
                           placeholder="Ex: Proposta Enterprise — Q1 2025"
-                          className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                          className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] placeholder:text-[#4A6785] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                           {...field}
                         />
                       </FormControl>
@@ -325,8 +325,8 @@ export function DealFormDialog({
                             onClick={() => setLeadMode("existing")}
                             className="text-[10px] px-1.5 py-0.5 rounded-sm transition-colors"
                             style={{
-                              color: leadMode === "existing" ? "#CAFF33" : "#555559",
-                              backgroundColor: leadMode === "existing" ? "#CAFF3318" : "transparent",
+                              color: leadMode === "existing" ? "#FF7043" : "#4A6785",
+                              backgroundColor: leadMode === "existing" ? "#FF704318" : "transparent",
                             }}
                           >
                             Existente
@@ -336,8 +336,8 @@ export function DealFormDialog({
                             onClick={() => setLeadMode("new")}
                             className="text-[10px] px-1.5 py-0.5 rounded-sm transition-colors"
                             style={{
-                              color: leadMode === "new" ? "#CAFF33" : "#555559",
-                              backgroundColor: leadMode === "new" ? "#CAFF3318" : "transparent",
+                              color: leadMode === "new" ? "#FF7043" : "#4A6785",
+                              backgroundColor: leadMode === "new" ? "#FF704318" : "transparent",
                             }}
                           >
                             Novo
@@ -354,20 +354,20 @@ export function DealFormDialog({
                           <FormItem className="min-w-0">
                             <Select onValueChange={field.onChange} value={field.value}>
                               <FormControl>
-                                <SelectTrigger className="min-w-0 overflow-hidden border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus:ring-[#CAFF33]/30">
+                                <SelectTrigger className="min-w-0 overflow-hidden border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] focus:ring-[#FF7043]/30">
                                   <SelectValue placeholder="Selecionar" className="truncate" />
                                 </SelectTrigger>
                               </FormControl>
-                              <SelectContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+                              <SelectContent style={{ backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}>
                                 {leads.map((lead) => (
                                   <SelectItem
                                     key={lead.id}
                                     value={lead.id}
-                                    className="text-[#E8E8E8] focus:bg-[#1A1A1E] focus:text-[#CAFF33]"
+                                    className="text-[#F0F8FF] focus:bg-[#0D1B2E] focus:text-[#FF7043]"
                                   >
                                     <span className="text-[13px]">{lead.name}</span>
                                     {lead.company && (
-                                      <span className="text-[11px] text-[#555559] ml-1">· {lead.company}</span>
+                                      <span className="text-[11px] text-[#4A6785] ml-1">· {lead.company}</span>
                                     )}
                                   </SelectItem>
                                 ))}
@@ -378,7 +378,7 @@ export function DealFormDialog({
                         )}
                       />
                     ) : (
-                      <p className="text-[12px] text-[#8A8A8F] truncate h-9 flex items-center">Preencher abaixo</p>
+                      <p className="text-[12px] text-[#8BACD4] truncate h-9 flex items-center">Preencher abaixo</p>
                     )}
                   </div>
 
@@ -390,17 +390,17 @@ export function DealFormDialog({
                         <FormLabel className={labelClass} style={monoStyle}>Estágio</FormLabel>
                         <Select onValueChange={handleStageChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="min-w-0 overflow-hidden border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus:ring-[#CAFF33]/30">
+                            <SelectTrigger className="min-w-0 overflow-hidden border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] focus:ring-[#FF7043]/30">
                               <SelectValue className="truncate" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+                          <SelectContent style={{ backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}>
                             {(Object.entries(STAGE_CONFIG) as [DealStage, { label: string; color: string }][]).map(
                               ([key, { label, color }]) => (
                                 <SelectItem
                                   key={key}
                                   value={key}
-                                  className="text-[#E8E8E8] focus:bg-[#1A1A1E] focus:text-[#CAFF33]"
+                                  className="text-[#F0F8FF] focus:bg-[#0D1B2E] focus:text-[#FF7043]"
                                 >
                                   <span className="flex items-center gap-2">
                                     <span className="h-1.5 w-1.5 rounded-full inline-block shrink-0" style={{ backgroundColor: color }} />
@@ -418,7 +418,7 @@ export function DealFormDialog({
                 </div>
 
                 {leadMode === "new" && !isEditing && (
-                  <div className="grid grid-cols-2 gap-3 rounded-md border border-[#2A2A2E] bg-[#1A1A1E]/40 p-3">
+                  <div className="grid grid-cols-2 gap-3 rounded-md border border-[#2A2A2E] bg-[#0D1B2E]/40 p-3">
                     <FormField
                       control={form.control}
                       name="new_lead_name"
@@ -428,7 +428,7 @@ export function DealFormDialog({
                           <FormControl>
                             <Input
                               placeholder="Nome do lead"
-                              className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                              className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] placeholder:text-[#4A6785] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                               {...field}
                             />
                           </FormControl>
@@ -445,7 +445,7 @@ export function DealFormDialog({
                             <Input
                               type="email"
                               placeholder="email@exemplo.com"
-                              className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                              className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] placeholder:text-[#4A6785] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                               {...field}
                             />
                           </FormControl>
@@ -461,7 +461,7 @@ export function DealFormDialog({
                           <FormControl>
                             <Input
                               placeholder="(00) 00000-0000"
-                              className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                              className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] placeholder:text-[#4A6785] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                               {...field}
                             />
                           </FormControl>
@@ -477,7 +477,7 @@ export function DealFormDialog({
                           <FormControl>
                             <Input
                               placeholder="Nome da empresa"
-                              className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                              className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] placeholder:text-[#4A6785] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                               {...field}
                             />
                           </FormControl>
@@ -487,7 +487,7 @@ export function DealFormDialog({
                   </div>
                 )}
 
-                {leadError && <p className="text-[12px] text-[#FF4757]">{leadError}</p>}
+                {leadError && <p className="text-[12px] text-[#FF4444]">{leadError}</p>}
 
                 <div className="grid grid-cols-2 gap-3">
                   <FormField
@@ -499,7 +499,7 @@ export function DealFormDialog({
                         <FormControl>
                           <CurrencyInput
                             placeholder="0,00"
-                            className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                            className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] placeholder:text-[#4A6785] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                             style={monoStyle}
                             value={field.value ?? ""}
                             onValueChange={field.onChange}
@@ -519,7 +519,7 @@ export function DealFormDialog({
                         <FormControl>
                           <CurrencyInput
                             placeholder="0,00"
-                            className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] placeholder:text-[#555559] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                            className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] placeholder:text-[#4A6785] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                             style={monoStyle}
                             value={field.value ?? ""}
                             onValueChange={field.onChange}
@@ -540,16 +540,16 @@ export function DealFormDialog({
                         <FormLabel className={labelClass} style={monoStyle}>Responsável</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
                           <FormControl>
-                            <SelectTrigger className="min-w-0 overflow-hidden border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus:ring-[#CAFF33]/30">
+                            <SelectTrigger className="min-w-0 overflow-hidden border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] focus:ring-[#FF7043]/30">
                               <SelectValue placeholder="Ninguém" className="truncate" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+                          <SelectContent style={{ backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}>
                             {members.map((m) => (
                               <SelectItem
                                 key={m.id}
                                 value={m.id}
-                                className="text-[#E8E8E8] focus:bg-[#1A1A1E] focus:text-[#CAFF33]"
+                                className="text-[#F0F8FF] focus:bg-[#0D1B2E] focus:text-[#FF7043]"
                               >
                                 {m.name}
                               </SelectItem>
@@ -572,7 +572,7 @@ export function DealFormDialog({
                         <FormControl>
                           <Input
                             type="date"
-                            className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                            className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                             style={monoStyle}
                             {...field}
                           />
@@ -587,7 +587,7 @@ export function DealFormDialog({
                     <FormControl>
                       <Input
                         type="datetime-local"
-                        className="border-[#2A2A2E] bg-[#1A1A1E] text-[#E8E8E8] focus-visible:ring-[#CAFF33]/30 focus-visible:border-[#CAFF33]/40"
+                        className="border-[#2A2A2E] bg-[#0D1B2E] text-[#F0F8FF] focus-visible:ring-[#FF7043]/30 focus-visible:border-[#FF7043]/40"
                         style={monoStyle}
                         value={nextContact}
                         onChange={(e) => setNextContact(e.target.value)}
@@ -606,14 +606,14 @@ export function DealFormDialog({
                   workspaceId={workspaceId}
                 />
               ) : (
-                <p className="px-5 py-4 text-[12px] text-[#555559]">
+                <p className="px-5 py-4 text-[12px] text-[#4A6785]">
                   Salve o negócio para registrar atividades.
                 </p>
               )}
 
               <Separator style={{ backgroundColor: "#1E1E22" }} />
 
-              <div className="px-5 py-3.5 flex items-center justify-between shrink-0 sticky bottom-0" style={{ backgroundColor: "#141416" }}>
+              <div className="px-5 py-3.5 flex items-center justify-between shrink-0 sticky bottom-0" style={{ backgroundColor: "#0D1B2E" }}>
                 {isEditing && onDelete ? (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -621,26 +621,26 @@ export function DealFormDialog({
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="text-[#FF4757] hover:text-[#FF4757] hover:bg-[#FF4757]/10 gap-1.5 text-[12px]"
+                        className="text-[#FF4444] hover:text-[#FF4444] hover:bg-[#FF4444]/10 gap-1.5 text-[12px]"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                         Excluir
                       </Button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent style={{ backgroundColor: "#141416", borderColor: "#2A2A2E" }}>
+                    <AlertDialogContent style={{ backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}>
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-[#E8E8E8]">Excluir negócio?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-[#8A8A8F]">
+                        <AlertDialogTitle className="text-[#F0F8FF]">Excluir negócio?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-[#8BACD4]">
                           Esta ação não pode ser desfeita.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel className="border-[#2A2A2E] bg-transparent text-[#8A8A8F] hover:bg-[#1A1A1E]">
+                        <AlertDialogCancel className="border-[#2A2A2E] bg-transparent text-[#8BACD4] hover:bg-[#0D1B2E]">
                           Cancelar
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={handleDelete}
-                          className="bg-[#FF4757] hover:bg-[#FF4757]/80 text-white border-0"
+                          className="bg-[#FF4444] hover:bg-[#FF4444]/80 text-white border-0"
                         >
                           Excluir
                         </AlertDialogAction>
@@ -656,7 +656,7 @@ export function DealFormDialog({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="text-[#8A8A8F] hover:text-[#E8E8E8] hover:bg-[#1A1A1E] text-[12px]"
+                    className="text-[#8BACD4] hover:text-[#F0F8FF] hover:bg-[#0D1B2E] text-[12px]"
                     onClick={() => onOpenChange(false)}
                   >
                     Cancelar
@@ -666,7 +666,7 @@ export function DealFormDialog({
                     size="sm"
                     disabled={isCreatingLead}
                     className="text-[12px] font-semibold border-0 disabled:opacity-60"
-                    style={{ backgroundColor: "#CAFF33", color: "#0C0C0E" }}
+                    style={{ backgroundColor: "#FF7043", color: "#060B14" }}
                   >
                     {isCreatingLead ? "Salvando..." : isEditing ? "Salvar" : "Criar negócio"}
                   </Button>

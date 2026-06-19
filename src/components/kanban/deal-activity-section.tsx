@@ -36,18 +36,18 @@ export function DealActivitySection({ dealId, leadId, workspaceId }: DealActivit
     <div className="px-5 py-4 space-y-3">
       <div className="flex items-center justify-between">
         <h3
-          className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#8A8A8F]"
+          className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[#8BACD4]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           Atividades
           {activities.length > 0 && (
-            <span className="ml-1.5 text-[#555559]">({activities.length})</span>
+            <span className="ml-1.5 text-[#4A6785]">({activities.length})</span>
           )}
         </h3>
         <Button
           size="sm"
           variant="outline"
-          className="gap-1.5 text-[12px] border-[#2A2A2E] bg-transparent text-[#8A8A8F] hover:bg-[#1A1A1E] hover:text-[#E8E8E8]"
+          className="gap-1.5 text-[12px] border-[#2A2A2E] bg-transparent text-[#8BACD4] hover:bg-[#0D1B2E] hover:text-[#F0F8FF]"
           onClick={() => setFormOpen(true)}
         >
           <Plus className="h-3.5 w-3.5" />
@@ -58,7 +58,7 @@ export function DealActivitySection({ dealId, leadId, workspaceId }: DealActivit
       <Separator style={{ backgroundColor: "#1E1E22" }} />
 
       {isPending ? (
-        <p className="text-[12px] text-[#555559] py-3">Carregando...</p>
+        <p className="text-[12px] text-[#4A6785] py-3">Carregando...</p>
       ) : (
         <ActivityTimeline activities={activities} />
       )}

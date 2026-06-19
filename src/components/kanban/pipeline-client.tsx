@@ -49,7 +49,7 @@ function StatCard({ icon: Icon, label, value, sub, color, delay }: StatCardProps
   return (
     <div
       className="stat-enter flex items-center gap-3 px-4 py-2.5 rounded-lg border"
-      style={{ animationDelay: `${delay}ms`, backgroundColor: "#141416", borderColor: "#2A2A2E" }}
+      style={{ animationDelay: `${delay}ms`, backgroundColor: "#0D1B2E", borderColor: "#2A2A2E" }}
     >
       <div
         className="h-7 w-7 rounded-md flex items-center justify-center shrink-0"
@@ -59,19 +59,19 @@ function StatCard({ icon: Icon, label, value, sub, color, delay }: StatCardProps
       </div>
       <div className="min-w-0">
         <p
-          className="text-[10px] uppercase tracking-[0.12em] leading-none mb-1 truncate text-[#555559]"
+          className="text-[10px] uppercase tracking-[0.12em] leading-none mb-1 truncate text-[#4A6785]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {label}
         </p>
         <p
-          className="text-[13px] font-bold leading-none text-[#E8E8E8]"
+          className="text-[13px] font-bold leading-none text-[#F0F8FF]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {value}
         </p>
         {sub && (
-          <p className="text-[10px] text-[#555559] mt-0.5" style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}>
+          <p className="text-[10px] text-[#4A6785] mt-0.5" style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}>
             {sub}
           </p>
         )}
@@ -195,13 +195,13 @@ export function PipelineClient({ initialDeals, leads, members, lostReasons, work
       <div className="flex items-center justify-between mb-4 shrink-0">
         <div>
           <h1
-            className="text-xl font-bold text-[#E8E8E8]"
+            className="text-xl font-bold text-[#F0F8FF]"
             style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
           >
             Pipeline
           </h1>
           <p
-            className="text-[12px] text-[#555559] mt-0.5"
+            className="text-[12px] text-[#4A6785] mt-0.5"
             style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
           >
             Acompanhe seus negócios em cada etapa do funil
@@ -211,7 +211,7 @@ export function PipelineClient({ initialDeals, leads, members, lostReasons, work
           onClick={() => handleOpenCreate()}
           size="sm"
           className="gap-1.5 border-0 text-[12px] font-semibold"
-          style={{ backgroundColor: "#CAFF33", color: "#0C0C0E" }}
+          style={{ backgroundColor: "#FF7043", color: "#060B14" }}
         >
           <Plus className="h-3.5 w-3.5" />
           Novo Negócio
@@ -219,10 +219,10 @@ export function PipelineClient({ initialDeals, leads, members, lostReasons, work
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 mb-4 shrink-0">
-        <StatCard icon={BarChart3} label="Pipeline ativo" value={formatBRL(pipelineValue)} sub={`${openDeals.length} negócios`} color="#5B7FFF" delay={0} />
-        <StatCard icon={Trophy} label="Receita ganha" value={formatBRL(wonValue)} sub={`${wonDeals.length} fechados`} color="#2ED573" delay={60} />
-        <StatCard icon={Target} label="Taxa de conversão" value={`${conversionRate}%`} sub="do total de deals" color="#CAFF33" delay={120} />
-        <StatCard icon={TrendingUp} label="Total de negócios" value={String(deals.length)} sub="em todos os estágios" color="#00B4D8" delay={180} />
+        <StatCard icon={BarChart3} label="Pipeline ativo" value={formatBRL(pipelineValue)} sub={`${openDeals.length} negócios`} color="#4A90E2" delay={0} />
+        <StatCard icon={Trophy} label="Receita ganha" value={formatBRL(wonValue)} sub={`${wonDeals.length} fechados`} color="#3BFFA0" delay={60} />
+        <StatCard icon={Target} label="Taxa de conversão" value={`${conversionRate}%`} sub="do total de deals" color="#FF7043" delay={120} />
+        <StatCard icon={TrendingUp} label="Total de negócios" value={String(deals.length)} sub="em todos os estágios" color="#FFAB40" delay={180} />
       </div>
 
       <div className="flex gap-0.5 mb-4 h-1 rounded-full overflow-hidden shrink-0">
@@ -251,13 +251,13 @@ export function PipelineClient({ initialDeals, leads, members, lostReasons, work
               className="h-1 rounded-full transition-all"
               style={{
                 width: i === 0 ? "16px" : "6px",
-                backgroundColor: i === 0 ? "#CAFF33" : "#2A2A2E",
+                backgroundColor: i === 0 ? "#FF7043" : "#2A2A2E",
               }}
             />
           ))}
         </div>
         <p
-          className="text-[10px] text-[#555559]"
+          className="text-[10px] text-[#4A6785]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           deslize para ver todas as etapas

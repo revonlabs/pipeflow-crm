@@ -39,18 +39,18 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Toolti
   return (
     <div
       className="rounded-lg px-4 py-3 text-sm shadow-xl"
-      style={{ background: "#1A1A1E", border: `1px solid ${d.color}40`, color: "#E8E8E8" }}
+      style={{ background: "#0D1B2E", border: `1px solid ${d.color}40`, color: "#F0F8FF" }}
     >
       <p className="mb-2 text-xs font-semibold uppercase tracking-wider" style={{ color: d.color }}>
         {d.label}
       </p>
-      <p style={{ color: "#8A8A8F" }}>
+      <p style={{ color: "#8BACD4" }}>
         Negócios:{" "}
-        <span style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}>{d.count}</span>
+        <span style={{ color: "#F0F8FF", fontFamily: "'JetBrains Mono', monospace" }}>{d.count}</span>
       </p>
-      <p style={{ color: "#8A8A8F" }}>
+      <p style={{ color: "#8BACD4" }}>
         Valor:{" "}
-        <span style={{ color: "#E8E8E8", fontFamily: "'JetBrains Mono', monospace" }}>
+        <span style={{ color: "#F0F8FF", fontFamily: "'JetBrains Mono', monospace" }}>
           {new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(d.value)}
         </span>
       </p>
@@ -60,9 +60,9 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: Toolti
 
 export function FunnelChart({ data }: FunnelChartProps) {
   return (
-    <Card className="border-0" style={{ background: "#141416", border: "1px solid #2A2A2E" }}>
+    <Card className="border-0" style={{ background: "#0D1B2E", border: "1px solid #2A2A2E" }}>
       <CardHeader className="pb-2 pt-5 px-5">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#8A8A8F" }}>
+        <CardTitle className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#8BACD4" }}>
           Pipeline por Etapa
         </CardTitle>
       </CardHeader>
@@ -70,15 +70,15 @@ export function FunnelChart({ data }: FunnelChartProps) {
         <ResponsiveContainer width="100%" height={260}>
           <BarChart data={data} margin={{ top: 4, right: 4, left: -8, bottom: 0 }} barSize={36}>
             <CartesianGrid strokeDasharray="3 3" stroke="#2A2A2E" vertical={false} />
-            <XAxis dataKey="label" tick={{ fill: "#8A8A8F", fontSize: 11 }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="label" tick={{ fill: "#8BACD4", fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis
-              tick={{ fill: "#555559", fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
+              tick={{ fill: "#4A6785", fontSize: 10, fontFamily: "'JetBrains Mono', monospace" }}
               axisLine={false}
               tickLine={false}
               tickFormatter={formatCurrency}
               width={52}
             />
-            <Tooltip content={<CustomTooltip />} cursor={{ fill: "#FFFFFF08" }} />
+            <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(255,255,255,0.03)" }} />
             <Bar dataKey="value" radius={[4, 4, 0, 0]}>
               {data.map((entry) => (
                 <Cell key={entry.stage} fill={entry.color} opacity={0.85} />
@@ -91,7 +91,7 @@ export function FunnelChart({ data }: FunnelChartProps) {
           {data.map((entry) => (
             <div key={entry.stage} className="flex items-center gap-1.5">
               <div className="h-2 w-2 rounded-full" style={{ background: entry.color }} />
-              <span className="text-xs" style={{ color: "#8A8A8F" }}>{entry.label}</span>
+              <span className="text-xs" style={{ color: "#8BACD4" }}>{entry.label}</span>
               <span className="text-xs font-semibold" style={{ color: entry.color, fontFamily: "'JetBrains Mono', monospace" }}>
                 {entry.count}
               </span>

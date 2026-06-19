@@ -50,7 +50,7 @@ export function KanbanColumn({
       {/* ── Column header ── */}
       <div
         className="flex items-center gap-2 px-3 py-2.5 rounded-t-lg border border-b-0"
-        style={{ borderColor: "#2A2A2E", backgroundColor: "#141416" }}
+        style={{ borderColor: "#2A2A2E", backgroundColor: "#0D1B2E" }}
       >
         {/* Dot com cor do stage */}
         <div
@@ -60,7 +60,7 @@ export function KanbanColumn({
 
         {/* Nome do stage — IBM Plex Mono uppercase */}
         <span
-          className="text-[11px] font-medium uppercase tracking-[0.12em] flex-1 truncate text-[#8A8A8F]"
+          className="text-[11px] font-medium uppercase tracking-[0.12em] flex-1 truncate text-[#8BACD4]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {stageLabel}
@@ -83,7 +83,7 @@ export function KanbanColumn({
         {onAddDeal && (
           <button
             onClick={() => onAddDeal(stage)}
-            className="text-[#555559] hover:text-[#CAFF33] transition-colors duration-150 shrink-0"
+            className="text-[#4A6785] hover:text-[#FF7043] transition-colors duration-150 shrink-0"
             title="Adicionar negócio"
           >
             <Plus className="h-3.5 w-3.5" />
@@ -94,17 +94,17 @@ export function KanbanColumn({
       {/* ── Valor total ── */}
       <div
         className="px-3 py-1.5 border-x flex items-center justify-between"
-        style={{ borderColor: "#2A2A2E", backgroundColor: "#0C0C0E" }}
+        style={{ borderColor: "#2A2A2E", backgroundColor: "#060B14" }}
       >
         <span
-          className="text-[13px] font-bold text-[#E8E8E8]"
+          className="text-[13px] font-bold text-[#F0F8FF]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           {totalValue > 0 ? formatBRL(totalValue) : "—"}
         </span>
         {totalValue > 0 && (
           <span
-            className="text-[10px] uppercase tracking-wider text-[#555559]"
+            className="text-[10px] uppercase tracking-wider text-[#4A6785]"
             style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
           >
             {deals.length} deal{deals.length !== 1 ? "s" : ""}
@@ -121,7 +121,7 @@ export function KanbanColumn({
         )}
         style={{
           borderColor: isOver ? `${stageColor}40` : "#2A2A2E",
-          backgroundColor: isOver ? `${stageColor}06` : "#0C0C0E",
+          backgroundColor: isOver ? `${stageColor}06` : "#060B14",
         }}
       >
         <SortableContext
@@ -146,7 +146,7 @@ export function KanbanColumn({
               style={{ borderColor: `${stageColor}25` }}
             />
             <p
-              className="text-[10px] uppercase tracking-wider text-center text-[#555559]"
+              className="text-[10px] uppercase tracking-wider text-center text-[#4A6785]"
               style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
             >
               Arraste aqui

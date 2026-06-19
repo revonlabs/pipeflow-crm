@@ -85,7 +85,7 @@ export default async function InvitePage({ params }: InvitePageProps) {
       title={`Bem-vindo a ${workspaceName}!`}
       description="Você entrou no workspace com sucesso."
     >
-      <Button asChild className="bg-[#CAFF33] text-[#0C0C0E] hover:bg-[#b8eb2d]">
+      <Button asChild className="bg-[#FF7043] text-[#060B14] hover:bg-[#FF7043]">
         <Link href="/dashboard">Ir para o dashboard</Link>
       </Button>
     </InviteLayout>

@@ -68,7 +68,7 @@ export function InviteMemberDialog() {
   return (
     <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) { reset(); setServerMessage(null) } }}>
       <DialogTrigger asChild>
-        <Button className="gap-2 bg-[#CAFF33] text-[#0C0C0E] hover:bg-[#b8eb2d]">
+        <Button className="gap-2 bg-[#FF7043] text-[#060B14] hover:bg-[#FF7043]">
           <UserPlus className="h-4 w-4" />
           Convidar membro
         </Button>

@@ -25,10 +25,10 @@ function formatBRL(value: number) {
   }).format(value);
 }
 
-const OWNER_HUE = ["#5B7FFF", "#CAFF33", "#FF6B35", "#00B4D8", "#2ED573"] as const;
+const OWNER_HUE = ["#4A90E2", "#FF7043", "#CE59B2", "#FFAB40", "#3BFFA0"] as const;
 
 function ownerColorFromId(id: string | null) {
-  if (!id) return "#8A8A8F";
+  if (!id) return "#8BACD4";
   let hash = 0;
   for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash);
   return OWNER_HUE[Math.abs(hash) % OWNER_HUE.length];
@@ -85,7 +85,7 @@ export function DealCard({
         className={cn(
           "deal-card-inner rounded-lg border cursor-grab active:cursor-grabbing select-none",
           // v2 surface — sem glassmorphism, sem blur
-          "bg-[#141416] border-[#2A2A2E]",
+          "bg-[#0D1B2E] border-[#2A2A2E]",
           isDragOverlay && "rotate-[1.5deg] scale-[1.02] opacity-90 cursor-grabbing"
         )}
         style={{ "--deal-card-color": stageColor } as React.CSSProperties}
@@ -93,7 +93,7 @@ export function DealCard({
         <div className="p-3">
           {/* Título — Syne (herda h* style do CSS base) */}
           <p
-            className="text-[13px] font-semibold leading-snug line-clamp-2 text-[#E8E8E8] mb-1.5"
+            className="text-[13px] font-semibold leading-snug line-clamp-2 text-[#F0F8FF] mb-1.5"
             style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
           >
             {deal.title}
@@ -101,10 +101,10 @@ export function DealCard({
 
           {/* Lead + Empresa — DM Sans, secondary */}
           {deal.lead && (
-            <p className="text-[11px] text-[#8A8A8F] truncate mb-3 leading-none">
+            <p className="text-[11px] text-[#8BACD4] truncate mb-3 leading-none">
               {deal.lead.name}
               {deal.lead.company && (
-                <span className="text-[#555559]"> · {deal.lead.company}</span>
+                <span className="text-[#4A6785]"> · {deal.lead.company}</span>
               )}
             </p>
           )}
@@ -127,7 +127,7 @@ export function DealCard({
                 )}
                 {deal.setup_value > 0 && (
                   <span
-                    className="text-[10px] text-[#8A8A8F]"
+                    className="text-[10px] text-[#8BACD4]"
                     style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
                   >
                     + {formatBRL(deal.setup_value)} setup
@@ -136,7 +136,7 @@ export function DealCard({
               </span>
             ) : (
               <span
-                className="text-[11px] text-[#555559] italic"
+                className="text-[11px] text-[#4A6785] italic"
                 style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
               >
                 sem valor
@@ -151,8 +151,8 @@ export function DealCard({
                     "flex items-center gap-[3px] text-[10px] font-medium px-1.5 py-0.5 rounded border",
                     "uppercase tracking-wide",
                     isOverdue
-                      ? "text-[#FF4757] bg-[#FF4757]/8 border-[#FF4757]/20"
-                      : "text-[#555559] bg-[#1A1A1E] border-[#2A2A2E]"
+                      ? "text-[#FF4444] bg-[#FF4444]/8 border-[#FF4444]/20"
+                      : "text-[#4A6785] bg-[#0D1B2E] border-[#2A2A2E]"
                   )}
                   style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
                 >
@@ -172,10 +172,10 @@ export function DealCard({
                     "flex items-center gap-[3px] text-[10px] font-medium px-1.5 py-0.5 rounded border",
                     "uppercase tracking-wide",
                     isTaskOverdue
-                      ? "text-[#FF4757] bg-[#FF4757]/8 border-[#FF4757]/20"
+                      ? "text-[#FF4444] bg-[#FF4444]/8 border-[#FF4444]/20"
                       : isTaskToday
-                      ? "text-[#FFC107] bg-[#FFC107]/8 border-[#FFC107]/20"
-                      : "text-[#555559] bg-[#1A1A1E] border-[#2A2A2E]"
+                      ? "text-[#FFAB40] bg-[#FFAB40]/8 border-[#FFAB40]/20"
+                      : "text-[#4A6785] bg-[#0D1B2E] border-[#2A2A2E]"
                   )}
                   style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
                 >

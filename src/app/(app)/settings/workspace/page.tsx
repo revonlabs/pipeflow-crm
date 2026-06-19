@@ -38,13 +38,13 @@ export default async function WorkspaceSettingsPage() {
         <CardContent className="flex items-center gap-3">
           <Badge
             variant={workspace.plan === 'pro' ? 'default' : 'secondary'}
-            className={workspace.plan === 'pro' ? 'bg-[#CAFF33] text-[#0C0C0E]' : ''}
+            className={workspace.plan === 'pro' ? 'bg-[#FF7043] text-[#060B14]' : ''}
           >
             {PLAN_LABELS[workspace.plan] ?? workspace.plan}
           </Badge>
           {workspace.plan === 'free' && (
             <p className="text-sm text-muted-foreground">
-              Máximo de 2 membros e 50 leads. <a href="/settings/billing" className="text-[#CAFF33] hover:underline">Fazer upgrade para Pro</a>
+              Máximo de 2 membros e 50 leads. <a href="/settings/billing" className="text-[#FF7043] hover:underline">Fazer upgrade para Pro</a>
             </p>
           )}
         </CardContent>

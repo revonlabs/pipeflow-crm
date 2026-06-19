@@ -53,10 +53,10 @@ export function StatCounter({ value, label, delay = 0 }: StatCounterProps) {
           : undefined
       }
     >
-      <span className="font-display text-4xl font-bold text-[#CAFF33] md:text-5xl">
+      <span className="font-display text-4xl font-bold text-[#FF7043] md:text-5xl">
         {value}
       </span>
-      <span className="text-sm text-[#8A8A8F]">{label}</span>
+      <span className="text-sm text-[#8BACD4]">{label}</span>
     </div>
   );
 }

@@ -25,7 +25,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
   return (
     <aside
       className="flex h-full w-60 shrink-0 flex-col"
-      style={{ backgroundColor: "#141416", borderRight: "1px solid #1E1E22" }}
+      style={{ backgroundColor: "#0D1B2E", borderRight: "1px solid #1E1E22" }}
     >
       {/* Logo */}
       <div
@@ -34,12 +34,12 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
       >
         <div
           className="flex h-8 w-8 items-center justify-center rounded-lg shrink-0"
-          style={{ backgroundColor: "#CAFF33" }}
+          style={{ backgroundColor: "#FF7043" }}
         >
-          <Zap className="h-4 w-4" style={{ color: "#0C0C0E" }} />
+          <Zap className="h-4 w-4" style={{ color: "#060B14" }} />
         </div>
         <span
-          className="font-bold text-[17px] text-[#E8E8E8] tracking-tight"
+          className="font-bold text-[17px] text-[#F0F8FF] tracking-tight"
           style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
         >
           PipeFlow
@@ -64,22 +64,22 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
               href={href}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] font-medium transition-all duration-150",
-                isActive ? "text-[#CAFF33]" : "text-[#555559] hover:text-[#8A8A8F]"
+                isActive ? "text-[#FF7043]" : "text-[#4A6785] hover:text-[#8BACD4]"
               )}
               style={{
-                backgroundColor: isActive ? "rgba(202,255,51,0.08)" : "transparent",
+                backgroundColor: isActive ? "rgba(255,112,67,0.08)" : "transparent",
                 fontFamily: "var(--font-sans, 'Inter', sans-serif)",
               }}
             >
               <Icon
                 className="h-4 w-4 shrink-0"
-                style={{ color: isActive ? "#CAFF33" : "#555559" }}
+                style={{ color: isActive ? "#FF7043" : "#4A6785" }}
               />
               {label}
               {isActive && (
                 <div
                   className="ml-auto h-1.5 w-1.5 rounded-full shrink-0"
-                  style={{ backgroundColor: "#CAFF33" }}
+                  style={{ backgroundColor: "#FF7043" }}
                 />
               )}
             </Link>
@@ -90,7 +90,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
       {/* Footer */}
       <div className="px-4 py-4 border-t" style={{ borderColor: "#1E1E22" }}>
         <p
-          className="text-[10px] uppercase tracking-[0.14em] text-[#333337]"
+          className="text-[10px] uppercase tracking-[0.14em] text-[#2A2A2E]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
           PipeFlow CRM · v0.1

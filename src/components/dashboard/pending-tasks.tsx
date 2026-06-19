@@ -33,15 +33,15 @@ export function PendingTasks({ tasks, stageLabels, stageColors }: PendingTasksPr
   const now = Date.now();
 
   return (
-    <Card className="border-0" style={{ background: "#141416", border: "1px solid #2A2A2E" }}>
+    <Card className="border-0" style={{ background: "#0D1B2E", border: "1px solid #2A2A2E" }}>
       <CardHeader className="pb-2 pt-5 px-5">
-        <CardTitle className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#8A8A8F" }}>
+        <CardTitle className="text-sm font-semibold uppercase tracking-wider" style={{ color: "#8BACD4" }}>
           Próximos Contatos
         </CardTitle>
       </CardHeader>
       <CardContent className="px-0 pb-2">
         {tasks.length === 0 ? (
-          <p className="px-5 py-4 text-sm" style={{ color: "#555559" }}>
+          <p className="px-5 py-4 text-sm" style={{ color: "#4A6785" }}>
             Nenhum próximo contato agendado.
           </p>
         ) : (
@@ -50,7 +50,7 @@ export function PendingTasks({ tasks, stageLabels, stageColors }: PendingTasksPr
               const due = new Date(task.due_at).getTime();
               const isOverdue = due < now;
               const stage = task.deal?.stage;
-              const stageColor = stage ? stageColors[stage] : "#555559";
+              const stageColor = stage ? stageColors[stage] : "#4A6785";
 
               return (
                 <Link
@@ -58,16 +58,16 @@ export function PendingTasks({ tasks, stageLabels, stageColors }: PendingTasksPr
                   href="/pipeline"
                   className="flex items-center gap-4 px-5 py-3 transition-colors"
                   style={{ background: "transparent" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#1A1A1E")}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "#0D1B2E")}
                   onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <div className="h-7 w-0.5 shrink-0 rounded-full" style={{ background: stageColor }} />
 
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium" style={{ color: "#E8E8E8" }}>
+                    <p className="truncate text-sm font-medium" style={{ color: "#F0F8FF" }}>
                       {task.deal?.title ?? task.title}
                     </p>
-                    <p className="truncate text-xs" style={{ color: "#8A8A8F" }}>{task.title}</p>
+                    <p className="truncate text-xs" style={{ color: "#8BACD4" }}>{task.title}</p>
                   </div>
 
                   {stage && (
@@ -81,7 +81,7 @@ export function PendingTasks({ tasks, stageLabels, stageColors }: PendingTasksPr
 
                   <div
                     className="flex shrink-0 items-center gap-1"
-                    style={{ color: isOverdue ? "#FF4757" : "#FFC107" }}
+                    style={{ color: isOverdue ? "#FF4444" : "#FFAB40" }}
                   >
                     {isOverdue ? <AlarmClock className="h-3.5 w-3.5" /> : <Clock className="h-3.5 w-3.5" />}
                     <span className="font-mono text-xs" style={{ fontFamily: "'JetBrains Mono', monospace" }}>

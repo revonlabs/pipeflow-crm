@@ -30,29 +30,29 @@ export function MetricCardsGrid({
         label="Total de Leads"
         value={String(totalLeads)}
         change={totalLeadsChange}
-        icon={<Users className="h-5 w-5" style={{ color: "#5B7FFF" }} />}
-        accentColor="#5B7FFF"
+        icon={<Users className="h-5 w-5" style={{ color: "#4A90E2" }} />}
+        accentColor="#4A90E2"
       />
       <MetricCard
         label="Negócios Abertos"
         value={String(openDeals)}
         change={openDealsChange}
-        icon={<Briefcase className="h-5 w-5" style={{ color: "#00B4D8" }} />}
-        accentColor="#00B4D8"
+        icon={<Briefcase className="h-5 w-5" style={{ color: "#FFAB40" }} />}
+        accentColor="#FFAB40"
       />
       <MetricCard
         label="Valor do Pipeline"
         value={pipelineValue}
         change={pipelineValueChange}
-        icon={<DollarSign className="h-5 w-5" style={{ color: "#CAFF33" }} />}
-        accentColor="#CAFF33"
+        icon={<DollarSign className="h-5 w-5" style={{ color: "#FF7043" }} />}
+        accentColor="#FF7043"
       />
       <MetricCard
         label="Taxa de Conversão"
         value={conversionRate}
         change={conversionRateChange}
-        icon={<Target className="h-5 w-5" style={{ color: "#FF6B35" }} />}
-        accentColor="#FF6B35"
+        icon={<Target className="h-5 w-5" style={{ color: "#CE59B2" }} />}
+        accentColor="#CE59B2"
       />
     </div>
   );

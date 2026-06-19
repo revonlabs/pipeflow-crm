@@ -69,18 +69,18 @@ const PRO_FEATURES = [
 ];
 
 const PIPELINE_STAGES = [
-  { label: "Novo Lead",   color: "#5B7FFF", count: 8 },
-  { label: "Contato",     color: "#00B4D8", count: 5 },
-  { label: "Proposta",    color: "#CAFF33", count: 3 },
-  { label: "Negociação",  color: "#FF6B35", count: 2 },
-  { label: "Ganho",       color: "#2ED573", count: 4 },
+  { label: "Novo Lead",   color: "#4A90E2", count: 8 },
+  { label: "Contato",     color: "#FFAB40", count: 5 },
+  { label: "Proposta",    color: "#FF7043", count: 3 },
+  { label: "Negociação",  color: "#CE59B2", count: 2 },
+  { label: "Ganho",       color: "#3BFFA0", count: 4 },
 ];
 
 /* ─── Page ─── */
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-[#0A0A0A] text-[#E8E8E8] overflow-x-hidden">
+    <div className="min-h-screen bg-[#060B14] text-[#F0F8FF] overflow-x-hidden">
       <LandingNavbar />
 
       {/* ══ HERO ══ */}
@@ -88,27 +88,27 @@ export default function LandingPage() {
         {/* Orb top-center */}
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[500px] w-[700px] rounded-full bg-[#CAFF33] opacity-[0.055] blur-[130px]"
+          className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-[500px] w-[700px] rounded-full bg-[#FF7043] opacity-[0.055] blur-[130px]"
         />
-        <div aria-hidden className="pointer-events-none absolute -left-24 top-32 h-64 w-64 rounded-full bg-[#5B7FFF] opacity-[0.09] blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -right-16 bottom-24 h-56 w-56 rounded-full bg-[#CAFF33] opacity-[0.06] blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -left-24 top-32 h-64 w-64 rounded-full bg-[#4A90E2] opacity-[0.09] blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -right-16 bottom-24 h-56 w-56 rounded-full bg-[#FF7043] opacity-[0.06] blur-3xl" />
 
         {/* Badge */}
-        <span className="lp-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-[#CAFF33]/20 bg-[#CAFF33]/5 px-4 py-1.5 text-xs font-medium text-[#CAFF33]">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#CAFF33] animate-pulse" />
+        <span className="lp-fade-up mb-6 inline-flex items-center gap-2 rounded-full border border-[#FF7043]/20 bg-[#FF7043]/5 px-4 py-1.5 text-xs font-medium text-[#FF7043]">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#FF7043] animate-pulse" />
           Pipeline Kanban · Multi-workspace · Free/Pro
         </span>
 
         {/* Headline */}
         <h1 className="lp-fade-up-1 relative z-10 max-w-4xl font-display text-5xl font-bold leading-[1.06] tracking-tight text-white md:text-7xl lg:text-[80px]">
           Feche mais negócios.{" "}
-          <span className="text-[#CAFF33]" style={{ textShadow: "0 0 40px rgba(202,255,51,0.3)" }}>
+          <span className="text-[#FF7043]" style={{ textShadow: "0 0 40px rgba(255,112,67,0.3)" }}>
             Com clareza.
           </span>
         </h1>
 
         {/* Sub */}
-        <p className="lp-fade-up-2 relative z-10 mx-auto mt-6 max-w-lg text-base leading-relaxed text-[#8A8A8F] md:text-lg">
+        <p className="lp-fade-up-2 relative z-10 mx-auto mt-6 max-w-lg text-base leading-relaxed text-[#8BACD4] md:text-lg">
           PipeFlow é o CRM para PMEs e times de vendas brasileiros. Pipeline Kanban
           visual, gestão de leads, métricas em tempo real — tudo no mesmo lugar.
         </p>
@@ -117,32 +117,32 @@ export default function LandingPage() {
         <div className="lp-fade-up-3 relative z-10 mt-10 flex flex-col items-stretch gap-3 w-full max-w-xs sm:max-w-none sm:flex-row sm:items-center sm:justify-center">
           <Link
             href="/register"
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#CAFF33] px-7 py-3.5 text-sm font-semibold text-[#0A0A0A] transition-all duration-200 hover:bg-[#b8e62e] hover:shadow-[0_0_32px_rgba(202,255,51,0.35)] active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#FF7043] px-7 py-3.5 text-sm font-semibold text-[#060B14] transition-all duration-200 hover:bg-[#FF7043] hover:shadow-[0_0_32px_rgba(255,112,67,0.35)] active:scale-[0.98]"
           >
             Começar grátis
             <ArrowRight className="size-4" />
           </Link>
           <Link
             href="#features"
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#2A2A2E] px-7 py-3.5 text-sm font-medium text-[#E8E8E8] transition-all duration-200 hover:border-[#CAFF33]/30 hover:bg-[#CAFF33]/5"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#2A2A2E] px-7 py-3.5 text-sm font-medium text-[#F0F8FF] transition-all duration-200 hover:border-[#FF7043]/30 hover:bg-[#FF7043]/5"
           >
             Ver funcionalidades
           </Link>
         </div>
 
-        <p className="lp-fade-up-3 relative z-10 mt-5 text-xs text-[#555559]">
+        <p className="lp-fade-up-3 relative z-10 mt-5 text-xs text-[#4A6785]">
           Sem cartão de crédito · Plano gratuito para sempre
         </p>
 
         {/* Pipeline preview */}
         <div className="lp-fade-up-4 relative z-10 mt-16 w-full max-w-5xl">
-          <div className="overflow-hidden rounded-2xl border border-[#2A2A2E] bg-[#0C0C0E] shadow-2xl">
+          <div className="overflow-hidden rounded-2xl border border-[#2A2A2E] bg-[#060B14] shadow-2xl">
             {/* Window chrome */}
             <div className="flex items-center gap-1.5 border-b border-[#1E1E22] px-4 py-3">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#FF4757]/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#FF6B35]/70" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#2ED573]/70" />
-              <span className="ml-4 font-mono text-[10px] text-[#555559]">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#FF4444]/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#FFAB40]/70" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#3BFFA0]/70" />
+              <span className="ml-4 font-mono text-[10px] text-[#4A6785]">
                 pipeflow.app/pipeline
               </span>
             </div>
@@ -151,17 +151,17 @@ export default function LandingPage() {
               {PIPELINE_STAGES.map((stage, i) => (
                 <div
                   key={stage.label}
-                  className={`flex w-44 shrink-0 flex-col gap-2 rounded-lg border border-[#1E1E22] bg-[#141416] p-3${i >= 3 ? " hidden md:flex" : ""}`}
+                  className={`flex w-44 shrink-0 flex-col gap-2 rounded-lg border border-[#1E1E22] bg-[#0D1B2E] p-3${i >= 3 ? " hidden md:flex" : ""}`}
                 >
                   <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full" style={{ background: stage.color }} />
-                    <span className="text-[10px] font-medium text-[#8A8A8F]">{stage.label}</span>
-                    <span className="ml-auto font-mono text-[10px] text-[#555559]">{stage.count}</span>
+                    <span className="text-[10px] font-medium text-[#8BACD4]">{stage.label}</span>
+                    <span className="ml-auto font-mono text-[10px] text-[#4A6785]">{stage.count}</span>
                   </div>
                   {Array.from({ length: Math.min(stage.count, 3) }).map((_, j) => (
                     <div
                       key={j}
-                      className="h-12 rounded-md border border-[#2A2A2E] bg-[#1A1A1E] px-2.5 py-2"
+                      className="h-12 rounded-md border border-[#2A2A2E] bg-[#0D1B2E] px-2.5 py-2"
                       style={{ borderLeftWidth: 2, borderLeftColor: stage.color, opacity: 1 - j * 0.15 }}
                     >
                       <div className="h-1.5 w-16 rounded bg-[#2A2A2E]" />
@@ -177,14 +177,14 @@ export default function LandingPage() {
       </section>
 
       {/* ══ STATS ══ */}
-      <section className="border-y border-[#1E1E22] bg-[#0C0C0E] px-4 py-16">
+      <section className="border-y border-[#1E1E22] bg-[#060B14] px-4 py-16">
         <div className="mx-auto grid max-w-4xl grid-cols-2 gap-10 md:grid-cols-4">
           {STATS.map((s, i) => (
             <div key={s.value} className={`lp-fade-up-${i + 1} flex flex-col items-center gap-1 text-center`}>
-              <span className="font-display text-4xl font-bold text-[#CAFF33] md:text-5xl">
+              <span className="font-display text-4xl font-bold text-[#FF7043] md:text-5xl">
                 {s.value}
               </span>
-              <span className="text-sm text-[#8A8A8F]">{s.label}</span>
+              <span className="text-sm text-[#8BACD4]">{s.label}</span>
             </div>
           ))}
         </div>
@@ -197,7 +197,7 @@ export default function LandingPage() {
             <h2 className="font-display text-3xl font-bold text-white md:text-4xl">
               Tudo que um time de vendas precisa
             </h2>
-            <p className="mt-3 text-[#8A8A8F]">
+            <p className="mt-3 text-[#8BACD4]">
               Do primeiro contato ao fechamento — sem abas extras, sem planilhas.
             </p>
           </div>
@@ -206,13 +206,13 @@ export default function LandingPage() {
             {FEATURES.map((f) => (
               <div
                 key={f.title}
-                className="rounded-xl border border-[#2A2A2E] bg-[#141416] p-6 transition-all duration-200 hover:border-[#CAFF33]/25 hover:bg-[#1A1A1E]"
+                className="rounded-xl border border-[#2A2A2E] bg-[#0D1B2E] p-6 transition-all duration-200 hover:border-[#FF7043]/25 hover:bg-[#0D1B2E]"
               >
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#CAFF33]/10">
-                  <f.icon className="size-5 text-[#CAFF33]" />
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-[#FF7043]/10">
+                  <f.icon className="size-5 text-[#FF7043]" />
                 </div>
                 <h3 className="mb-2 font-display text-base font-semibold text-white">{f.title}</h3>
-                <p className="text-sm leading-relaxed text-[#8A8A8F]">{f.description}</p>
+                <p className="text-sm leading-relaxed text-[#8BACD4]">{f.description}</p>
               </div>
             ))}
           </div>
@@ -223,7 +223,7 @@ export default function LandingPage() {
       <section id="pricing" className="relative px-4 py-24">
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-64 w-[600px] rounded-full bg-[#CAFF33] opacity-[0.04] blur-[80px]"
+          className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 h-64 w-[600px] rounded-full bg-[#FF7043] opacity-[0.04] blur-[80px]"
         />
 
         <div className="relative mx-auto max-w-4xl">
@@ -231,35 +231,35 @@ export default function LandingPage() {
             <h2 className="font-display text-3xl font-bold text-white md:text-4xl">
               Preço simples. Sem surpresas.
             </h2>
-            <p className="mt-3 text-[#8A8A8F]">
+            <p className="mt-3 text-[#8BACD4]">
               Comece grátis e faça upgrade quando precisar crescer.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2">
             {/* Free */}
-            <div className="flex flex-col rounded-xl border border-[#2A2A2E] bg-[#141416] p-8">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-[#8A8A8F]">
+            <div className="flex flex-col rounded-xl border border-[#2A2A2E] bg-[#0D1B2E] p-8">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-[#8BACD4]">
                 Grátis
               </p>
               <p className="font-display text-4xl font-bold text-white">
                 R$0
-                <span className="text-base font-normal text-[#8A8A8F]">/mês</span>
+                <span className="text-base font-normal text-[#8BACD4]">/mês</span>
               </p>
-              <p className="mt-2 mb-8 text-sm text-[#8A8A8F]">
+              <p className="mt-2 mb-8 text-sm text-[#8BACD4]">
                 Para freelancers e times pequenos.
               </p>
               <ul className="mb-8 flex-1 space-y-3">
                 {FREE_FEATURES.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-sm text-[#E8E8E8]">
-                    <Check className="size-4 shrink-0 text-[#2ED573]" />
+                  <li key={f} className="flex items-center gap-3 text-sm text-[#F0F8FF]">
+                    <Check className="size-4 shrink-0 text-[#3BFFA0]" />
                     {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/register"
-                className="block w-full rounded-lg border border-[#2A2A2E] py-3 text-center text-sm font-medium text-[#E8E8E8] transition-all duration-200 hover:border-[#CAFF33]/30 hover:bg-[#CAFF33]/5"
+                className="block w-full rounded-lg border border-[#2A2A2E] py-3 text-center text-sm font-medium text-[#F0F8FF] transition-all duration-200 hover:border-[#FF7043]/30 hover:bg-[#FF7043]/5"
               >
                 Começar grátis
               </Link>
@@ -267,33 +267,33 @@ export default function LandingPage() {
 
             {/* Pro */}
             <div
-              className="relative flex flex-col overflow-hidden rounded-xl border border-[#CAFF33]/30 bg-[#141416] p-8"
-              style={{ boxShadow: "inset 0 0 50px rgba(202,255,51,0.05), 0 0 40px rgba(202,255,51,0.06)" }}
+              className="relative flex flex-col overflow-hidden rounded-xl border border-[#FF7043]/30 bg-[#0D1B2E] p-8"
+              style={{ boxShadow: "inset 0 0 50px rgba(255,112,67,0.05), 0 0 40px rgba(255,112,67,0.06)" }}
             >
-              <span className="absolute right-6 top-6 rounded-full bg-[#CAFF33] px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#0A0A0A]">
+              <span className="absolute right-6 top-6 rounded-full bg-[#FF7043] px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-[#060B14]">
                 Popular
               </span>
-              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-[#CAFF33]">
+              <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-[#FF7043]">
                 Pro
               </p>
               <p className="font-display text-4xl font-bold text-white">
                 R$49
-                <span className="text-base font-normal text-[#8A8A8F]">/mês</span>
+                <span className="text-base font-normal text-[#8BACD4]">/mês</span>
               </p>
-              <p className="mt-2 mb-8 text-sm text-[#8A8A8F]">
+              <p className="mt-2 mb-8 text-sm text-[#8BACD4]">
                 Para times que querem crescer sem limite.
               </p>
               <ul className="mb-8 flex-1 space-y-3">
                 {PRO_FEATURES.map((f) => (
-                  <li key={f} className="flex items-center gap-3 text-sm text-[#E8E8E8]">
-                    <Check className="size-4 shrink-0 text-[#CAFF33]" />
+                  <li key={f} className="flex items-center gap-3 text-sm text-[#F0F8FF]">
+                    <Check className="size-4 shrink-0 text-[#FF7043]" />
                     {f}
                   </li>
                 ))}
               </ul>
               <Link
                 href="/register"
-                className="block w-full rounded-lg bg-[#CAFF33] py-3 text-center text-sm font-semibold text-[#0A0A0A] transition-all duration-200 hover:bg-[#b8e62e] hover:shadow-[0_0_24px_rgba(202,255,51,0.3)] active:scale-[0.98]"
+                className="block w-full rounded-lg bg-[#FF7043] py-3 text-center text-sm font-semibold text-[#060B14] transition-all duration-200 hover:bg-[#FF7043] hover:shadow-[0_0_24px_rgba(255,112,67,0.3)] active:scale-[0.98]"
               >
                 Assinar Pro
               </Link>
@@ -306,26 +306,26 @@ export default function LandingPage() {
       <section className="relative overflow-hidden px-4 py-24">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#CAFF33]/[0.025] to-transparent"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[#FF7043]/[0.025] to-transparent"
         />
         <div className="relative mx-auto max-w-2xl text-center">
           <h2 className="font-display text-3xl font-bold text-white md:text-5xl">
             Pronto para fechar mais negócios?
           </h2>
-          <p className="mt-4 text-[#8A8A8F]">
+          <p className="mt-4 text-[#8BACD4]">
             Crie sua conta grátis em menos de 1 minuto. Sem cartão de crédito.
           </p>
           <div className="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-center sm:items-stretch-none">
             <Link
               href="/register"
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#CAFF33] px-8 py-4 text-base font-semibold text-[#0A0A0A] transition-all duration-200 hover:bg-[#b8e62e] hover:shadow-[0_0_40px_rgba(202,255,51,0.4)] active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#FF7043] px-8 py-4 text-base font-semibold text-[#060B14] transition-all duration-200 hover:bg-[#FF7043] hover:shadow-[0_0_40px_rgba(255,112,67,0.4)] active:scale-[0.98]"
             >
               Criar conta grátis
               <ArrowRight className="size-4" />
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#2A2A2E] px-8 py-4 text-base font-medium text-[#8A8A8F] transition-all duration-200 hover:border-[#CAFF33]/30 hover:text-[#E8E8E8]"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#2A2A2E] px-8 py-4 text-base font-medium text-[#8BACD4] transition-all duration-200 hover:border-[#FF7043]/30 hover:text-[#F0F8FF]"
             >
               Já tenho conta
             </Link>
@@ -338,23 +338,23 @@ export default function LandingPage() {
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
           {/* Logo */}
           <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#CAFF33]">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FF7043]">
               <svg viewBox="0 0 20 20" fill="none" className="h-4 w-4" aria-hidden>
-                <circle cx="5" cy="10" r="2.5" fill="#0A0A0A" />
-                <circle cx="10" cy="6" r="2.5" fill="#0A0A0A" />
-                <circle cx="15" cy="10" r="2.5" fill="#0A0A0A" />
-                <path d="M7.5 10h5M10 8.5V6" stroke="#0A0A0A" strokeWidth="1.5" strokeLinecap="round" />
+                <circle cx="5" cy="10" r="2.5" fill="#060B14" />
+                <circle cx="10" cy="6" r="2.5" fill="#060B14" />
+                <circle cx="15" cy="10" r="2.5" fill="#060B14" />
+                <path d="M7.5 10h5M10 8.5V6" stroke="#060B14" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </div>
             <span className="font-display text-sm font-bold text-white">PipeFlow</span>
           </div>
-          <p className="text-xs text-[#555559]">
+          <p className="text-xs text-[#4A6785]">
             © {new Date().getFullYear()} PipeFlow. Todos os direitos reservados.
           </p>
-          <div className="flex gap-5 text-xs text-[#555559]">
-            <Link href="#" className="transition-colors hover:text-[#CAFF33]">Termos</Link>
-            <Link href="#" className="transition-colors hover:text-[#CAFF33]">Privacidade</Link>
-            <Link href="#" className="transition-colors hover:text-[#CAFF33]">Contato</Link>
+          <div className="flex gap-5 text-xs text-[#4A6785]">
+            <Link href="#" className="transition-colors hover:text-[#FF7043]">Termos</Link>
+            <Link href="#" className="transition-colors hover:text-[#FF7043]">Privacidade</Link>
+            <Link href="#" className="transition-colors hover:text-[#FF7043]">Contato</Link>
           </div>
         </div>
       </footer>
