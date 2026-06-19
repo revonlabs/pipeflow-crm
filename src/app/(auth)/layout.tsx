@@ -31,8 +31,9 @@ export default function AuthLayout({
               />
             </svg>
           </div>
-          <span className="text-xl font-semibold tracking-tight text-white">
-            PipeFlow
+          <span className="text-xl tracking-tight text-white">
+            <span className="font-black">Revon</span>{" "}
+            <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em]">Studio CRM</span>
           </span>
         </div>
 

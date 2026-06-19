@@ -55,7 +55,7 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
         <Alert className="border-green-500/50 bg-green-500/10">
           <Check className="h-4 w-4 text-green-500" />
           <AlertDescription className="text-green-400">
-            Assinatura ativada com sucesso! Bem-vindo ao PipeFlow Pro.
+            Assinatura ativada com sucesso! Bem-vindo ao Revon Studio CRM Pro.
           </AlertDescription>
         </Alert>
       )}

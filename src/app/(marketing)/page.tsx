@@ -109,7 +109,7 @@ export default function LandingPage() {
 
         {/* Sub */}
         <p className="lp-fade-up-2 relative z-10 mx-auto mt-6 max-w-lg text-base leading-relaxed text-[#8BACD4] md:text-lg">
-          PipeFlow é o CRM para PMEs e times de vendas brasileiros. Pipeline Kanban
+          Revon Studio CRM é o CRM para PMEs e times de vendas brasileiros. Pipeline Kanban
           visual, gestão de leads, métricas em tempo real — tudo no mesmo lugar.
         </p>
 
@@ -346,10 +346,13 @@ export default function LandingPage() {
                 <path d="M7.5 10h5M10 8.5V6" stroke="#060B14" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </div>
-            <span className="font-display text-sm font-bold text-white">PipeFlow</span>
+            <span className="font-display text-sm tracking-tight text-white">
+              <span className="font-black">Revon</span>{" "}
+              <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em] text-[11px]">Studio CRM</span>
+            </span>
           </div>
           <p className="text-xs text-[#4A6785]">
-            © {new Date().getFullYear()} PipeFlow. Todos os direitos reservados.
+            © {new Date().getFullYear()} Revon Studio CRM. Todos os direitos reservados.
           </p>
           <div className="flex gap-5 text-xs text-[#4A6785]">
             <Link href="#" className="transition-colors hover:text-[#FF7043]">Termos</Link>

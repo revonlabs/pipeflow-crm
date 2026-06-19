@@ -97,9 +97,9 @@ export async function inviteMemberAction(
 
   const resend = getResendClient()
   const { error: emailError } = await resend.emails.send({
-    from: 'PipeFlow <onboarding@resend.dev>',
+    from: 'Revon Studio CRM <onboarding@resend.dev>',
     to: toEmail,
-    subject: `Você foi convidado para ${ctx.workspace.name} no PipeFlow`,
+    subject: `Você foi convidado para ${ctx.workspace.name} no Revon Studio CRM`,
     html: renderWorkspaceInviteEmail({
       workspaceName: ctx.workspace.name,
       inviterName,

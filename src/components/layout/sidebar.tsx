@@ -39,10 +39,11 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
           <Zap className="h-4 w-4" style={{ color: "#060B14" }} />
         </div>
         <span
-          className="font-bold text-[17px] text-[#F0F8FF] tracking-tight"
+          className="text-[17px] tracking-tight"
           style={{ fontFamily: "var(--font-sans, 'Inter', sans-serif)" }}
         >
-          PipeFlow
+          <span className="font-black text-[#F0F8FF]">Revon</span>{" "}
+          <span className="font-light text-[#8BACD4] uppercase tracking-[0.1em] text-[13px]">Studio CRM</span>
         </span>
       </div>
 
@@ -93,7 +94,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
           className="text-[10px] uppercase tracking-[0.14em] text-[#2A2A2E]"
           style={{ fontFamily: "var(--font-mono, 'JetBrains Mono', monospace)" }}
         >
-          PipeFlow CRM · v0.1
+          Revon Studio CRM · v0.1
         </p>
       </div>
     </aside>
