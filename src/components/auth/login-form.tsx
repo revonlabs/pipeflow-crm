@@ -138,15 +138,6 @@ export function LoginForm() {
         </div>
       )}
 
-      <p className="mt-6 text-center text-sm text-white/40">
-        Não tem uma conta?{" "}
-        <Link
-          href={inviteToken ? `/register?invite=${inviteToken}` : "/register"}
-          className="text-[#4F8EF7] hover:underline"
-        >
-          Criar conta grátis
-        </Link>
-      </p>
     </div>
   );
 }

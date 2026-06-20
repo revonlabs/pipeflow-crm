@@ -20,7 +20,7 @@ export default function AuthLayout({
       <div className="relative z-10 w-full max-w-md px-4 py-12">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
-          <Logo height={64} />
+          <Logo height={100} />
         </div>
 
         {children}
