@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { getWorkspaceContext } from '@/lib/workspace'
+import { isPlatformAdmin } from '@/lib/platform-admin'
 
-const TABS = [
+const BASE_TABS = [
   { href: '/settings/workspace', label: 'Workspace' },
   { href: '/settings/members', label: 'Membros' },
   { href: '/settings/lost-reasons', label: 'Motivos de Perda' },
@@ -16,6 +17,10 @@ export default async function SettingsLayout({
 }) {
   const ctx = await getWorkspaceContext()
   if (!ctx) redirect('/onboarding')
+
+  const TABS = (await isPlatformAdmin())
+    ? [...BASE_TABS, { href: '/settings/clients', label: 'Clientes' }]
+    : BASE_TABS
 
   return (
     <div className="space-y-6">
