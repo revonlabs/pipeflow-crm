@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { slugify } from '@/lib/slug'
 
 export async function createWorkspaceAction(name: string): Promise<{ error?: string }> {
   const supabase = await getSupabaseServerClient()
@@ -10,13 +11,7 @@ export async function createWorkspaceAction(name: string): Promise<{ error?: str
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   if (userError || !user) return { error: 'Não autenticado' }
 
-  const slug = name
-    .toLowerCase()
-    .normalize('NFKD')
-    .replace(/\p{M}/gu, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 50)
+  const slug = slugify(name)
 
   if (!slug) return { error: 'Nome inválido para gerar um slug.' }
 

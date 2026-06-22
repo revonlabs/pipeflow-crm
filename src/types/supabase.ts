@@ -251,6 +251,21 @@ export type Database = {
           },
         ]
       }
+      platform_admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       processed_stripe_events: {
         Row: {
           event_id: string
@@ -534,6 +549,10 @@ export type Database = {
       create_workspace: {
         Args: { workspace_name: string; workspace_slug: string }
         Returns: string
+      }
+      is_platform_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
       is_workspace_member: {
         Args: { p_workspace_id: string }
