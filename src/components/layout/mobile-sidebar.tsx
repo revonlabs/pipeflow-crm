@@ -6,16 +6,18 @@ import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { Sidebar } from "./sidebar";
-import type { Workspace } from "@/types";
+import type { Workspace, WorkspaceRole } from "@/types";
 
 interface MobileSidebarTriggerProps {
   activeWorkspace: Workspace;
   allWorkspaces: Workspace[];
+  role: WorkspaceRole;
 }
 
 export function MobileSidebarTrigger({
   activeWorkspace,
   allWorkspaces,
+  role,
 }: MobileSidebarTriggerProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -46,6 +48,7 @@ export function MobileSidebarTrigger({
           <Sidebar
             activeWorkspace={activeWorkspace}
             allWorkspaces={allWorkspaces}
+            role={role}
           />
         </SheetContent>
       </Sheet>
