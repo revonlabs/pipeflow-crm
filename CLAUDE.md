@@ -151,6 +151,9 @@ STRIPE_PRO_PRICE_ID=
 # Resend
 RESEND_API_KEY=
 
+# WhatsApp Monitor (módulo /wa)
+WA_MASTER_KEY=                      # obrigatória — gerar com `openssl rand -base64 32`; ver src/lib/wa/README.md
+
 # App
 NEXT_PUBLIC_APP_URL=                # ex: https://pipeflow.vercel.app
 ```

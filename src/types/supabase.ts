@@ -484,6 +484,7 @@ export type Database = {
           display_name: string | null
           id: string
           is_blocked: boolean
+          key_version: number
           last_message_at: string | null
           phone_number: string
           profile_pic_url: string | null
@@ -496,6 +497,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           is_blocked?: boolean
+          key_version?: number
           last_message_at?: string | null
           phone_number: string
           profile_pic_url?: string | null
@@ -508,6 +510,7 @@ export type Database = {
           display_name?: string | null
           id?: string
           is_blocked?: boolean
+          key_version?: number
           last_message_at?: string | null
           phone_number?: string
           profile_pic_url?: string | null
@@ -653,6 +656,7 @@ export type Database = {
           evolution_message_id: string
           id: string
           intervention_user_id: string | null
+          key_version: number
           media_mime: string | null
           media_size_bytes: number | null
           media_url: string | null
@@ -671,6 +675,7 @@ export type Database = {
           evolution_message_id: string
           id?: string
           intervention_user_id?: string | null
+          key_version?: number
           media_mime?: string | null
           media_size_bytes?: number | null
           media_url?: string | null
@@ -689,6 +694,7 @@ export type Database = {
           evolution_message_id?: string
           id?: string
           intervention_user_id?: string | null
+          key_version?: number
           media_mime?: string | null
           media_size_bytes?: number | null
           media_url?: string | null
@@ -920,6 +926,50 @@ export type Database = {
       is_workspace_member: {
         Args: { p_workspace_id: string }
         Returns: boolean
+      }
+      wa_decrypt_content: {
+        Args: {
+          p_ciphertext: string
+          p_key_version: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_decrypt_content_rpc: {
+        Args: {
+          p_ciphertext: string
+          p_key_version: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_derive_workspace_key: {
+        Args: {
+          p_key_version: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_encrypt_content: {
+        Args: {
+          p_key_version: number
+          p_master_key: string
+          p_plaintext: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_encrypt_content_rpc: {
+        Args: {
+          p_key_version: number
+          p_master_key: string
+          p_plaintext: string
+          p_workspace_id: string
+        }
+        Returns: string
       }
     }
     Enums: {
