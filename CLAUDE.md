@@ -153,6 +153,7 @@ RESEND_API_KEY=
 
 # WhatsApp Monitor (módulo /wa)
 WA_MASTER_KEY=                      # obrigatória — gerar com `openssl rand -base64 32`; ver src/lib/wa/README.md
+WA_WORKER_SECRET=                   # obrigatória — gerar com `openssl rand -base64 32`; protege o endpoint interno do worker (pg_cron)
 EVOLUTION_API_URL=                  # base URL da instância Evolution API (self-hosted/cloud)
 EVOLUTION_API_KEY=                  # API key global, enviada no header `apikey`
 

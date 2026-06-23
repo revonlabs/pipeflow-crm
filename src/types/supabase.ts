@@ -945,6 +945,28 @@ export type Database = {
         }
         Returns: string
       }
+      wa_dequeue_webhook_items: {
+        Args: { p_limit?: number }
+        Returns: {
+          attempts: number
+          event_type: string
+          id: number
+          instance_id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          processed_at: string | null
+          received_at: string
+          status: string
+          workspace_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "wa_webhook_queue"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       wa_derive_workspace_key: {
         Args: {
           p_key_version: number
