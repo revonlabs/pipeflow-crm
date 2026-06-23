@@ -31,7 +31,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA extensions;
 -- funções _rpc abaixo, como SECURITY DEFINER (dono da função, não o caller).
 CREATE OR REPLACE FUNCTION public.wa_derive_workspace_key(p_workspace_id UUID, p_key_version INTEGER, p_master_key TEXT)
 RETURNS BYTEA
-LANGUAGE plpgsql IMMUTABLE SECURITY DEFINER
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER
 SET search_path = ''
 AS $$
 BEGIN
@@ -63,7 +63,7 @@ REVOKE EXECUTE ON FUNCTION public.wa_derive_workspace_key(UUID, INTEGER, TEXT) F
 
 CREATE OR REPLACE FUNCTION public.wa_encrypt_content(p_plaintext TEXT, p_workspace_id UUID, p_key_version INTEGER, p_master_key TEXT)
 RETURNS BYTEA
-LANGUAGE plpgsql IMMUTABLE SECURITY DEFINER
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER
 SET search_path = ''
 AS $$
 DECLARE
@@ -80,7 +80,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION public.wa_decrypt_content(p_ciphertext BYTEA, p_workspace_id UUID, p_key_version INTEGER, p_master_key TEXT)
 RETURNS TEXT
-LANGUAGE plpgsql IMMUTABLE SECURITY DEFINER
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER
 SET search_path = ''
 AS $$
 DECLARE
