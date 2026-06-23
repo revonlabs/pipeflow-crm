@@ -153,6 +153,8 @@ RESEND_API_KEY=
 
 # WhatsApp Monitor (módulo /wa)
 WA_MASTER_KEY=                      # obrigatória — gerar com `openssl rand -base64 32`; ver src/lib/wa/README.md
+EVOLUTION_API_URL=                  # base URL da instância Evolution API (self-hosted/cloud)
+EVOLUTION_API_KEY=                  # API key global, enviada no header `apikey`
 
 # App
 NEXT_PUBLIC_APP_URL=                # ex: https://pipeflow.vercel.app
