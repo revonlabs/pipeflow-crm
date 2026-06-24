@@ -4,6 +4,7 @@ import { logWaAudit } from "@/lib/wa/audit";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getConversationsAction } from "@/lib/actions/wa-conversations";
 import { ConversationList } from "@/components/wa/conversation-list";
+import { WaSubnav } from "@/components/wa/wa-subnav";
 
 export default async function WhatsAppMonitorPage() {
   let ctx;
@@ -50,6 +51,7 @@ export default async function WhatsAppMonitorPage() {
           Conversas monitoradas em todas as instâncias do workspace.
         </p>
       </div>
+      <WaSubnav />
       <ConversationList
         workspaceId={ctx.workspace.id}
         initialConversations={initialConversations}

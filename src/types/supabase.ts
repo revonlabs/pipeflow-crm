@@ -594,6 +594,41 @@ export type Database = {
           },
         ]
       }
+      wa_digest_config: {
+        Row: {
+          enabled: boolean
+          last_sent_at: string | null
+          period_hours: number
+          schedule_time: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          enabled?: boolean
+          last_sent_at?: string | null
+          period_hours?: number
+          schedule_time?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          enabled?: boolean
+          last_sent_at?: string | null
+          period_hours?: number
+          schedule_time?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_digest_config_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       wa_instances: {
         Row: {
           created_at: string
@@ -927,6 +962,11 @@ export type Database = {
         Args: { p_workspace_id: string }
         Returns: boolean
       }
+      wa_aggregate_metrics: { Args: { p_date?: string }; Returns: undefined }
+      wa_claim_digest_send: {
+        Args: { p_workspace_id: string }
+        Returns: boolean
+      }
       wa_decrypt_content: {
         Args: {
           p_ciphertext: string
@@ -975,6 +1015,13 @@ export type Database = {
         }
         Returns: string
       }
+      wa_due_digest_workspaces: {
+        Args: { p_window_end: string; p_window_start: string }
+        Returns: {
+          period_hours: number
+          workspace_id: string
+        }[]
+      }
       wa_encrypt_content: {
         Args: {
           p_key_version: number
@@ -1013,6 +1060,15 @@ export type Database = {
           timestamp_wa: string
         }[]
       }
+      wa_get_digest_config_rpc: {
+        Args: { p_workspace_id: string }
+        Returns: {
+          enabled: boolean
+          last_sent_at: string
+          period_hours: number
+          schedule_time: string
+        }[]
+      }
       wa_get_message_rpc: {
         Args: {
           p_master_key: string
@@ -1030,6 +1086,18 @@ export type Database = {
           sent_by: string
           status: string
           timestamp_wa: string
+        }[]
+      }
+      wa_get_metrics_overview_rpc: {
+        Args: { p_from: string; p_to: string; p_workspace_id: string }
+        Returns: {
+          avg_first_response_seconds: number
+          conversations_started: number
+          conversations_unanswered_1h: number
+          date: string
+          total_in: number
+          total_out: number
+          unique_contacts: number
         }[]
       }
       wa_list_conversations_rpc: {
@@ -1052,6 +1120,15 @@ export type Database = {
           status: string
           unread_count: number
         }[]
+      }
+      wa_upsert_digest_config_rpc: {
+        Args: {
+          p_enabled: boolean
+          p_period_hours: number
+          p_schedule_time: string
+          p_workspace_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
