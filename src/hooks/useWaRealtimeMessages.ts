@@ -37,7 +37,12 @@ export function useWaRealtimeMessages(
           if (!messageId) return;
 
           getMessageAction(messageId).then((result) => {
-            if ("message" in result) onMessageRef.current(result.message);
+            // Defesa em profundidade: o filtro do canal já restringe a este
+            // conversation_id, mas não confiamos só nisso (ex.: reconexão
+            // que reaplique o filtro de forma inconsistente).
+            if ("message" in result && result.conversationId === conversationId) {
+              onMessageRef.current(result.message);
+            }
           });
         }
       )
