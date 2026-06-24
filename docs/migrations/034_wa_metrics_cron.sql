@@ -35,7 +35,9 @@ SELECT cron.schedule(
 -- granularidade de entrega de até 15min do horário escolhido pelo cliente.
 SELECT cron.schedule(
   'wa_send_digests',
-  '15 minutes',
+  '*/15 * * * *', -- sintaxe de intervalo do Supabase Cron só aceita segundos
+                  -- ('[1-59] seconds'), não minutos — '15 minutes' deu
+                  -- "invalid schedule" ao aplicar; cron syntax padrão funciona.
   $$
   SELECT net.http_post(
     url := 'https://crm.revonlabs.com.br/api/wa/worker/send-digests',
