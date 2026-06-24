@@ -32,6 +32,7 @@ export default async function AppLayout({
           <Sidebar
             activeWorkspace={ctx.workspace}
             allWorkspaces={ctx.allWorkspaces}
+            role={ctx.role}
           />
         </div>
 
@@ -41,6 +42,7 @@ export default async function AppLayout({
             userEmail={userEmail}
             activeWorkspace={ctx.workspace}
             allWorkspaces={ctx.allWorkspaces}
+            role={ctx.role}
           />
           <main className="flex-1 overflow-y-auto p-4 lg:p-6">{children}</main>
         </div>

@@ -13,16 +13,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MobileSidebarTrigger } from "./mobile-sidebar";
 import { signOutAction } from "@/lib/actions/auth";
-import type { Workspace } from "@/types";
+import type { Workspace, WorkspaceRole } from "@/types";
 
 interface NavbarProps {
   userName: string;
   userEmail: string;
   activeWorkspace: Workspace;
   allWorkspaces: Workspace[];
+  role: WorkspaceRole;
 }
 
-export function Navbar({ userName, userEmail, activeWorkspace, allWorkspaces }: NavbarProps) {
+export function Navbar({ userName, userEmail, activeWorkspace, allWorkspaces, role }: NavbarProps) {
   const initials = userName
     .split(" ")
     .slice(0, 2)
@@ -35,6 +36,7 @@ export function Navbar({ userName, userEmail, activeWorkspace, allWorkspaces }: 
       <MobileSidebarTrigger
         activeWorkspace={activeWorkspace}
         allWorkspaces={allWorkspaces}
+        role={role}
       />
 
       <div className="flex-1" />

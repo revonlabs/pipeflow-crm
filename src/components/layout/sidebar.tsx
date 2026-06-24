@@ -2,26 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Kanban, Settings } from "lucide-react";
+import { LayoutDashboard, Users, Kanban, Settings, MessageCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/logo";
 import { WorkspaceSwitcher } from "./workspace-switcher";
-import type { Workspace } from "@/types";
+import type { Workspace, WorkspaceRole } from "@/types";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/leads", label: "Leads", icon: Users },
-  { href: "/pipeline", label: "Pipeline", icon: Kanban },
-  { href: "/settings", label: "Configurações", icon: Settings },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, adminOnly: false },
+  { href: "/leads", label: "Leads", icon: Users, adminOnly: false },
+  { href: "/pipeline", label: "Pipeline", icon: Kanban, adminOnly: false },
+  { href: "/wa", label: "WhatsApp", icon: MessageCircle, adminOnly: true },
+  { href: "/settings", label: "Configurações", icon: Settings, adminOnly: false },
 ];
 
 interface SidebarProps {
   activeWorkspace: Workspace;
   allWorkspaces: Workspace[];
+  role: WorkspaceRole;
 }
 
-export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
+export function Sidebar({ activeWorkspace, allWorkspaces, role }: SidebarProps) {
   const pathname = usePathname();
+
+  // `role` chega como prop do Server Component (AppLayout → getWorkspaceContext()),
+  // não de fetch/hook no client: o filtro é síncrono na primeira renderização,
+  // então o item admin-only nunca aparece e desaparece (sem flash de conteúdo).
+  const visibleNavItems = NAV_ITEMS.filter((item) => !item.adminOnly || role === "admin");
 
   return (
     <aside
@@ -46,7 +53,7 @@ export function Sidebar({ activeWorkspace, allWorkspaces }: SidebarProps) {
 
       {/* Navigation */}
       <nav className="flex-1 px-2 py-4 space-y-0.5">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+        {visibleNavItems.map(({ href, label, icon: Icon }) => {
           const isActive = pathname === href || pathname.startsWith(href + "/");
           return (
             <Link

@@ -438,6 +438,412 @@ export type Database = {
           },
         ]
       }
+      wa_audit_log: {
+        Row: {
+          action: string
+          created_at: string
+          id: number
+          ip_address: unknown
+          metadata: Json | null
+          target_id: string | null
+          target_type: string | null
+          user_agent: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          id?: number
+          ip_address?: unknown
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+          user_id: string
+          workspace_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          id?: number
+          ip_address?: unknown
+          metadata?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+          user_id?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      wa_contacts: {
+        Row: {
+          anonymized_at: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          is_blocked: boolean
+          key_version: number
+          last_message_at: string | null
+          phone_number: string
+          profile_pic_url: string | null
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          anonymized_at?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          is_blocked?: boolean
+          key_version?: number
+          last_message_at?: string | null
+          phone_number: string
+          profile_pic_url?: string | null
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          anonymized_at?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          is_blocked?: boolean
+          key_version?: number
+          last_message_at?: string | null
+          phone_number?: string
+          profile_pic_url?: string | null
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_contacts_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wa_conversations: {
+        Row: {
+          contact_id: string
+          created_at: string
+          first_response_at: string | null
+          id: string
+          instance_id: string
+          last_message_at: string | null
+          last_message_preview: string | null
+          sla_breach_at: string | null
+          status: string
+          unread_count: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          contact_id: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          instance_id: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          sla_breach_at?: string | null
+          status?: string
+          unread_count?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          contact_id?: string
+          created_at?: string
+          first_response_at?: string | null
+          id?: string
+          instance_id?: string
+          last_message_at?: string | null
+          last_message_preview?: string | null
+          sla_breach_at?: string | null
+          status?: string
+          unread_count?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_conversations_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "wa_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wa_conversations_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "wa_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wa_conversations_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wa_digest_config: {
+        Row: {
+          enabled: boolean
+          last_sent_at: string | null
+          period_hours: number
+          schedule_time: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          enabled?: boolean
+          last_sent_at?: string | null
+          period_hours?: number
+          schedule_time?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          enabled?: boolean
+          last_sent_at?: string | null
+          period_hours?: number
+          schedule_time?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_digest_config_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wa_instances: {
+        Row: {
+          created_at: string
+          display_name: string
+          evolution_instance_name: string
+          id: string
+          last_seen_at: string | null
+          owner_user_id: string | null
+          phone_number: string
+          status: string
+          updated_at: string
+          webhook_secret: string
+          webhook_token: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          evolution_instance_name: string
+          id?: string
+          last_seen_at?: string | null
+          owner_user_id?: string | null
+          phone_number: string
+          status?: string
+          updated_at?: string
+          webhook_secret?: string
+          webhook_token?: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          evolution_instance_name?: string
+          id?: string
+          last_seen_at?: string | null
+          owner_user_id?: string | null
+          phone_number?: string
+          status?: string
+          updated_at?: string
+          webhook_secret?: string
+          webhook_token?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_instances_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wa_messages: {
+        Row: {
+          content_text: string | null
+          content_type: string
+          conversation_id: string
+          direction: string
+          evolution_message_id: string
+          id: string
+          intervention_user_id: string | null
+          key_version: number
+          media_mime: string | null
+          media_size_bytes: number | null
+          media_url: string | null
+          metadata: Json | null
+          received_at: string
+          sent_by: string
+          status: string | null
+          timestamp_wa: string
+          workspace_id: string
+        }
+        Insert: {
+          content_text?: string | null
+          content_type: string
+          conversation_id: string
+          direction: string
+          evolution_message_id: string
+          id?: string
+          intervention_user_id?: string | null
+          key_version?: number
+          media_mime?: string | null
+          media_size_bytes?: number | null
+          media_url?: string | null
+          metadata?: Json | null
+          received_at?: string
+          sent_by: string
+          status?: string | null
+          timestamp_wa: string
+          workspace_id: string
+        }
+        Update: {
+          content_text?: string | null
+          content_type?: string
+          conversation_id?: string
+          direction?: string
+          evolution_message_id?: string
+          id?: string
+          intervention_user_id?: string | null
+          key_version?: number
+          media_mime?: string | null
+          media_size_bytes?: number | null
+          media_url?: string | null
+          metadata?: Json | null
+          received_at?: string
+          sent_by?: string
+          status?: string | null
+          timestamp_wa?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wa_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "wa_conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wa_messages_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wa_response_metrics: {
+        Row: {
+          avg_first_response_seconds: number | null
+          avg_response_seconds: number | null
+          conversations_started: number
+          conversations_unanswered_1h: number
+          date: string
+          instance_id: string
+          peak_hour: number | null
+          total_in: number
+          total_out: number
+          unique_contacts: number
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          avg_first_response_seconds?: number | null
+          avg_response_seconds?: number | null
+          conversations_started?: number
+          conversations_unanswered_1h?: number
+          date: string
+          instance_id: string
+          peak_hour?: number | null
+          total_in?: number
+          total_out?: number
+          unique_contacts?: number
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          avg_first_response_seconds?: number | null
+          avg_response_seconds?: number | null
+          conversations_started?: number
+          conversations_unanswered_1h?: number
+          date?: string
+          instance_id?: string
+          peak_hour?: number | null
+          total_in?: number
+          total_out?: number
+          unique_contacts?: number
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
+      wa_webhook_queue: {
+        Row: {
+          attempts: number
+          event_type: string
+          id: number
+          instance_id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          processed_at: string | null
+          received_at: string
+          status: string
+          workspace_id: string
+        }
+        Insert: {
+          attempts?: number
+          event_type: string
+          id?: number
+          instance_id: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload: Json
+          processed_at?: string | null
+          received_at?: string
+          status?: string
+          workspace_id: string
+        }
+        Update: {
+          attempts?: number
+          event_type?: string
+          id?: number
+          instance_id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          processed_at?: string | null
+          received_at?: string
+          status?: string
+          workspace_id?: string
+        }
+        Relationships: []
+      }
       workspace_invites: {
         Row: {
           accepted_at: string | null
@@ -550,13 +956,179 @@ export type Database = {
         Args: { workspace_name: string; workspace_slug: string }
         Returns: string
       }
-      is_platform_admin: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_platform_admin: { Args: never; Returns: boolean }
+      is_workspace_admin: { Args: { p_workspace_id: string }; Returns: boolean }
       is_workspace_member: {
         Args: { p_workspace_id: string }
         Returns: boolean
+      }
+      wa_aggregate_metrics: { Args: { p_date?: string }; Returns: undefined }
+      wa_claim_digest_send: {
+        Args: { p_workspace_id: string }
+        Returns: boolean
+      }
+      wa_decrypt_content: {
+        Args: {
+          p_ciphertext: string
+          p_key_version: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_decrypt_content_rpc: {
+        Args: {
+          p_ciphertext: string
+          p_key_version: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_dequeue_webhook_items: {
+        Args: { p_limit?: number }
+        Returns: {
+          attempts: number
+          event_type: string
+          id: number
+          instance_id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          processed_at: string | null
+          received_at: string
+          status: string
+          workspace_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "wa_webhook_queue"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      wa_derive_workspace_key: {
+        Args: {
+          p_key_version: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_due_digest_workspaces: {
+        Args: { p_window_end: string; p_window_start: string }
+        Returns: {
+          period_hours: number
+          workspace_id: string
+        }[]
+      }
+      wa_encrypt_content: {
+        Args: {
+          p_key_version: number
+          p_master_key: string
+          p_plaintext: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_encrypt_content_rpc: {
+        Args: {
+          p_key_version: number
+          p_master_key: string
+          p_plaintext: string
+          p_workspace_id: string
+        }
+        Returns: string
+      }
+      wa_get_conversation_messages_rpc: {
+        Args: {
+          p_before?: string
+          p_conversation_id: string
+          p_limit?: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: {
+          content_text: string
+          content_type: string
+          direction: string
+          id: string
+          media_mime: string
+          media_url: string
+          sent_by: string
+          status: string
+          timestamp_wa: string
+        }[]
+      }
+      wa_get_digest_config_rpc: {
+        Args: { p_workspace_id: string }
+        Returns: {
+          enabled: boolean
+          last_sent_at: string
+          period_hours: number
+          schedule_time: string
+        }[]
+      }
+      wa_get_message_rpc: {
+        Args: {
+          p_master_key: string
+          p_message_id: string
+          p_workspace_id: string
+        }
+        Returns: {
+          content_text: string
+          content_type: string
+          conversation_id: string
+          direction: string
+          id: string
+          media_mime: string
+          media_url: string
+          sent_by: string
+          status: string
+          timestamp_wa: string
+        }[]
+      }
+      wa_get_metrics_overview_rpc: {
+        Args: { p_from: string; p_to: string; p_workspace_id: string }
+        Returns: {
+          avg_first_response_seconds: number
+          conversations_started: number
+          conversations_unanswered_1h: number
+          date: string
+          total_in: number
+          total_out: number
+          unique_contacts: number
+        }[]
+      }
+      wa_list_conversations_rpc: {
+        Args: {
+          p_instance_id?: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_status?: string
+          p_workspace_id: string
+        }
+        Returns: {
+          contact_id: string
+          contact_name: string
+          contact_phone: string
+          id: string
+          instance_id: string
+          last_message_at: string
+          last_message_preview: string
+          status: string
+          unread_count: number
+        }[]
+      }
+      wa_upsert_digest_config_rpc: {
+        Args: {
+          p_enabled: boolean
+          p_period_hours: number
+          p_schedule_time: string
+          p_workspace_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {

@@ -1,0 +1,145 @@
+"use client";
+
+import { useEffect, useState, useTransition } from "react";
+import { MessageCircle } from "lucide-react";
+import { ConversationFilters } from "@/components/wa/conversation-filters";
+import { ConversationCard } from "@/components/wa/conversation-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getConversationsAction } from "@/lib/actions/wa-conversations";
+import { useWaRealtimeConversations } from "@/hooks/useWaRealtimeConversations";
+import type { WaConversationListItem, WaConversationStatus } from "@/types";
+
+interface InstanceOption {
+  id: string;
+  displayName: string;
+}
+
+interface ConversationListProps {
+  workspaceId: string;
+  initialConversations: WaConversationListItem[];
+  instances: InstanceOption[];
+}
+
+const SEARCH_DEBOUNCE_MS = 300;
+
+export function ConversationList({
+  workspaceId,
+  initialConversations,
+  instances,
+}: ConversationListProps) {
+  const [conversations, setConversations] = useState(initialConversations);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState<WaConversationStatus | "all">("all");
+  const [instanceId, setInstanceId] = useState<string | "all">("all");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setPage(1);
+      startTransition(async () => {
+        const result = await getConversationsAction({
+          search: search || undefined,
+          status: status === "all" ? undefined : status,
+          instanceId: instanceId === "all" ? undefined : instanceId,
+          page: 1,
+        });
+        if ("conversations" in result) {
+          setConversations(result.conversations);
+          setHasMore(result.conversations.length === 20);
+        }
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => clearTimeout(timeout);
+  }, [search, status, instanceId]);
+
+  // Sprint 3 — atualiza in-place (preview/unread/timestamp) só de conversas
+  // já carregadas na página atual. Não insere conversas novas fora da
+  // paginação/filtro vigente, para não reordenar a lista de forma
+  // inconsistente com o que os filtros pedem.
+  useWaRealtimeConversations(workspaceId, (update) => {
+    setConversations((prev) => {
+      if (!prev.some((c) => c.id === update.id)) return prev;
+      return prev
+        .map((c) =>
+          c.id === update.id
+            ? {
+                ...c,
+                lastMessageAt: update.last_message_at,
+                lastMessagePreview: update.last_message_preview,
+                unreadCount: update.unread_count,
+              }
+            : c
+        )
+        .sort((a, b) => {
+          if (!a.lastMessageAt) return 1;
+          if (!b.lastMessageAt) return -1;
+          return new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime();
+        });
+    });
+  });
+
+  function loadMore() {
+    const nextPage = page + 1;
+    startTransition(async () => {
+      const result = await getConversationsAction({
+        search: search || undefined,
+        status: status === "all" ? undefined : status,
+        instanceId: instanceId === "all" ? undefined : instanceId,
+        page: nextPage,
+      });
+      if ("conversations" in result) {
+        setConversations((prev) => [...prev, ...result.conversations]);
+        setHasMore(result.conversations.length === 20);
+        setPage(nextPage);
+      }
+    });
+  }
+
+  return (
+    <div className="space-y-4">
+      <ConversationFilters
+        search={search}
+        status={status}
+        instanceId={instanceId}
+        instances={instances}
+        onSearchChange={setSearch}
+        onStatusChange={setStatus}
+        onInstanceChange={setInstanceId}
+      />
+
+      {conversations.length === 0 && !isPending ? (
+        <EmptyState
+          icon={MessageCircle}
+          title="Nenhuma conversa encontrada"
+          description="Tente ajustar os filtros de busca, status ou instância."
+        />
+      ) : (
+        <div className="space-y-2">
+          {conversations.map((conversation) => (
+            <ConversationCard key={conversation.id} conversation={conversation} />
+          ))}
+          {isPending && (
+            <>
+              <Skeleton className="h-[68px] w-full rounded-lg" />
+              <Skeleton className="h-[68px] w-full rounded-lg" />
+            </>
+          )}
+        </div>
+      )}
+
+      {hasMore && !isPending && (
+        <div className="flex justify-center">
+          <Button variant="outline" size="sm" onClick={loadMore}>
+            Carregar mais
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
