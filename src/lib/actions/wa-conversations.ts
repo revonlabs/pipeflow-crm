@@ -153,6 +153,60 @@ export async function getConversationMessagesAction(
   };
 }
 
+interface MessageRpcRow {
+  id: string;
+  conversation_id: string;
+  direction: WaMessageDirection;
+  sent_by: WaMessageSentBy;
+  content_type: WaMessageContentType | "unsupported";
+  content_text: string | null;
+  media_url: string | null;
+  media_mime: string | null;
+  status: WaMessageStatus | null;
+  timestamp_wa: string;
+}
+
+// Decifra uma única mensagem (Sprint 3 — Realtime): o evento postgres_changes
+// só traz o id da mensagem nova, nunca content_text/media_url cifrados.
+export async function getMessageAction(
+  messageId: string
+): Promise<{ message: WaMessageDecrypted; conversationId: string } | { error: string }> {
+  let workspaceId: string;
+  try {
+    ({ workspace: { id: workspaceId } } = await requireWaAdmin());
+  } catch {
+    return { error: "Acesso negado" };
+  }
+
+  const supabase = await getSupabaseServerClient();
+
+  const { data, error } = await supabase.rpc("wa_get_message_rpc", {
+    p_message_id: messageId,
+    p_workspace_id: workspaceId,
+    p_master_key: getMasterKey(),
+  });
+
+  const row = ((data ?? []) as MessageRpcRow[])[0];
+  if (error || !row) {
+    return { error: "Não foi possível carregar a mensagem" };
+  }
+
+  return {
+    conversationId: row.conversation_id,
+    message: {
+      id: row.id,
+      direction: row.direction,
+      sentBy: row.sent_by,
+      contentType: row.content_type,
+      contentText: row.content_text,
+      mediaPath: row.media_url,
+      mediaMime: row.media_mime,
+      status: row.status,
+      timestampWa: row.timestamp_wa,
+    },
+  };
+}
+
 const SIGNED_URL_TTL_SECONDS = 300;
 
 export async function getWaMediaSignedUrlAction(

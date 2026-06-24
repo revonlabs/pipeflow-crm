@@ -1013,6 +1013,25 @@ export type Database = {
           timestamp_wa: string
         }[]
       }
+      wa_get_message_rpc: {
+        Args: {
+          p_master_key: string
+          p_message_id: string
+          p_workspace_id: string
+        }
+        Returns: {
+          content_text: string
+          content_type: string
+          conversation_id: string
+          direction: string
+          id: string
+          media_mime: string
+          media_url: string
+          sent_by: string
+          status: string
+          timestamp_wa: string
+        }[]
+      }
       wa_list_conversations_rpc: {
         Args: {
           p_instance_id?: string

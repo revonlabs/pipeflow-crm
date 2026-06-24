@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getConversationsAction } from "@/lib/actions/wa-conversations";
+import { useWaRealtimeConversations } from "@/hooks/useWaRealtimeConversations";
 import type { WaConversationListItem, WaConversationStatus } from "@/types";
 
 interface InstanceOption {
@@ -16,13 +17,18 @@ interface InstanceOption {
 }
 
 interface ConversationListProps {
+  workspaceId: string;
   initialConversations: WaConversationListItem[];
   instances: InstanceOption[];
 }
 
 const SEARCH_DEBOUNCE_MS = 300;
 
-export function ConversationList({ initialConversations, instances }: ConversationListProps) {
+export function ConversationList({
+  workspaceId,
+  initialConversations,
+  instances,
+}: ConversationListProps) {
   const [conversations, setConversations] = useState(initialConversations);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<WaConversationStatus | "all">("all");
@@ -51,6 +57,32 @@ export function ConversationList({ initialConversations, instances }: Conversati
 
     return () => clearTimeout(timeout);
   }, [search, status, instanceId]);
+
+  // Sprint 3 — atualiza in-place (preview/unread/timestamp) só de conversas
+  // já carregadas na página atual. Não insere conversas novas fora da
+  // paginação/filtro vigente, para não reordenar a lista de forma
+  // inconsistente com o que os filtros pedem.
+  useWaRealtimeConversations(workspaceId, (update) => {
+    setConversations((prev) => {
+      if (!prev.some((c) => c.id === update.id)) return prev;
+      return prev
+        .map((c) =>
+          c.id === update.id
+            ? {
+                ...c,
+                lastMessageAt: update.last_message_at,
+                lastMessagePreview: update.last_message_preview,
+                unreadCount: update.unread_count,
+              }
+            : c
+        )
+        .sort((a, b) => {
+          if (!a.lastMessageAt) return 1;
+          if (!b.lastMessageAt) return -1;
+          return new Date(b.lastMessageAt).getTime() - new Date(a.lastMessageAt).getTime();
+        });
+    });
+  });
 
   function loadMore() {
     const nextPage = page + 1;

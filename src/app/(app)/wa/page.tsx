@@ -50,7 +50,11 @@ export default async function WhatsAppMonitorPage() {
           Conversas monitoradas em todas as instâncias do workspace.
         </p>
       </div>
-      <ConversationList initialConversations={initialConversations} instances={instances} />
+      <ConversationList
+        workspaceId={ctx.workspace.id}
+        initialConversations={initialConversations}
+        instances={instances}
+      />
     </div>
   );
 }

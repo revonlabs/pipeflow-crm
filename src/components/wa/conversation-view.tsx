@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageBubble } from "@/components/wa/message-bubble";
 import { getConversationMessagesAction } from "@/lib/actions/wa-conversations";
+import { useWaRealtimeMessages } from "@/hooks/useWaRealtimeMessages";
 import type { WaMessageDecrypted } from "@/types";
 
 interface ConversationViewProps {
@@ -71,6 +72,27 @@ export function ConversationView({
     const container = scrollContainerRef.current;
     if (container) container.scrollTop = container.scrollHeight;
   }, []);
+
+  // Sprint 3 — mensagem nova chega via Realtime (postgres_changes), decifrada
+  // pontualmente por getMessageAction. Dedupe por id evita duplicar caso o
+  // evento chegue mais de uma vez (reconexão do canal).
+  useWaRealtimeMessages(conversationId, (message) => {
+    setMessages((prev) => {
+      if (prev.some((m) => m.id === message.id)) return prev;
+      return [...prev, message];
+    });
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      const isNearBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight < 150;
+      if (isNearBottom) {
+        requestAnimationFrame(() => {
+          container.scrollTop = container.scrollHeight;
+        });
+      }
+    }
+  });
 
   const filteredMessages = search
     ? messages.filter((m) => m.contentText?.toLowerCase().includes(search.toLowerCase()))
