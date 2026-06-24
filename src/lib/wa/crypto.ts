@@ -1,17 +1,7 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/supabase";
-
-// WA_MASTER_KEY: obrigatória, nunca tem default. Gerar com `openssl rand -base64 32`
-// e configurar como env var na Vercel (nunca no Supabase Vault, nunca no código).
-// Ver README do módulo (seção "Criptografia").
-function getMasterKey(): string {
-  const key = process.env.WA_MASTER_KEY;
-  if (!key) {
-    throw new Error("wa_master_key_missing");
-  }
-  return key;
-}
+import { getMasterKey } from "@/lib/wa/master-key";
 
 // REGRA INEGOCIÁVEL: nenhuma função abaixo deve logar `key`, `plaintext` ou
 // `ciphertext`. Erros do Postgres já voltam genéricos ("wa_crypto_error" —

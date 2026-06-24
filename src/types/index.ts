@@ -235,6 +235,36 @@ export interface WaMessage {
   received_at: string;
 }
 
+// Retorno de wa_list_conversations_rpc (migration 030) — já com nome/telefone
+// do contato via join e last_message_preview (não cifrado nesta tabela).
+export interface WaConversationListItem {
+  id: string;
+  instanceId: string;
+  contactId: string;
+  contactName: string | null;
+  contactPhone: string;
+  status: WaConversationStatus;
+  lastMessageAt: string | null;
+  lastMessagePreview: string | null;
+  unreadCount: number;
+}
+
+// Retorno de wa_get_conversation_messages_rpc (migration 030) — content_text
+// e mediaPath já decifrados dentro do Postgres antes de chegar ao client.
+export interface WaMessageDecrypted {
+  id: string;
+  direction: WaMessageDirection;
+  sentBy: WaMessageSentBy;
+  // "unsupported" pode ocorrer mesmo fora do CHECK constraint da coluna —
+  // ver nota em src/components/wa/message-media.tsx.
+  contentType: WaMessageContentType | "unsupported";
+  contentText: string | null;
+  mediaPath: string | null;
+  mediaMime: string | null;
+  status: WaMessageStatus | null;
+  timestampWa: string;
+}
+
 export interface WaWebhookQueueItem {
   id: number;
   workspace_id: string;

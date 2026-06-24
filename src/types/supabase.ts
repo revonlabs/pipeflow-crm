@@ -993,6 +993,47 @@ export type Database = {
         }
         Returns: string
       }
+      wa_get_conversation_messages_rpc: {
+        Args: {
+          p_before?: string
+          p_conversation_id: string
+          p_limit?: number
+          p_master_key: string
+          p_workspace_id: string
+        }
+        Returns: {
+          content_text: string
+          content_type: string
+          direction: string
+          id: string
+          media_mime: string
+          media_url: string
+          sent_by: string
+          status: string
+          timestamp_wa: string
+        }[]
+      }
+      wa_list_conversations_rpc: {
+        Args: {
+          p_instance_id?: string
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_status?: string
+          p_workspace_id: string
+        }
+        Returns: {
+          contact_id: string
+          contact_name: string
+          contact_phone: string
+          id: string
+          instance_id: string
+          last_message_at: string
+          last_message_preview: string
+          status: string
+          unread_count: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
