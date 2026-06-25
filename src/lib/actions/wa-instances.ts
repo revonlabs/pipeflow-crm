@@ -4,7 +4,12 @@ import { randomUUID } from "crypto";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { requireWaAdmin } from "@/lib/wa/auth";
 import { logWaAudit } from "@/lib/wa/audit";
-import { createInstance, getInstanceConnect, deleteInstance } from "@/lib/wa/evolution-client";
+import {
+  createInstance,
+  getInstanceConnect,
+  deleteInstance,
+  setInstanceWebhook,
+} from "@/lib/wa/evolution-client";
 import type { WaInstance } from "@/types";
 
 function buildWebhookUrl(workspaceId: string, instanceId: string, webhookToken: string): string {
@@ -87,6 +92,17 @@ export async function createInstanceAction(
     const qrcode = await createInstance({
       instanceName: evolutionInstanceName,
       webhookUrl,
+    });
+
+    // O webhook embutido no payload de /instance/create não se mostrou
+    // confiável em teste real (instância criada sem o registro aparecer em
+    // GET /webhook/find depois) — chama /webhook/set explicitamente em
+    // sequência para garantir a configuração, independente do comportamento
+    // do create nesta versão da Evolution.
+    await setInstanceWebhook({
+      instanceName: evolutionInstanceName,
+      webhookUrl,
+      events: ["MESSAGES_UPSERT", "CONNECTION_UPDATE", "QRCODE_UPDATED"],
     });
 
     await logWaAudit({

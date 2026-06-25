@@ -109,13 +109,15 @@ export interface InstanceQrCode {
 }
 
 // POST /instance/create — validado com chamada real (Sprint 5.5, instância
-// "teste-sprint55"). O webhook embutido no payload É aplicado pela Evolution
-// (confirmado: resposta trouxe webhook configurado), então setInstanceWebhook
-// separado não é necessário neste fluxo — fica reservado para reconfigurar
-// webhook de instâncias já existentes (ex: "trazer" a instância "Revon").
+// "teste-sprint55"). O campo `webhook` embutido no payload NÃO se mostrou
+// confiável em teste real (instância criada em produção sem o webhook
+// aparecer em GET /webhook/find depois, mesmo enviando o payload) — o
+// caller SEMPRE deve chamar setInstanceWebhook em seguida para garantir a
+// configuração (ver wa-instances.ts). O campo é mantido aqui só por
+// completude do payload documentado, não removido por segurança.
 // Shape da resposta tem o QR aninhado em `qrcode` (diferente de
-// getInstanceConnect, que retorna o QR direto na raiz — confirmado nos dois
-// curls reais desta sessão).
+// getInstanceConnect, que retorna o QR direto na raiz — confirmado em
+// curls reais).
 export async function createInstance(input: CreateInstanceInput): Promise<InstanceQrCode> {
   const response = await evolutionFetch<{ qrcode: InstanceQrCode }>("/instance/create", {
     method: "POST",
