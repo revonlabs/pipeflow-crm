@@ -10,10 +10,19 @@ import type { Json } from "@/types/supabase";
 // upsert de contato/conversa, upload de mídia) é do worker (pg_cron),
 // ainda não implementado — ver wa-pgcrypto-sprint1-blocker.
 //
-// Validação em duas camadas (decisão de Pedro, ver memória do projeto):
-// 1. token na URL precisa bater com wa_instances.webhook_token
-// 2. apikey no corpo precisa bater com EVOLUTION_API_KEY
-// Qualquer falha → 401 imediato, sem processar nem logar o payload.
+// Validação: token na URL precisa bater com wa_instances.webhook_token
+// (64 bytes aleatórios gerados por nós — migration 022). Qualquer falha →
+// 401 imediato, sem processar nem logar o payload.
+//
+// CORREÇÃO (Sprint 5.5, payload real capturado em produção): o campo
+// `apikey` do corpo do webhook NÃO é a EVOLUTION_API_KEY global — é um hash
+// específico por instância gerado pela própria Evolution no /instance/create
+// (campo `hash` da resposta), diferente para cada instância e fora do nosso
+// controle. A checagem anterior contra EVOLUTION_API_KEY sempre falhava com
+// 401 e nunca foi uma validação de segurança real (nunca configuramos nem
+// conhecíamos esse valor por instância). O webhook_token da URL já é
+// suficiente como segredo — não vale a pena passar a armazenar e validar
+// esse hash por instância só para uma segunda camada redundante.
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ workspaceId: string; instanceId: string; token: string }> }
@@ -25,11 +34,6 @@ export async function POST(
     body = await request.json();
   } catch {
     return NextResponse.json({ error: "invalid_json" }, { status: 400 });
-  }
-
-  const expectedApiKey = process.env.EVOLUTION_API_KEY;
-  if (!expectedApiKey || body.apikey !== expectedApiKey) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
   const supabase = getSupabaseAdminClient();
