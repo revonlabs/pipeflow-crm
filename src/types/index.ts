@@ -165,17 +165,21 @@ export type WaWebhookQueueStatus = "pending" | "processing" | "done" | "failed" 
 export type WaAuditAction =
   | "view_conversation"
   | "view_dashboard"
-  | "send_intervention"
+  | "send_intervention_attempt"
+  | "send_intervention_success"
+  | "send_intervention_failed"
   | "export_data"
   | "change_settings"
   | "login"
-  | "logout";
+  | "logout"
+  | "create_instance"
+  | "delete_instance";
 
 export interface WaInstance {
   id: string;
   workspace_id: string;
   evolution_instance_name: string;
-  phone_number: string;
+  phone_number: string | null;
   display_name: string;
   owner_user_id: string | null;
   status: WaInstanceStatus;

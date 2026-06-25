@@ -76,6 +76,47 @@ export function sanitizeWebhookPayload(payload: EvolutionWebhookPayload): Record
   return rest;
 }
 
+export type WaInstanceConnectionState = "open" | "close" | "connecting";
+
+export interface ParsedConnectionUpdate {
+  state: WaInstanceConnectionState;
+  phoneNumber: string | null;
+}
+
+const INSTANCE_STATUS_BY_STATE: Record<WaInstanceConnectionState, string> = {
+  open: "connected",
+  close: "disconnected",
+  connecting: "qr_pending",
+};
+
+// Shape ainda NÃO confirmado com payload real (Sprint 5.5 não conseguiu
+// conectar uma instância de teste por bloqueio temporário do WhatsApp —
+// ver memória do projeto). Segue a estrutura padrão documentada da Evolution
+// (data.state: 'open'|'close'|'connecting', data.instance.wuid com o JID
+// quando 'open'). Validar contra payload real na primeira conexão bem
+// sucedida em produção e corrigir aqui se o shape vier diferente.
+export function parseConnectionUpdate(payload: EvolutionWebhookPayload): ParsedConnectionUpdate | null {
+  if (payload.event !== "connection.update") {
+    return null;
+  }
+
+  const data = payload.data as unknown as { state?: string; wuid?: string; instance?: { wuid?: string } };
+  const state = data.state;
+
+  if (state !== "open" && state !== "close" && state !== "connecting") {
+    return null;
+  }
+
+  const wuid = data.wuid ?? data.instance?.wuid ?? null;
+  const phoneNumber = wuid ? wuid.split("@")[0].split(":")[0] : null;
+
+  return { state, phoneNumber };
+}
+
+export function waInstanceStatusForState(state: WaInstanceConnectionState): string {
+  return INSTANCE_STATUS_BY_STATE[state];
+}
+
 export function parseWaWebhookEvent(payload: EvolutionWebhookPayload): ParsedWaMessage | null {
   if (payload.event !== "messages.upsert") {
     return null;

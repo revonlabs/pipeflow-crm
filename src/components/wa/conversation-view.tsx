@@ -6,6 +6,7 @@ import { ArrowLeft, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { MessageBubble } from "@/components/wa/message-bubble";
+import { AdminInterventionModal } from "@/components/wa/admin-intervention-modal";
 import { getConversationMessagesAction } from "@/lib/actions/wa-conversations";
 import { useWaRealtimeMessages } from "@/hooks/useWaRealtimeMessages";
 import type { WaMessageDecrypted } from "@/types";
@@ -114,6 +115,10 @@ export function ConversationView({
             className="pl-8 h-8 text-xs"
           />
         </div>
+        <AdminInterventionModal
+          conversationId={conversationId}
+          onSent={(message) => setMessages((prev) => [...prev, message])}
+        />
       </div>
 
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-2">

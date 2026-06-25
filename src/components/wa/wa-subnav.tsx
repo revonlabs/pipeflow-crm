@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 const SUBNAV_ITEMS = [
   { href: "/wa", label: "Conversas" },
+  { href: "/wa/instances", label: "Instâncias" },
   { href: "/wa/metrics", label: "Métricas" },
   { href: "/wa/settings", label: "Configurações" },
 ];

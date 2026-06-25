@@ -637,7 +637,7 @@ export type Database = {
           id: string
           last_seen_at: string | null
           owner_user_id: string | null
-          phone_number: string
+          phone_number: string | null
           status: string
           updated_at: string
           webhook_secret: string
@@ -651,7 +651,7 @@ export type Database = {
           id?: string
           last_seen_at?: string | null
           owner_user_id?: string | null
-          phone_number: string
+          phone_number?: string | null
           status?: string
           updated_at?: string
           webhook_secret?: string
@@ -665,7 +665,7 @@ export type Database = {
           id?: string
           last_seen_at?: string | null
           owner_user_id?: string | null
-          phone_number?: string
+          phone_number?: string | null
           status?: string
           updated_at?: string
           webhook_secret?: string
@@ -967,6 +967,17 @@ export type Database = {
         Args: { p_workspace_id: string }
         Returns: boolean
       }
+      wa_create_instance_rpc: {
+        Args: {
+          p_display_name: string
+          p_evolution_instance_name: string
+          p_workspace_id: string
+        }
+        Returns: {
+          id: string
+          webhook_token: string
+        }[]
+      }
       wa_decrypt_content: {
         Args: {
           p_ciphertext: string
@@ -984,6 +995,10 @@ export type Database = {
           p_workspace_id: string
         }
         Returns: string
+      }
+      wa_delete_instance_rpc: {
+        Args: { p_instance_id: string; p_workspace_id: string }
+        Returns: undefined
       }
       wa_dequeue_webhook_items: {
         Args: { p_limit?: number }
@@ -1060,6 +1075,13 @@ export type Database = {
           timestamp_wa: string
         }[]
       }
+      wa_get_conversation_send_context_rpc: {
+        Args: { p_conversation_id: string; p_workspace_id: string }
+        Returns: {
+          contact_phone: string
+          evolution_instance_name: string
+        }[]
+      }
       wa_get_digest_config_rpc: {
         Args: { p_workspace_id: string }
         Returns: {
@@ -1068,6 +1090,10 @@ export type Database = {
           period_hours: number
           schedule_time: string
         }[]
+      }
+      wa_get_last_vendor_activity_rpc: {
+        Args: { p_conversation_id: string; p_workspace_id: string }
+        Returns: string
       }
       wa_get_message_rpc: {
         Args: {
@@ -1120,6 +1146,40 @@ export type Database = {
           status: string
           unread_count: number
         }[]
+      }
+      wa_list_instances_rpc: {
+        Args: { p_workspace_id: string }
+        Returns: {
+          created_at: string
+          display_name: string
+          evolution_instance_name: string
+          id: string
+          last_seen_at: string
+          phone_number: string
+          status: string
+        }[]
+      }
+      wa_send_admin_message_rpc: {
+        Args: {
+          p_content_text: string
+          p_conversation_id: string
+          p_evolution_message_id: string
+          p_master_key: string
+          p_user_id: string
+          p_workspace_id: string
+        }
+        Returns: {
+          id: string
+          timestamp_wa: string
+        }[]
+      }
+      wa_update_instance_status_rpc: {
+        Args: {
+          p_instance_id: string
+          p_phone_number?: string
+          p_status: string
+        }
+        Returns: undefined
       }
       wa_upsert_digest_config_rpc: {
         Args: {

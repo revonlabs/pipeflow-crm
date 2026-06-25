@@ -2,7 +2,12 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { encryptWaContent } from "@/lib/wa/crypto";
 import { uploadWaMedia } from "@/lib/wa/media-storage";
-import { parseWaWebhookEvent, type EvolutionWebhookPayload } from "@/lib/wa/webhook-parser";
+import {
+  parseWaWebhookEvent,
+  parseConnectionUpdate,
+  waInstanceStatusForState,
+  type EvolutionWebhookPayload,
+} from "@/lib/wa/webhook-parser";
 import { waLogger } from "@/lib/wa/logger";
 import type { Database } from "@/types/supabase";
 
@@ -88,13 +93,29 @@ async function processQueueItem(
   supabase: ReturnType<typeof getSupabaseAdminClient>,
   item: QueueItem
 ): Promise<void> {
-  if (item.event_type !== "messages.upsert") {
-    // Outros eventos (connection.update, qrcode.updated, etc.) ainda não
-    // têm processamento definido — marcar como concluído sem ação, não falhar.
+  const payload = item.payload as unknown as EvolutionWebhookPayload;
+
+  if (item.event_type === "connection.update") {
+    const connectionUpdate = parseConnectionUpdate(payload);
+    if (connectionUpdate) {
+      const { error: statusError } = await supabase.rpc("wa_update_instance_status_rpc", {
+        p_instance_id: item.instance_id,
+        p_status: waInstanceStatusForState(connectionUpdate.state),
+        p_phone_number: connectionUpdate.phoneNumber ?? undefined,
+      });
+      if (statusError) {
+        throw new Error("wa_instance_status_update_failed");
+      }
+    }
     return;
   }
 
-  const payload = item.payload as unknown as EvolutionWebhookPayload;
+  if (item.event_type !== "messages.upsert") {
+    // Outros eventos (qrcode.updated, contacts.update, etc.) ainda não têm
+    // processamento definido — marcar como concluído sem ação, não falhar.
+    return;
+  }
+
   const parsed = parseWaWebhookEvent(payload);
 
   if (!parsed) {
