@@ -692,6 +692,7 @@ export type Database = {
           id: string
           intervention_user_id: string | null
           key_version: number
+          media_expired: boolean
           media_mime: string | null
           media_size_bytes: number | null
           media_url: string | null
@@ -711,6 +712,7 @@ export type Database = {
           id?: string
           intervention_user_id?: string | null
           key_version?: number
+          media_expired?: boolean
           media_mime?: string | null
           media_size_bytes?: number | null
           media_url?: string | null
@@ -730,6 +732,7 @@ export type Database = {
           id?: string
           intervention_user_id?: string | null
           key_version?: number
+          media_expired?: boolean
           media_mime?: string | null
           media_size_bytes?: number | null
           media_url?: string | null
@@ -963,6 +966,14 @@ export type Database = {
         Returns: boolean
       }
       wa_aggregate_metrics: { Args: { p_date?: string }; Returns: undefined }
+      wa_anonymize_contact_rpc: {
+        Args: { p_contact_id: string; p_workspace_id: string }
+        Returns: undefined
+      }
+      wa_archive_old_messages: {
+        Args: never
+        Returns: { archived_count: number }[]
+      }
       wa_claim_digest_send: {
         Args: { p_workspace_id: string }
         Returns: boolean
@@ -1157,6 +1168,28 @@ export type Database = {
           last_seen_at: string
           phone_number: string
           status: string
+        }[]
+      }
+      wa_mark_media_expired: {
+        Args: { p_message_ids: string[] }
+        Returns: undefined
+      }
+      wa_purge_anonymized_contacts: {
+        Args: { p_limit?: number }
+        Returns: {
+          key_version: number
+          media_url: string
+          message_id: string
+          workspace_id: string
+        }[]
+      }
+      wa_select_expirable_media: {
+        Args: { p_limit?: number }
+        Returns: {
+          key_version: number
+          media_url: string
+          message_id: string
+          workspace_id: string
         }[]
       }
       wa_send_admin_message_rpc: {

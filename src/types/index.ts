@@ -173,7 +173,8 @@ export type WaAuditAction =
   | "login"
   | "logout"
   | "create_instance"
-  | "delete_instance";
+  | "delete_instance"
+  | "contact_anonymized";
 
 export interface WaInstance {
   id: string;

@@ -63,3 +63,39 @@ Sem busca full-text sobre `content_text` (índice `content_text_search` não
 existe): com o conteúdo cifrado, um índice TSVECTOR sobre texto puro não é
 possível. Decidir busca client-side pós-decrypt vs. campo derivado fica para
 quando a ingestão (Sprint 1) tiver volume real para justificar a decisão.
+
+## Retenção e arquivamento (Sprint 6)
+
+Job mensal (`wa_retention_job`, pg_cron, dia 1 às 3h) chama
+`/api/wa/worker/retention-job` (mesmo padrão de auth/worker de
+`process-queue`/`aggregate-metrics`: header `Authorization: Bearer
+WA_WORKER_SECRET`, secret vindo do Supabase Vault). Migrations:
+`041_wa_retention.sql` (tabelas/functions) e `042_wa_retention_cron.sql` (o
+agendamento em si).
+
+O job faz três coisas, cada uma tolerante à falha das outras:
+
+1. **Arquivamento (>90 dias):** `wa_archive_old_messages()` move mensagens de
+   `wa_messages` para `wa_messages_archive` (particionada por mês,
+   `timestamp_wa`). A function cria a partição do mês de destino em runtime —
+   não depende de nova migration para meses futuros.
+2. **Limpeza de mídia (>30 dias):** `wa_select_expirable_media()` seleciona até
+   200 mensagens com mídia ainda não limpa; o worker descriptografa o path
+   (`decryptWaContent`), chama `deleteWaMedia()` (Storage) e só então marca
+   `media_expired = true` via `wa_mark_media_expired()`. Item que falhar na
+   deleção física não é marcado — é retentado no próximo mês.
+3. **Purga de contatos anonimizados (LGPD, >30 dias após `anonymized_at`):**
+   `wa_purge_anonymized_contacts()` identifica mídia restante desses contatos
+   (mesmo orçamento de 200 itens, função separada da etapa 2); o worker repete
+   o mesmo fluxo de descriptografar → deletar → marcar.
+
+**Anonimização (`wa_anonymize_contact_rpc`):** só function + Server Action
+(`anonymizeContactAction` em `src/lib/actions/wa-contacts.ts`) por ora — sem
+botão na UI ainda. Zera `display_name`/`phone_number`/`profile_pic_url` e
+marca `anonymized_at`; é o gatilho que a purga da etapa 3 espera 30 dias para
+processar.
+
+⚠️ Mesma armadilha de todo cron deste módulo: **nunca aplicar `042` antes do
+deploy da rota `/api/wa/worker/retention-job` estar respondendo em produção** —
+senão `pg_net` acumula 404 até o próximo dia 1. Confirmar agendamento com
+`SELECT * FROM cron.job WHERE jobname = 'wa_retention_job';`.

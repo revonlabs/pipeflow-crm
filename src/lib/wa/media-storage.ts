@@ -48,3 +48,14 @@ export async function uploadWaMedia(
 
   return path;
 }
+
+// Deleta o arquivo físico do bucket wa-media. Usado pelo worker de retenção
+// (Sprint 6) para mídia > 30 dias ou de contatos anonimizados há > 30 dias.
+// O path deve ser o valor já descriptografado de wa_messages.media_url.
+export async function deleteWaMedia(supabase: SupabaseClient<Database>, path: string): Promise<void> {
+  const { error } = await supabase.storage.from("wa-media").remove([path]);
+
+  if (error) {
+    throw new Error("wa_media_delete_failed");
+  }
+}

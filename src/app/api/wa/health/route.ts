@@ -21,7 +21,16 @@ export async function GET() {
 
   const supabase = await getSupabaseServerClient();
 
-  const [instancesResult, queuePendingResult, queueDeadResult] = await Promise.all([
+  const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+  const [
+    instancesResult,
+    queuePendingResult,
+    queueDeadResult,
+    archivableResult,
+    expirableMediaResult,
+  ] = await Promise.all([
     supabase
       .from("wa_instances")
       .select("status")
@@ -36,9 +45,27 @@ export async function GET() {
       .select("id", { count: "exact", head: true })
       .eq("workspace_id", ctx.workspace.id)
       .eq("status", "dead"),
+    supabase
+      .from("wa_messages")
+      .select("id", { count: "exact", head: true })
+      .eq("workspace_id", ctx.workspace.id)
+      .lt("timestamp_wa", ninetyDaysAgo),
+    supabase
+      .from("wa_messages")
+      .select("id", { count: "exact", head: true })
+      .eq("workspace_id", ctx.workspace.id)
+      .eq("media_expired", false)
+      .not("media_url", "is", null)
+      .lt("received_at", thirtyDaysAgo),
   ]);
 
-  if (instancesResult.error || queuePendingResult.error || queueDeadResult.error) {
+  if (
+    instancesResult.error ||
+    queuePendingResult.error ||
+    queueDeadResult.error ||
+    archivableResult.error ||
+    expirableMediaResult.error
+  ) {
     waLogger.error("wa_health_check_failed", { workspaceId: ctx.workspace.id });
     return NextResponse.json({ error: "health_check_failed" }, { status: 500 });
   }
