@@ -171,6 +171,26 @@ $$;
 REVOKE ALL  ON FUNCTION public.is_workspace_member(UUID) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.is_workspace_member(UUID) TO authenticated;
 
+-- Espelha is_workspace_member, filtrando role = 'admin' (ver 023_wa_rls_policies.sql)
+CREATE OR REPLACE FUNCTION public.is_workspace_admin(p_workspace_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.workspace_members
+    WHERE workspace_id = p_workspace_id
+      AND user_id = (SELECT auth.uid())
+      AND role = 'admin'
+  );
+$$;
+
+REVOKE ALL  ON FUNCTION public.is_workspace_admin(UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_workspace_admin(UUID) TO authenticated;
+
 CREATE OR REPLACE FUNCTION public.create_workspace(
   workspace_name TEXT,
   workspace_slug TEXT
@@ -276,9 +296,13 @@ DROP POLICY IF EXISTS "leads_insert" ON public.leads;
 DROP POLICY IF EXISTS "leads_update" ON public.leads;
 DROP POLICY IF EXISTS "leads_delete" ON public.leads;
 
+-- Member só vê leads onde é owner_id; admin vê todos (043_leads_deals_owner_visibility.sql)
 CREATE POLICY "leads_select" ON public.leads
   FOR SELECT TO authenticated
-  USING (public.is_workspace_member(workspace_id));
+  USING (
+    public.is_workspace_admin(workspace_id)
+    OR owner_id = (SELECT auth.uid())
+  );
 CREATE POLICY "leads_insert" ON public.leads
   FOR INSERT TO authenticated
   WITH CHECK (public.is_workspace_member(workspace_id));
@@ -295,9 +319,19 @@ DROP POLICY IF EXISTS "deals_insert" ON public.deals;
 DROP POLICY IF EXISTS "deals_update" ON public.deals;
 DROP POLICY IF EXISTS "deals_delete" ON public.deals;
 
+-- Member vê deals onde é owner_id (do deal ou do lead vinculado); admin vê todos
+-- (043_leads_deals_owner_visibility.sql)
 CREATE POLICY "deals_select" ON public.deals
   FOR SELECT TO authenticated
-  USING (public.is_workspace_member(workspace_id));
+  USING (
+    public.is_workspace_admin(workspace_id)
+    OR owner_id = (SELECT auth.uid())
+    OR EXISTS (
+      SELECT 1 FROM public.leads
+      WHERE leads.id = deals.lead_id
+        AND leads.owner_id = (SELECT auth.uid())
+    )
+  );
 CREATE POLICY "deals_insert" ON public.deals
   FOR INSERT TO authenticated
   WITH CHECK (public.is_workspace_member(workspace_id));
