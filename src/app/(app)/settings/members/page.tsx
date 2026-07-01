@@ -64,11 +64,7 @@ export default async function MembersPage() {
         <div className="flex items-start gap-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-400">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <span>
-            Você atingiu o limite de {FREE_MEMBER_LIMIT} membros do plano Free.{' '}
-            <a href="/settings/billing" className="font-medium underline underline-offset-2">
-              Faça upgrade para Pro
-            </a>{' '}
-            para adicionar membros ilimitados.
+            Você atingiu o limite de {FREE_MEMBER_LIMIT} membros do plano Free.
           </span>
         </div>
       )}

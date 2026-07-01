@@ -44,7 +44,7 @@ export default async function WorkspaceSettingsPage() {
           </Badge>
           {workspace.plan === 'free' && (
             <p className="text-sm text-muted-foreground">
-              Máximo de 2 membros e 50 leads. <a href="/settings/billing" className="text-[#FF7043] hover:underline">Fazer upgrade para Pro</a>
+              Máximo de 2 membros e 50 leads.
             </p>
           )}
         </CardContent>
